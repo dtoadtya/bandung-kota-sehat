@@ -1,0 +1,207 @@
+/* =====================================================
+   PENYERAGAMAN WARNA MODUL KELEMBAGAAN
+   ===================================================== */
+
+.kelembagaan-header {
+    position: relative;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 30px 28px 58px;
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid #dceaf7;
+    border-radius: 15px;
+    background: linear-gradient(
+        135deg,
+        #eaf5ff 0%,
+        #f5faff 55%,
+        #ffffff 100%
+    );
+    box-shadow: 0 5px 18px rgba(35, 91, 140, 0.06);
+}
+
+.kelembagaan-header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    background: linear-gradient(
+        180deg,
+        #1769aa,
+        #4da3df
+    );
+}
+
+.kelembagaan-header::after {
+    content: "";
+    position: absolute;
+    right: -45px;
+    top: -65px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(77, 163, 223, 0.08);
+}
+
+.kelembagaan-header h1 {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    color: #164b78;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.kelembagaan-header p {
+    position: relative;
+    z-index: 1;
+    margin: 7px 0 0;
+    color: #66839d;
+    font-size: 15px;
+}
+
+.kelembagaan-header .btn {
+    position: relative;
+    z-index: 2;
+    border: 1px solid #c9dfef;
+    border-radius: 9px;
+    color: #1769aa;
+    background: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 2px 7px rgba(23, 105, 170, 0.06);
+}
+
+.kelembagaan-header .btn:hover {
+    color: #ffffff;
+    background: #1769aa;
+    border-color: #1769aa;
+}
+
+/* Card halaman kelembagaan */
+.kelembagaan-page-card,
+.container-fluid > .card {
+    border: 1px solid #dfebf5 !important;
+    border-radius: 15px !important;
+    box-shadow: 0 5px 18px rgba(35, 91, 140, 0.06) !important;
+}
+
+/* Judul di dalam card */
+.card-body h4 {
+    color: #164b78;
+    font-weight: 700;
+}
+
+/* Tombol utama */
+.btn-primary {
+    background-color: #1769aa !important;
+    border-color: #1769aa !important;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #125486 !important;
+    border-color: #125486 !important;
+}
+
+/* Tombol warning edit */
+.btn-warning {
+    color: #ffffff !important;
+    background-color: #e0a52b !important;
+    border-color: #e0a52b !important;
+}
+
+/* Header tabel agar seragam */
+.table thead.table-primary,
+.table thead {
+    background-color: #eaf4fc !important;
+}
+
+.table thead th {
+    color: #245b83 !important;
+    background-color: #eaf4fc !important;
+    border-color: #d2e4f2 !important;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+/* Isi tabel */
+.table tbody td {
+    color: #405b70;
+    border-color: #e3edf5;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f5faff !important;
+}
+
+/* Badge tahun */
+.badge.bg-primary {
+    background-color: #dceefe !important;
+    color: #1769aa !important;
+    border: 1px solid #c5e1f5;
+    font-weight: 700;
+}
+
+/* Tombol outline */
+.btn-outline-primary {
+    color: #1769aa !important;
+    border-color: #8fc3e8 !important;
+    background: #f7fbff;
+}
+
+.btn-outline-primary:hover {
+    color: #ffffff !important;
+    background-color: #1769aa !important;
+    border-color: #1769aa !important;
+}
+
+/* Tombol kembali */
+.btn-secondary {
+    background-color: #e8eef3 !important;
+    border-color: #d5e0e8 !important;
+    color: #536b7d !important;
+}
+
+.btn-secondary:hover {
+    background-color: #d6e1e9 !important;
+    border-color: #c8d6e0 !important;
+}
+
+/* Alert */
+.alert-success {
+    color: #23613e;
+    background-color: #eaf8ef;
+    border-color: #ccebd8;
+}
+
+.alert-danger {
+    color: #8a3540;
+    background-color: #fff0f2;
+    border-color: #f2cbd1;
+}
+
+/* Form */
+.form-label {
+    color: #315a78;
+    font-weight: 600;
+}
+
+.form-control,
+.form-select {
+    border: 1px solid #d4e3ee;
+    border-radius: 8px;
+    color: #405b70;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #75b4df;
+    box-shadow: 0 0 0 0.2rem rgba(77, 163, 223, 0.15);
+}
