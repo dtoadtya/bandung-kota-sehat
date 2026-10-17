@@ -8,6 +8,7 @@ use App\Models\TimPembinaModel;
 use App\Models\ForumBandungSehatModel;
 use App\Models\ForumKecamatanSehatModel;
 use App\Models\PokjaKelurahanSehatModel;
+use App\Models\SelfAssessmentModel;
 
 class Dashboard extends BaseController
 {
@@ -389,6 +390,40 @@ class Dashboard extends BaseController
 
 
         // =====================================================
+        // NILAI SELF-ASSESSMENT (SEMENTARA)
+        // Nilai per modul milik user yang sedang
+        // login, dipakai form di panel progres.
+        // =====================================================
+
+        $userId =
+            session()->get('user_id');
+
+        $nilaiSelfAssessment = [];
+
+        if ($userId) {
+
+            $modelSelfAssessment =
+                new SelfAssessmentModel();
+
+            $barisNilai =
+                $modelSelfAssessment
+                    ->where('user_id', $userId)
+                    ->findAll();
+
+            foreach ($barisNilai as $item) {
+                $nilaiSelfAssessment[$item['modul']] =
+                    $item;
+            }
+        }
+
+        foreach ($progresKelembagaan as $key => &$modul) {
+            $modul['nilai_self_assessment'] =
+                $nilaiSelfAssessment[$key] ?? null;
+        }
+        unset($modul);
+
+
+        // =====================================================
         // DATA DASHBOARD
         // =====================================================
 
@@ -426,6 +461,9 @@ class Dashboard extends BaseController
 
             'progresKelembagaan' =>
                 $progresKelembagaan,
+
+            'nilaiSelfAssessment' =>
+                $nilaiSelfAssessment,
         ];
 
 

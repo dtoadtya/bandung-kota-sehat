@@ -554,6 +554,132 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
 
 /* =========================================================
+   FORM NILAI SELF-ASSESSMENT (SEMENTARA)
+========================================================= */
+
+.dashboard-progres-form {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f8fafc;
+    border: 1px solid #e6eef6;
+    border-radius: 10px;
+}
+
+.dashboard-progres-form .progres-form-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #33506b;
+    margin-bottom: 8px;
+}
+
+.dashboard-progres-form .progres-form-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #fff8e1;
+    color: #b77900;
+    border: 1px solid #f2c94c;
+    font-size: 10px;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+.dashboard-progres-form .progres-form-row {
+    display: flex;
+    gap: 8px;
+}
+
+.dashboard-progres-form .progres-form-input {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+    border: 1px solid #cfe2f5;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #063b78;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dashboard-progres-form .progres-form-input:focus {
+    outline: none;
+    border-color: #087df5;
+    box-shadow: 0 0 0 2px rgba(8, 125, 245, .15);
+}
+
+.dashboard-progres-form .progres-form-submit {
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: #087df5;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.dashboard-progres-form .progres-form-submit:hover {
+    background: #0568d4;
+}
+
+.dashboard-progres-form .progres-form-info {
+    margin-top: 8px;
+    font-size: 10.5px;
+    color: #69839e;
+}
+
+.dashboard-progres-form .progres-form-info .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    background: #eafaf1;
+    color: #159957;
+    border: 1px solid #9eddbb;
+}
+
+
+/* =========================================================
+   TOMBOL UNDUH EXCEL (Khusus Admin)
+========================================================= */
+
+.dashboard-progres-export {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #e6eef6;
+}
+
+.dashboard-progres-export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #159957;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.dashboard-progres-export-btn:hover {
+    background: #0e7a42;
+    color: #ffffff;
+}
+
+.dashboard-progres-export-info {
+    font-size: 11px;
+    color: #69839e;
+}
+
+
+/* =========================================================
    TOOLBAR DROPDOWN GRAFIK
 ========================================================= */
 
@@ -580,6 +706,29 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
     font-weight: 700;
     padding: 7px 12px;
     cursor: pointer;
+}
+
+.dashboard-chart-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dashboard-export-excel {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    background: #159957;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.dashboard-export-excel:hover {
+    background: #0f7a44;
 }
 
 
@@ -882,7 +1031,35 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                 'foto'          => 'Foto Sekretariat',
             ];
 
+            $roleUser =
+                session()->get('role')
+                ?? ($role ?? 'user');
+
         ?>
+
+
+        <?php if ($roleUser === 'admin'): ?>
+
+
+            <div class="dashboard-progres-export">
+
+                <a
+                    href="<?= site_url('self-assessment/excel') ?>"
+                    class="dashboard-progres-export-btn"
+                >
+                    <i class="bi bi-file-earmark-excel"></i>
+                    Unduh Excel
+                </a>
+
+                <span class="dashboard-progres-export-info">
+                    Semua nilai self-assessment seluruh user
+                    (khusus admin)
+                </span>
+
+            </div>
+
+
+        <?php endif; ?>
 
 
         <?php foreach ($daftarProgres as $key => $modul): ?>
@@ -964,6 +1141,125 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                 </div>
 
 
+                <?php
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | FORM NILAI SELF-ASSESSMENT
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $nilaiSA =
+                        $modul['nilai_self_assessment']
+                        ?? null;
+
+                ?>
+
+
+                <form
+                    class="dashboard-progres-form"
+                    method="post"
+                    action="<?= site_url('self-assessment/store') ?>"
+                >
+
+
+                    <input
+                        type="hidden"
+                        name="modul"
+                        value="<?= esc($key) ?>"
+                    >
+
+
+                    <div class="progres-form-title">
+
+                        Nilai Self-Assessment
+
+                        <span class="progres-form-badge">
+                            sementara
+                        </span>
+
+                    </div>
+
+
+                    <div class="progres-form-row">
+
+                        <input
+                            type="number"
+                            name="nilai"
+                            class="progres-form-input"
+                            min="0"
+                            max="100"
+                            step="0.5"
+                            placeholder="0 - 100"
+                            value="<?= $nilaiSA !== null
+                                ? esc(number_format(
+                                    (float) $nilaiSA['nilai'],
+                                    2,
+                                    '.',
+                                    ''
+                                ))
+                                : '' ?>"
+                            required
+                        >
+
+                        <button
+                            type="submit"
+                            class="progres-form-submit"
+                        >
+                            Simpan
+                        </button>
+
+                    </div>
+
+
+                    <div class="progres-form-info">
+
+                        <?php if ($nilaiSA): ?>
+
+                            <?php
+
+                                $tanggalSA =
+                                    $nilaiSA['updated_at']
+                                    ?? $nilaiSA['created_at']
+                                    ?? null;
+
+                            ?>
+
+                            <span class="badge">
+                                Tersimpan
+                            </span>
+
+                            status
+                            <strong>
+                                <?= esc(
+                                    $nilaiSA['status']
+                                    ?? 'sementara'
+                                ) ?>
+                            </strong>
+
+                            <?php if ($tanggalSA): ?>
+                                &middot;
+                                <?= date(
+                                    'd/m/Y H:i',
+                                    strtotime($tanggalSA)
+                                ) ?>
+                            <?php endif; ?>
+
+                        <?php else: ?>
+
+                            Belum dinilai
+                            &middot;
+                            isi nilai 0 - 100 lalu
+                            klik Simpan
+
+                        <?php endif; ?>
+
+                    </div>
+
+
+                </form>
+
+
             </div>
 
 
@@ -978,37 +1274,56 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
          CHARTS
     ====================================================== -->
 
-    <!-- DROPDOWN PILIH TAMPILAN GRAFIK -->
+    <!-- DROPDOWN PILIH TAMPILAN GRAFIK + TOMBOL EXCEL -->
 
     <div class="dashboard-chart-toolbar">
 
-        <label for="chartScope">
-            Tampilkan grafik
-        </label>
 
-        <select id="chartScope">
+        <?php if (($role ?? session()->get('role')) === 'admin'): ?>
 
-            <option value="kelembagaan">
-                Kelembagaan (semua)
-            </option>
+            <a
+                href="<?= site_url('export/self-assessment') ?>"
+                class="dashboard-export-excel"
+                title="Unduh nilai self-assessment seluruh user (Excel)"
+            >
+                <i class="bi bi-file-earmark-excel"></i>
+                Unduh Excel
+            </a>
 
-            <option value="tim_pembina">
-                Tim Pembina
-            </option>
+        <?php endif; ?>
 
-            <option value="forum_bandung_sehat">
-                Forum Bandung Sehat
-            </option>
 
-            <option value="forum_kecamatan_sehat">
-                Forum Kecamatan Sehat
-            </option>
+        <div class="dashboard-chart-toolbar-right">
 
-            <option value="pokja_kelurahan_sehat">
-                Pokja Kelurahan Sehat
-            </option>
+            <label for="chartScope">
+                Tampilkan grafik
+            </label>
 
-        </select>
+            <select id="chartScope">
+
+                <option value="kelembagaan">
+                    Kelembagaan (semua)
+                </option>
+
+                <option value="tim_pembina">
+                    Tim Pembina
+                </option>
+
+                <option value="forum_bandung_sehat">
+                    Forum Bandung Sehat
+                </option>
+
+                <option value="forum_kecamatan_sehat">
+                    Forum Kecamatan Sehat
+                </option>
+
+                <option value="pokja_kelurahan_sehat">
+                    Pokja Kelurahan Sehat
+                </option>
+
+            </select>
+
+        </div>
 
     </div>
 

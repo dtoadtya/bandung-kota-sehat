@@ -1234,3 +1234,26 @@ $routes->post('inovasi/perangkat-daerah/store', 'InovasiPerangkatDaerah::store')
 $routes->get('inovasi/perangkat-daerah/edit/(:num)', 'InovasiPerangkatDaerah::edit/$1');
 $routes->post('inovasi/perangkat-daerah/update/(:num)', 'InovasiPerangkatDaerah::update/$1');
 $routes->get('inovasi/perangkat-daerah/delete/(:num)', 'InovasiPerangkatDaerah::delete/$1');
+
+// =====================================================
+// SELF-ASSESSMENT (NILAI SEMENTARA DI PANEL PROGRES DASHBOARD)
+// =====================================================
+
+$routes->post(
+    'self-assessment/store',
+    'SelfAssessment::store',
+    ['filter' => 'role:user,admin']
+);
+
+$routes->get(
+    'self-assessment/excel',
+    'SelfAssessment::excel',
+    ['filter' => 'role:admin']
+);
+
+$routes->get(
+    'export/self-assessment',
+    'Export::selfAssessment',
+    ['filter' => 'role:admin']
+);
+

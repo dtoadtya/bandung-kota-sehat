@@ -654,6 +654,21 @@ CREATE TABLE `rencana_kerja` (
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `self_assessment`
+--
+
+CREATE TABLE `self_assessment` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `modul` varchar(40) NOT NULL,
+  `nilai` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `keterangan` varchar(255) DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'sementara',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
 -- Struktur dari tabel `sk`
 --
 
@@ -976,6 +991,13 @@ ALTER TABLE `rencana_kerja`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indeks untuk tabel `self_assessment`
+--
+ALTER TABLE `self_assessment`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_self_assessment_user_modul` (`user_id`,`modul`);
+
+--
 -- Indeks untuk tabel `sk`
 --
 ALTER TABLE `sk`
@@ -1153,6 +1175,12 @@ ALTER TABLE `realisasi_pendanaan`
 --
 ALTER TABLE `rencana_kerja`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT untuk tabel `self_assessment`
+--
+ALTER TABLE `self_assessment`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `sk`
