@@ -24,6 +24,12 @@ header('Expires: 0');
         <?= esc($title ?? 'Login - Bandung Sehat') ?>
     </title>
 
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
     <style>
 
         :root {
@@ -372,6 +378,68 @@ header('Expires: 0');
             box-shadow:
                 0 0 0 3px
                 rgba(22,135,232,0.10);
+        }
+
+
+        /*
+        =====================================================
+        TOGGLE PASSWORD
+        =====================================================
+        */
+
+        .password-wrapper {
+
+            position: relative;
+        }
+
+
+        .password-wrapper .form-control {
+
+            padding-right: 48px;
+        }
+
+
+        .btn-toggle-password {
+
+            position: absolute;
+
+            top: 50%;
+
+            right: 6px;
+
+            transform: translateY(-50%);
+
+            width: 38px;
+
+            height: 38px;
+
+            border: none;
+
+            background: transparent;
+
+            color: #718096;
+
+            font-size: 18px;
+
+            cursor: pointer;
+
+            border-radius: 8px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            transition: .2s;
+        }
+
+
+        .btn-toggle-password:hover {
+
+            color: var(--blue);
+
+            background: var(--blue-light);
         }
 
 
@@ -762,14 +830,27 @@ header('Expires: 0');
                 </label>
 
 
-                <input
-                    type="password"
-                    id="login_password"
-                    name="password"
-                    class="form-control"
-                    placeholder="Masukkan password"
-                    required
-                >
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="login_password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Masukkan password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="btn-toggle-password"
+                        onclick="togglePassword()"
+                        aria-label="Tampilkan password"
+                    >
+                        <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                    </button>
+
+                </div>
 
             </div>
 
@@ -806,6 +887,46 @@ header('Expires: 0');
     </div>
 
 </div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+
+function togglePassword()
+{
+
+    var input =
+        document.getElementById('login_password');
+
+
+    var icon =
+        document.getElementById('togglePasswordIcon');
+
+
+    if (input.type === 'password') {
+
+        input.type = 'text';
+
+        icon.classList.remove('bi-eye');
+
+        icon.classList.add('bi-eye-slash');
+
+    } else {
+
+        input.type = 'password';
+
+        icon.classList.remove('bi-eye-slash');
+
+        icon.classList.add('bi-eye');
+
+    }
+
+}
+
+</script>
 
 
 </body>
