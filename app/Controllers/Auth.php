@@ -37,11 +37,7 @@ class Auth extends BaseController
      * PROSES LOGIN
      * =========================================================
      *
-     * Login User:
-     * login_type = user
-     *
-     * Login Admin:
-     * login_type = admin
+     * Satu form untuk semua role.
      *
      * Role yang digunakan hanya:
      *
@@ -57,8 +53,6 @@ class Auth extends BaseController
         );
 
         $password = (string) $this->request->getPost('password');
-
-        $loginType = (string) $this->request->getPost('login_type');
 
 
         /*
@@ -176,71 +170,6 @@ class Auth extends BaseController
                 ->with(
                     'error',
                     'Role akun tidak valid. Silakan hubungi administrator.'
-                );
-        }
-
-
-        /*
-         * =====================================================
-         * LOGIN USER
-         * =====================================================
-         */
-        if ($loginType === 'user') {
-
-            /*
-             * Hanya role user yang boleh
-             * masuk melalui menu User.
-             */
-            if ($role !== 'user') {
-
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'Akun administrator harus login melalui menu Admin.'
-                    );
-            }
-        }
-
-
-        /*
-         * =====================================================
-         * LOGIN ADMIN
-         * =====================================================
-         */
-        elseif ($loginType === 'admin') {
-
-            /*
-             * Hanya role admin yang boleh
-             * masuk melalui menu Admin.
-             */
-            if ($role !== 'admin') {
-
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with(
-                        'error',
-                        'Akun ini bukan akun administrator.'
-                    );
-            }
-        }
-
-
-        /*
-         * =====================================================
-         * LOGIN TYPE TIDAK VALID
-         * =====================================================
-         */
-        else {
-
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Jenis login tidak valid.'
                 );
         }
 

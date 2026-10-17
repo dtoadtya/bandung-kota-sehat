@@ -269,67 +269,6 @@ header('Expires: 0');
 
         /*
         =====================================================
-        TAB MASUK / ADMIN
-        =====================================================
-        */
-
-        .auth-tabs {
-
-            display: grid;
-
-            grid-template-columns: 1fr 1fr;
-
-            background: #eef3f9;
-
-            border-radius: 10px;
-
-            padding: 4px;
-
-            margin-bottom: 25px;
-        }
-
-
-        .auth-tab {
-
-            border: none;
-
-            background: transparent;
-
-            padding: 12px;
-
-            border-radius: 8px;
-
-            font-size: 14px;
-
-            font-weight: 700;
-
-            color: #718096;
-
-            cursor: pointer;
-
-            transition: .2s;
-        }
-
-
-        .auth-tab:hover {
-
-            color: var(--blue);
-        }
-
-
-        .auth-tab.active {
-
-            background: white;
-
-            color: var(--blue);
-
-            box-shadow:
-                0 2px 8px rgba(0,0,0,0.08);
-        }
-
-
-        /*
-        =====================================================
         ALERT
         =====================================================
         */
@@ -371,18 +310,6 @@ header('Expires: 0');
         FORM
         =====================================================
         */
-
-        .auth-form {
-
-            display: none;
-        }
-
-
-        .auth-form.active {
-
-            display: block;
-        }
-
 
         .form-group {
 
@@ -728,45 +655,19 @@ header('Expires: 0');
     <div class="login-card">
 
 
-        <!-- HEADER -->
+        <!-- =================================================
+             HEADER
+        ================================================== -->
 
         <div class="login-header">
 
-            <h2 id="authTitle">
+            <h2>
                 Selamat Datang
             </h2>
 
-            <p id="authSubtitle">
+            <p>
                 Silakan login untuk melanjutkan.
             </p>
-
-        </div>
-
-
-        <!-- =================================================
-             TAB
-        ================================================== -->
-
-        <div class="auth-tabs">
-
-            <button
-                type="button"
-                class="auth-tab active"
-                id="loginTab"
-                onclick="showLogin()"
-            >
-                Masuk
-            </button>
-
-
-            <button
-                type="button"
-                class="auth-tab"
-                id="adminTab"
-                onclick="showAdmin()"
-            >
-                Admin
-            </button>
 
         </div>
 
@@ -806,189 +707,83 @@ header('Expires: 0');
 
 
         <!-- =================================================
-             FORM LOGIN USER
+             FORM LOGIN
         ================================================== -->
 
-        <div
-            class="auth-form active"
-            id="loginForm"
+        <form
+            action="<?= base_url('login') ?>"
+            method="post"
         >
 
-            <form
-                action="<?= base_url('login') ?>"
-                method="post"
-            >
-
-                <?= csrf_field() ?>
-
-                <input
-                    type="hidden"
-                    name="login_type"
-                    value="user"
-                >
+            <?= csrf_field() ?>
 
 
-                <!-- USERNAME -->
+            <!-- USERNAME -->
 
-                <div class="form-group">
+            <div class="form-group">
 
-                    <label for="login_username">
+                <label for="login_username">
 
-                        Username
+                    Username
 
-                        <span class="required">
-                            *
-                        </span>
+                    <span class="required">
+                        *
+                    </span>
 
-                    </label>
-
-
-                    <input
-                        type="text"
-                        id="login_username"
-                        name="username"
-                        class="form-control"
-                        placeholder="Masukkan username"
-                        value="<?= old('username') ?>"
-                        required
-                        autofocus
-                    >
-
-                </div>
-
-
-                <!-- PASSWORD -->
-
-                <div class="form-group">
-
-                    <label for="login_password">
-
-                        Password
-
-                        <span class="required">
-                            *
-                        </span>
-
-                    </label>
-
-
-                    <input
-                        type="password"
-                        id="login_password"
-                        name="password"
-                        class="form-control"
-                        placeholder="Masukkan password"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- BUTTON -->
-
-                <button
-                    type="submit"
-                    class="btn-login"
-                >
-                    Masuk ke Dashboard
-                </button>
-
-            </form>
-
-        </div>
-
-
-        <!-- =================================================
-             FORM LOGIN ADMIN
-        ================================================== -->
-
-        <div
-            class="auth-form"
-            id="adminForm"
-        >
-
-            <form
-                action="<?= base_url('login') ?>"
-                method="post"
-            >
-
-                <?= csrf_field() ?>
+                </label>
 
 
                 <input
-                    type="hidden"
-                    name="login_type"
-                    value="admin"
+                    type="text"
+                    id="login_username"
+                    name="username"
+                    class="form-control"
+                    placeholder="Masukkan username"
+                    value="<?= old('username') ?>"
+                    required
+                    autofocus
                 >
 
-                <!-- USERNAME ADMIN -->
-
-                <div class="form-group">
-
-                    <label for="admin_username">
-
-                        Username
-
-                        <span class="required">
-                            *
-                        </span>
-
-                    </label>
+            </div>
 
 
-                    <input
-                        type="text"
-                        id="admin_username"
-                        name="username"
-                        class="form-control"
-                        placeholder="Masukkan username"
-                        value="<?= old('username') ?>"
-                        required
-                    >
+            <!-- PASSWORD -->
 
-                </div>
+            <div class="form-group">
 
+                <label for="login_password">
 
-                <!-- PASSWORD ADMIN -->
+                    Password
 
-                <div class="form-group">
+                    <span class="required">
+                        *
+                    </span>
 
-                    <label for="admin_password">
-
-                        Password
-
-                        <span class="required">
-                            *
-                        </span>
-
-                    </label>
+                </label>
 
 
-                    <input
-                        type="password"
-                        id="admin_password"
-                        name="password"
-                        class="form-control"
-                        placeholder="Masukkan password"
-                        required
-                    >
-
-                </div>
-
-
-                <!-- BUTTON ADMIN -->
-
-                <button
-                    type="submit"
-                    class="btn-login"
-                    id="adminLoginButton"
+                <input
+                    type="password"
+                    id="login_password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Masukkan password"
+                    required
                 >
-                    Masuk sebagai Admin
-                </button>
 
-            </form>
+            </div>
 
-        </div>
+
+            <!-- BUTTON -->
+
+            <button
+                type="submit"
+                class="btn-login"
+            >
+                Masuk ke Dashboard
+            </button>
+
+        </form>
 
 
         <!-- =================================================
@@ -1011,90 +806,6 @@ header('Expires: 0');
     </div>
 
 </div>
-
-
-<!-- =====================================================
-     JAVASCRIPT
-====================================================== -->
-
-<script>
-
-
-function showLogin()
-{
-
-    document
-        .getElementById('loginForm')
-        .classList.add('active');
-
-
-    document
-        .getElementById('adminForm')
-        .classList.remove('active');
-
-
-    document
-        .getElementById('loginTab')
-        .classList.add('active');
-
-
-    document
-        .getElementById('adminTab')
-        .classList.remove('active');
-
-
-    document
-        .getElementById('authTitle')
-        .innerText =
-        'Selamat Datang';
-
-
-    document
-        .getElementById('authSubtitle')
-        .innerText =
-        'Silakan login untuk melanjutkan.';
-
-}
-
-
-
-function showAdmin()
-{
-
-    document
-        .getElementById('adminForm')
-        .classList.add('active');
-
-
-    document
-        .getElementById('loginForm')
-        .classList.remove('active');
-
-
-    document
-        .getElementById('adminTab')
-        .classList.add('active');
-
-
-    document
-        .getElementById('loginTab')
-        .classList.remove('active');
-
-
-    document
-        .getElementById('authTitle')
-        .innerText =
-        'Login Admin';
-
-
-    document
-        .getElementById('authSubtitle')
-        .innerText =
-        'Masuk Sebagai Admin.';
-
-}
-
-</script>
 
 
 </body>
