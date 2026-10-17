@@ -84,6 +84,40 @@ class Dashboard extends BaseController
     }
 
     /**
+     * Menghitung jumlah data tiap sub menu
+     * kelembagaan (SK, rencana kerja,
+     * realisasi kegiatan, foto sekretariat).
+     *
+     * Contoh tabel:
+     *
+     * tim_pembina_sk
+     * tim_pembina_rencana_kerja
+     * ...
+     */
+    private function hitungProgres(
+        array $tabels
+    ): array {
+        $db = db_connect();
+
+        $hasil = [];
+
+        foreach ($tabels as $key => $tabel) {
+
+            $hasil[$key] = 0;
+
+            if (!$db->tableExists($tabel)) {
+                continue;
+            }
+
+            $hasil[$key] = (int) $db
+                ->table($tabel)
+                ->countAllResults();
+        }
+
+        return $hasil;
+    }
+
+    /**
      * Dashboard
      */
     public function index()
@@ -291,6 +325,70 @@ class Dashboard extends BaseController
 
 
         // =====================================================
+        // PROGRES TIAP KELEMBAGAAN
+        // =====================================================
+        //
+        // Jumlah data pada 4 sub menu:
+        //
+        // - SK
+        // - Rencana Kerja
+        // - Realisasi Kegiatan
+        // - Foto Sekretariat
+        //
+
+        $progresKelembagaan = [
+
+            'tim_pembina' => [
+                'label' => 'Tim Pembina',
+
+                'items' =>
+                    $this->hitungProgres([
+                        'sk'            => 'tim_pembina_sk',
+                        'rencana_kerja' => 'tim_pembina_rencana_kerja',
+                        'realisasi'     => 'tim_pembina_realisasi',
+                        'foto'          => 'tim_pembina_foto',
+                    ]),
+            ],
+
+            'forum_bandung_sehat' => [
+                'label' => 'Forum Bandung Sehat',
+
+                'items' =>
+                    $this->hitungProgres([
+                        'sk'            => 'forum_bandung_sehat_sk',
+                        'rencana_kerja' => 'forum_bandung_sehat_rencana_kerja',
+                        'realisasi'     => 'forum_bandung_sehat_realisasi',
+                        'foto'          => 'forum_bandung_sehat_foto',
+                    ]),
+            ],
+
+            'forum_kecamatan_sehat' => [
+                'label' => 'Forum Kecamatan Sehat',
+
+                'items' =>
+                    $this->hitungProgres([
+                        'sk'            => 'forum_kecamatan_sk',
+                        'rencana_kerja' => 'forum_kecamatan_sehat_rencana_kerja',
+                        'realisasi'     => 'forum_kecamatan_sehat_realisasi',
+                        'foto'          => 'forum_kecamatan_sehat_foto',
+                    ]),
+            ],
+
+            'pokja_kelurahan_sehat' => [
+                'label' => 'Pokja Kelurahan Sehat',
+
+                'items' =>
+                    $this->hitungProgres([
+                        'sk'            => 'pokja_kelurahan_sehat_sk',
+                        'rencana_kerja' => 'pokja_kelurahan_sehat_rencana_kerja',
+                        'realisasi'     => 'pokja_kelurahan_sehat_realisasi',
+                        'foto'          => 'pokja_kelurahan_sehat_foto',
+                    ]),
+            ],
+        ];
+
+
+        // =====================================================
         // DATA DASHBOARD
         // =====================================================
 
@@ -325,6 +423,9 @@ class Dashboard extends BaseController
 
             'jumlahPokja' =>
                 $jumlahPokja,
+
+            'progresKelembagaan' =>
+                $progresKelembagaan,
         ];
 
 

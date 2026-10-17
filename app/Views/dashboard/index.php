@@ -5,18 +5,6 @@
 <?php
 $role = session()->get('role') ?? ($role ?? 'user');
 $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
-
-$isAdmin = in_array(
-    $role,
-    ['user', 'admin'],
-    true
-);
-
-$isFbs = in_array(
-    $role,
-    ['admin', 'admin_fbs'],
-    true
-);
 ?>
 
 <style>
@@ -449,6 +437,163 @@ $isFbs = in_array(
     }
 }
 
+
+/* =========================================================
+   KARTU STATISTIK - BISA DIKLIK
+========================================================= */
+
+.dashboard-stat-card[data-progres] {
+    cursor: pointer;
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease;
+}
+
+.dashboard-stat-card[data-progres]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(6, 59, 120, .10);
+}
+
+.dashboard-stat-card[data-progres].active {
+    outline: 2px solid #087df5;
+    outline-offset: -2px;
+}
+
+.dashboard-stat-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #087df5;
+}
+
+
+/* =========================================================
+   PANEL PROGRES KELEMBAGAAN
+========================================================= */
+
+.dashboard-progres {
+    background: #ffffff;
+    border: 1px solid #dcebf8;
+    border-radius: 12px;
+    padding: 14px 16px 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 18px rgba(6, 59, 120, .06);
+}
+
+.dashboard-progres-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.dashboard-progres-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #063b78;
+}
+
+.dashboard-progres-close {
+    border: 0;
+    background: transparent;
+    color: #7890a7;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.dashboard-progres-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.dashboard-progres-item {
+    border: 1px solid #e3eefb;
+    border-radius: 8px;
+    background: #fbfdff;
+    padding: 10px;
+    text-align: center;
+}
+
+.dashboard-progres-item .progres-label {
+    font-size: 11px;
+    color: #7890a7;
+}
+
+.dashboard-progres-item .progres-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #063b78;
+    margin-top: 4px;
+}
+
+.dashboard-progres-item .progres-badge {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.dashboard-progres-item .progres-badge.terisi {
+    background: #eafaf1;
+    color: #159957;
+    border: 1px solid #9eddbb;
+}
+
+.dashboard-progres-item .progres-badge.kosong {
+    background: #fff8e1;
+    color: #b77900;
+    border: 1px solid #f2c94c;
+}
+
+
+/* =========================================================
+   TOOLBAR DROPDOWN GRAFIK
+========================================================= */
+
+.dashboard-chart-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.dashboard-chart-toolbar label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #69839e;
+}
+
+.dashboard-chart-toolbar select {
+    border: 1px solid #cfe2f5;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #063b78;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 7px 12px;
+    cursor: pointer;
+}
+
+
+@media (max-width: 700px) {
+
+    .dashboard-progres-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-chart-toolbar {
+        justify-content: flex-start;
+    }
+}
+
 </style>
 
 
@@ -485,8 +630,16 @@ $isFbs = in_array(
 
 
         <!-- TIM PEMBINA -->
+        <!-- Klik kartu untuk melihat progres -->
 
-        <div class="dashboard-stat-card gold">
+        <div
+            class="dashboard-stat-card gold"
+            role="button"
+            tabindex="0"
+            data-progres="tim_pembina"
+            onclick="toggleProgres('tim_pembina')"
+            onkeydown="if(event.key==='Enter'){toggleProgres('tim_pembina')}"
+        >
 
             <div class="dashboard-stat-top">
 
@@ -518,13 +671,30 @@ $isFbs = in_array(
 
             </div>
 
+
+            <div class="dashboard-stat-hint">
+
+                <i class="bi bi-chevron-down"></i>
+
+                Lihat progres
+
+            </div>
+
         </div>
 
 
 
         <!-- FORUM BANDUNG SEHAT -->
+        <!-- Klik kartu untuk melihat progres -->
 
-        <div class="dashboard-stat-card green">
+        <div
+            class="dashboard-stat-card green"
+            role="button"
+            tabindex="0"
+            data-progres="forum_bandung_sehat"
+            onclick="toggleProgres('forum_bandung_sehat')"
+            onkeydown="if(event.key==='Enter'){toggleProgres('forum_bandung_sehat')}"
+        >
 
             <div class="dashboard-stat-top">
 
@@ -556,13 +726,30 @@ $isFbs = in_array(
 
             </div>
 
+
+            <div class="dashboard-stat-hint">
+
+                <i class="bi bi-chevron-down"></i>
+
+                Lihat progres
+
+            </div>
+
         </div>
 
 
 
         <!-- FORUM KECAMATAN SEHAT -->
+        <!-- Klik kartu untuk melihat progres -->
 
-        <div class="dashboard-stat-card cyan">
+        <div
+            class="dashboard-stat-card cyan"
+            role="button"
+            tabindex="0"
+            data-progres="forum_kecamatan_sehat"
+            onclick="toggleProgres('forum_kecamatan_sehat')"
+            onkeydown="if(event.key==='Enter'){toggleProgres('forum_kecamatan_sehat')}"
+        >
 
             <div class="dashboard-stat-top">
 
@@ -594,13 +781,30 @@ $isFbs = in_array(
 
             </div>
 
+
+            <div class="dashboard-stat-hint">
+
+                <i class="bi bi-chevron-down"></i>
+
+                Lihat progres
+
+            </div>
+
         </div>
 
 
 
         <!-- POKJA KELURAHAN SEHAT -->
+        <!-- Klik kartu untuk melihat progres -->
 
-        <div class="dashboard-stat-card purple">
+        <div
+            class="dashboard-stat-card purple"
+            role="button"
+            tabindex="0"
+            data-progres="pokja_kelurahan_sehat"
+            onclick="toggleProgres('pokja_kelurahan_sehat')"
+            onkeydown="if(event.key==='Enter'){toggleProgres('pokja_kelurahan_sehat')}"
+        >
 
             <div class="dashboard-stat-top">
 
@@ -632,7 +836,138 @@ $isFbs = in_array(
 
             </div>
 
+
+            <div class="dashboard-stat-hint">
+
+                <i class="bi bi-chevron-down"></i>
+
+                Lihat progres
+
+            </div>
+
         </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PROGRES KELEMBAGAAN
+         Muncul saat kartu statistik diklik
+    ====================================================== -->
+
+    <div
+        class="dashboard-progres"
+        id="panelProgres"
+        style="display:none"
+    >
+
+
+        <?php
+
+            /*
+            |--------------------------------------------------------------------------
+            | DATA PROGRES
+            |--------------------------------------------------------------------------
+            */
+
+            $daftarProgres =
+                $progresKelembagaan ?? [];
+
+            $labelItemProgres = [
+                'sk'            => 'SK',
+                'rencana_kerja' => 'Rencana Kerja',
+                'realisasi'     => 'Realisasi Kegiatan',
+                'foto'          => 'Foto Sekretariat',
+            ];
+
+        ?>
+
+
+        <?php foreach ($daftarProgres as $key => $modul): ?>
+
+
+            <div
+                class="dashboard-progres-section"
+                id="progres-<?= esc($key) ?>"
+                style="display:none"
+            >
+
+
+                <div class="dashboard-progres-header">
+
+                    <div class="dashboard-progres-title">
+
+                        Progres
+                        <?= esc($modul['label']) ?>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="dashboard-progres-close"
+                        title="Tutup"
+                        onclick="toggleProgres('<?= esc($key) ?>')"
+                    >
+                        &times;
+                    </button>
+
+                </div>
+
+
+                <div class="dashboard-progres-list">
+
+                    <?php foreach (
+                        $labelItemProgres
+                        as $itemKey
+                        => $itemLabel
+                    ): ?>
+
+                        <?php
+
+                            $nilai =
+                                (int) (
+                                    $modul['items'][$itemKey]
+                                    ?? 0
+                                );
+
+                            $terisi =
+                                $nilai > 0;
+
+                        ?>
+
+                        <div class="dashboard-progres-item">
+
+                            <div class="progres-label">
+                                <?= esc($itemLabel) ?>
+                            </div>
+
+                            <div class="progres-value">
+                                <?= $nilai ?>
+                            </div>
+
+                            <span
+                                class="progres-badge <?= $terisi
+                                    ? 'terisi'
+                                    : 'kosong' ?>"
+                            >
+                                <?= $terisi
+                                    ? 'Terisi'
+                                    : 'Belum' ?>
+                            </span>
+
+                        </div>
+
+                    <?php endforeach; ?>
+
+                </div>
+
+
+            </div>
+
+
+        <?php endforeach; ?>
 
 
     </div>
@@ -642,6 +977,41 @@ $isFbs = in_array(
     <!-- =====================================================
          CHARTS
     ====================================================== -->
+
+    <!-- DROPDOWN PILIH TAMPILAN GRAFIK -->
+
+    <div class="dashboard-chart-toolbar">
+
+        <label for="chartScope">
+            Tampilkan grafik
+        </label>
+
+        <select id="chartScope">
+
+            <option value="kelembagaan">
+                Kelembagaan (semua)
+            </option>
+
+            <option value="tim_pembina">
+                Tim Pembina
+            </option>
+
+            <option value="forum_bandung_sehat">
+                Forum Bandung Sehat
+            </option>
+
+            <option value="forum_kecamatan_sehat">
+                Forum Kecamatan Sehat
+            </option>
+
+            <option value="pokja_kelurahan_sehat">
+                Pokja Kelurahan Sehat
+            </option>
+
+        </select>
+
+    </div>
+
 
     <div class="dashboard-chart-grid">
 
@@ -816,44 +1186,54 @@ $isFbs = in_array(
             <div class="dashboard-actions">
 
 
-                <?php if ($isAdmin): ?>
-
-                <a
-                    href="<?= base_url(
-                        'tim-pembina'
-                    ) ?>"
-                    class="dashboard-action"
-                >
-
-                    <div class="dashboard-action-icon">
-
-                        <i class="bi bi-people"></i>
-
-                    </div>
-
-                    <div class="dashboard-action-text">
-
-                        <div class="dashboard-action-title">
-                            Tim Pembina
-                        </div>
-
-                        <div class="dashboard-action-description">
-                            Kelola data
-                        </div>
-
-                    </div>
-
-                </a>
-
-                <?php endif; ?>
+                <?php if (
+                    in_array(
+                        $role,
+                        [
+                            'user',
+                            'admin'
+                        ],
+                        true
+                    )
+                ): ?>
 
 
-
-                <?php if ($isFbs): ?>
+                    <!-- INOVASI - PERANGKAT DAERAH -->
 
                     <a
                         href="<?= base_url(
-                            'forum-bandung-sehat'
+                            'inovasi/perangkat-daerah'
+                        ) ?>"
+                        class="dashboard-action"
+                    >
+
+                        <div class="dashboard-action-icon">
+
+                            <i class="bi bi-building-fill"></i>
+
+                        </div>
+
+                        <div class="dashboard-action-text">
+
+                            <div class="dashboard-action-title">
+                                Perangkat Daerah
+                            </div>
+
+                            <div class="dashboard-action-description">
+                                Kelola inovasi
+                            </div>
+
+                        </div>
+
+                    </a>
+
+
+
+                    <!-- INOVASI - KECAMATAN -->
+
+                    <a
+                        href="<?= base_url(
+                            'inovasi/kecamatan'
                         ) ?>"
                         class="dashboard-action"
                     >
@@ -867,78 +1247,48 @@ $isFbs = in_array(
                         <div class="dashboard-action-text">
 
                             <div class="dashboard-action-title">
-                                Forum Bandung
+                                Kecamatan
                             </div>
 
                             <div class="dashboard-action-description">
-                                Kelola data
+                                Kelola inovasi
                             </div>
 
                         </div>
 
                     </a>
 
-                <?php endif; ?>
 
 
+                    <!-- INOVASI - KELURAHAN -->
 
-                <?php if ($isAdmin): ?>
+                    <a
+                        href="<?= base_url(
+                            'inovasi/kelurahan'
+                        ) ?>"
+                        class="dashboard-action"
+                    >
 
-                <a
-                    href="<?= base_url(
-                        'forum-kecamatan-sehat'
-                    ) ?>"
-                    class="dashboard-action"
-                >
+                        <div class="dashboard-action-icon">
 
-                    <div class="dashboard-action-icon">
+                            <i class="bi bi-house-fill"></i>
 
-                        <i class="bi bi-chat-square-text"></i>
-
-                    </div>
-
-                    <div class="dashboard-action-text">
-
-                        <div class="dashboard-action-title">
-                            Forum Kecamatan
                         </div>
 
-                        <div class="dashboard-action-description">
-                            Kelola forum
+                        <div class="dashboard-action-text">
+
+                            <div class="dashboard-action-title">
+                                Kelurahan
+                            </div>
+
+                            <div class="dashboard-action-description">
+                                Kelola inovasi
+                            </div>
+
                         </div>
 
-                    </div>
+                    </a>
 
-                </a>
-
-
-
-                <a
-                    href="<?= base_url(
-                        'pokja-kelurahan-sehat'
-                    ) ?>"
-                    class="dashboard-action"
-                >
-
-                    <div class="dashboard-action-icon">
-
-                        <i class="bi bi-diagram-3"></i>
-
-                    </div>
-
-                    <div class="dashboard-action-text">
-
-                        <div class="dashboard-action-title">
-                            Pokja Kelurahan
-                        </div>
-
-                        <div class="dashboard-action-description">
-                            Kelola pokja
-                        </div>
-
-                    </div>
-
-                </a>
 
                 <?php endif; ?>
 
@@ -994,10 +1344,151 @@ document.addEventListener(
             ) ?>;
 
 
+        /* =====================================================
+           PROGRES TIAP KELEMBAGAAN
+        ====================================================== */
+
+        const progres =
+            <?= json_encode(
+                $progresKelembagaan ?? []
+            ) ?>;
+
+        const labelKelembagaan = [
+            'Tim Pembina',
+            'Forum Bandung Sehat',
+            'Forum Kecamatan Sehat',
+            'Pokja Kelurahan Sehat'
+        ];
+
+        const dataKelembagaan = [
+            jumlahTimPembina,
+            jumlahForumBandung,
+            jumlahForumKecamatan,
+            jumlahPokja
+        ];
+
+        const labelSubProgres = [
+            'SK',
+            'Rencana Kerja',
+            'Realisasi Kegiatan',
+            'Foto Sekretariat'
+        ];
+
+        const keySubProgres = [
+            'sk',
+            'rencana_kerja',
+            'realisasi',
+            'foto'
+        ];
+
+
+        /*
+         * Label + data sesuai pilihan dropdown
+         */
+        function ambilScope(scope) {
+
+            if (scope === 'kelembagaan') {
+
+                return {
+                    labels: labelKelembagaan,
+                    data: dataKelembagaan
+                };
+            }
+
+            const modul = progres[scope];
+
+            if (!modul) {
+                return null;
+            }
+
+            const items = modul.items || {};
+
+            return {
+                labels: labelSubProgres,
+                data: keySubProgres.map(function (key) {
+                    return Number(items[key] || 0);
+                })
+            };
+        }
+
+
+        /* =====================================================
+           PANEL PROGRES - KLIK KARTU STATISTIK
+        ====================================================== */
+
+        window.toggleProgres = function (key) {
+
+            const panel =
+                document.getElementById(
+                    'panelProgres'
+                );
+
+            if (!panel || !key) {
+                return;
+            }
+
+            const sections = panel.querySelectorAll(
+                '.dashboard-progres-section'
+            );
+
+            const cards = document.querySelectorAll(
+                '[data-progres]'
+            );
+
+            const aktif = panel.dataset.open;
+
+
+            /* Klik kartu yang sama -> tutup */
+
+            if (aktif === key) {
+
+                panel.style.display = 'none';
+                panel.dataset.open = '';
+
+                sections.forEach(function (item) {
+                    item.style.display = 'none';
+                });
+
+                cards.forEach(function (card) {
+                    card.classList.remove('active');
+                });
+
+                return;
+            }
+
+
+            /* Buka panel + tampilkan progresnya */
+
+            sections.forEach(function (item) {
+                item.style.display =
+                    item.id === 'progres-' + key
+                        ? 'block'
+                        : 'none';
+            });
+
+            cards.forEach(function (card) {
+                card.classList.toggle(
+                    'active',
+                    card.dataset.progres === key
+                );
+            });
+
+            panel.dataset.open = key;
+            panel.style.display = 'block';
+
+            panel.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        };
+
+
 
         /* =====================================================
            LINE CHART
         ====================================================== */
+
+        let lineChart = null;
 
         const dataChartElement =
             document.getElementById(
@@ -1007,7 +1498,7 @@ document.addEventListener(
 
         if (dataChartElement) {
 
-            new Chart(
+            lineChart = new Chart(
                 dataChartElement,
                 {
 
@@ -1015,23 +1506,15 @@ document.addEventListener(
 
                     data: {
 
-                        labels: [
-                            'Tim Pembina',
-                            'Forum Bandung',
-                            'Forum Kecamatan',
-                            'Pokja'
-                        ],
+                        labels:
+                            labelKelembagaan,
 
                         datasets: [
 
                             {
 
-                                data: [
-                                    jumlahTimPembina,
-                                    jumlahForumBandung,
-                                    jumlahForumKecamatan,
-                                    jumlahPokja
-                                ],
+                                data:
+                                    dataKelembagaan,
 
                                 borderColor:
                                     '#087df5',
@@ -1146,6 +1629,8 @@ document.addEventListener(
            DONUT CHART
         ====================================================== */
 
+        let donutChart = null;
+
         const donutChartElement =
             document.getElementById(
                 'donutChart'
@@ -1154,7 +1639,7 @@ document.addEventListener(
 
         if (donutChartElement) {
 
-            new Chart(
+            donutChart = new Chart(
                 donutChartElement,
                 {
 
@@ -1162,23 +1647,15 @@ document.addEventListener(
 
                     data: {
 
-                        labels: [
-                            'Tim Pembina',
-                            'Forum Bandung Sehat',
-                            'Forum Kecamatan Sehat',
-                            'Pokja Kelurahan Sehat'
-                        ],
+                        labels:
+                            labelKelembagaan,
 
                         datasets: [
 
                             {
 
-                                data: [
-                                    jumlahTimPembina,
-                                    jumlahForumBandung,
-                                    jumlahForumKecamatan,
-                                    jumlahPokja
-                                ],
+                                data:
+                                    dataKelembagaan,
 
                                 backgroundColor: [
                                     '#f5b700',
@@ -1245,6 +1722,57 @@ document.addEventListener(
                 }
             );
 
+        }
+
+
+        /* =====================================================
+           DROPDOWN PILIH TAMPILAN GRAFIK
+        ====================================================== */
+
+        const chartScope =
+            document.getElementById(
+                'chartScope'
+            );
+
+
+        if (chartScope) {
+
+            chartScope.addEventListener(
+                'change',
+                function () {
+
+                    const scope =
+                        ambilScope(
+                            chartScope.value
+                        );
+
+                    if (!scope) {
+                        return;
+                    }
+
+                    if (lineChart) {
+
+                        lineChart.data.labels =
+                            scope.labels;
+
+                        lineChart.data.datasets[0].data =
+                            scope.data;
+
+                        lineChart.update();
+                    }
+
+                    if (donutChart) {
+
+                        donutChart.data.labels =
+                            scope.labels;
+
+                        donutChart.data.datasets[0].data =
+                            scope.data;
+
+                        donutChart.update();
+                    }
+                }
+            );
         }
 
     }
