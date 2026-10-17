@@ -8,7 +8,7 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
 $isAdmin = in_array(
     $role,
-    ['admin', 'super_admin'],
+    ['user', 'admin'],
     true
 );
 ?>

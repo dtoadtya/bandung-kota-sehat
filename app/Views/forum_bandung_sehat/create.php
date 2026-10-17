@@ -69,6 +69,7 @@
         background: #e8f3ff;
         color: #087cf0;
         font-size: 24px;
+        flex-shrink: 0;
     }
 
     .kelembagaan-card-header h2 {
@@ -205,11 +206,17 @@
     }
 </style>
 
+
 <div class="kelembagaan-header">
+
     <div>
         <h1>Forum Bandung Sehat</h1>
-        <p>Kelola seluruh dokumen dan kegiatan Forum Bandung Sehat.</p>
+
+        <p>
+            Kelola seluruh dokumen dan kegiatan Forum Bandung Sehat.
+        </p>
     </div>
+
 
     <a
         href="<?= site_url('forum-bandung-sehat') ?>"
@@ -218,42 +225,62 @@
         <i class="bi bi-arrow-left"></i>
         Kembali
     </a>
+
 </div>
+
 
 <div class="kelembagaan-card">
 
     <div class="kelembagaan-card-header">
+
         <div class="kelembagaan-card-icon">
-            <i class="bi bi-building-fill"></i>
+            <i class="bi bi-people-fill"></i>
         </div>
 
         <div>
+
             <h2>Menu Forum Bandung Sehat</h2>
+
             <p>
                 Pilih jenis data yang ingin ditambahkan atau dikelola.
             </p>
+
         </div>
+
     </div>
+
 
     <div class="kelembagaan-menu">
 
-        <!-- SK -->
+
+        <!-- =========================
+             SK
+        ========================== -->
+
         <div class="menu-item">
+
             <div class="menu-item-top">
+
                 <div class="menu-item-icon">
                     <i class="bi bi-file-earmark-pdf-fill"></i>
                 </div>
 
                 <div>
+
                     <h3>SK</h3>
+
                     <p>
                         Upload Surat Keputusan Forum Bandung Sehat.
                         File harus berupa PDF dengan ukuran maksimal 5 MB.
                     </p>
+
                 </div>
+
             </div>
 
+
             <div class="menu-item-action">
+
                 <a
                     href="<?= site_url('forum-bandung-sehat/sk') ?>"
                     class="btn-menu"
@@ -261,80 +288,125 @@
                     <i class="bi bi-upload"></i>
                     Kelola SK
                 </a>
+
             </div>
+
         </div>
 
-        <!-- RENCANA KERJA -->
+
+
+        <!-- =========================
+             RENCANA KERJA
+        ========================== -->
+
         <div class="menu-item">
+
             <div class="menu-item-top">
+
                 <div class="menu-item-icon">
                     <i class="bi bi-journal-text"></i>
                 </div>
 
                 <div>
+
                     <h3>Rencana Kerja</h3>
+
                     <p>
                         Kelola rencana kerja Forum Bandung Sehat
                         berdasarkan tahun yang dapat ditentukan sendiri.
                     </p>
+
                 </div>
+
             </div>
 
+
             <div class="menu-item-action">
+
                 <a
-                    href="<?= site_url('forum-bandung-sehat/rencana-kerja/create') ?>"
+                    href="<?= site_url('forum-bandung-sehat/rencana-kerja') ?>"
                     class="btn-menu"
                 >
                     <i class="bi bi-journal-check"></i>
                     Kelola Rencana Kerja
                 </a>
+
             </div>
+
         </div>
 
-        <!-- REALISASI KEGIATAN -->
+
+
+        <!-- =========================
+             REALISASI KEGIATAN
+        ========================== -->
+
         <div class="menu-item">
+
             <div class="menu-item-top">
+
                 <div class="menu-item-icon">
                     <i class="bi bi-bar-chart-line-fill"></i>
                 </div>
 
                 <div>
+
                     <h3>Realisasi Kegiatan</h3>
+
                     <p>
                         Input laporan kegiatan, waktu, peserta,
                         hasil pelaksanaan, anggaran, dan sumber pendanaan.
                     </p>
+
                 </div>
+
             </div>
 
+
             <div class="menu-item-action">
+
                 <a
-                    href="<?= site_url('forum-bandung-sehat/realisasi/create') ?>"
+                    href="<?= site_url('forum-bandung-sehat/realisasi') ?>"
                     class="btn-menu"
                 >
                     <i class="bi bi-clipboard-data"></i>
                     Kelola Realisasi
                 </a>
+
             </div>
+
         </div>
 
-        <!-- FOTO KEGIATAN -->
+
+
+        <!-- =========================
+             FOTO KEGIATAN
+        ========================== -->
+
         <div class="menu-item">
+
             <div class="menu-item-top">
+
                 <div class="menu-item-icon">
                     <i class="bi bi-camera-fill"></i>
                 </div>
 
                 <div>
-                    <h3>Foto Kegiatan</h3>
+
+                    <h3>Foto Sekretariat</h3>
+
                     <p>
-                        Upload satu foto dokumentasi kegiatan
-                        dengan ukuran maksimal 5 MB.
+                        Upload satu foto Sekretariat
+                        dengan ukuran maksimal 2 MB.
                     </p>
+
                 </div>
+
             </div>
 
+
             <div class="menu-item-action">
+
                 <a
                     href="<?= site_url('forum-bandung-sehat/foto-kegiatan') ?>"
                     class="btn-menu"
@@ -342,17 +414,26 @@
                     <i class="bi bi-image"></i>
                     Kelola Foto
                 </a>
+
             </div>
+
         </div>
+
 
     </div>
 
+
     <div class="info-box">
+
         <i class="bi bi-info-circle me-2"></i>
-        Semua data Forum Bandung Sehat dikelola melalui empat menu di atas.
-        Silakan pilih sesuai jenis dokumen atau kegiatan yang ingin dikelola.
+
+        Semua data Forum Bandung Sehat dikelola melalui
+        empat menu di atas. Silakan pilih sesuai jenis
+        dokumen atau kegiatan yang ingin dikelola.
+
     </div>
 
 </div>
+
 
 <?= $this->endSection() ?>

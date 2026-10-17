@@ -14,11 +14,23 @@ class TimPembinaSk extends BaseController
         $this->timPembinaSkModel = new TimPembinaSkModel();
     }
 
-    /**
-     * =========================================================
-     * DAFTAR SK
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | CEK ADMIN
+    |--------------------------------------------------------------------------
+    */
+
+    private function isAdmin()
+    {
+        return session()->get('role') === 'admin';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | INDEX
+    |--------------------------------------------------------------------------
+    */
+
     public function index()
     {
         $data = $this->timPembinaSkModel
@@ -30,21 +42,23 @@ class TimPembinaSk extends BaseController
         ]);
     }
 
-    /**
-     * =========================================================
-     * FORM TAMBAH SK
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE
+    |--------------------------------------------------------------------------
+    */
+
     public function create()
     {
         return view('tim_pembina_sk/create');
     }
 
-    /**
-     * =========================================================
-     * SIMPAN SK BARU
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | STORE
+    |--------------------------------------------------------------------------
+    */
+
     public function store()
     {
         $rules = [
@@ -65,7 +79,8 @@ class TimPembinaSk extends BaseController
 
             'file' => [
                 'label' => 'Berkas Surat Keputusan',
-                'rules' => 'uploaded[file]'
+                'rules' =>
+                    'uploaded[file]'
                     . '|max_size[file,10240]'
                     . '|ext_in[file,pdf]'
                     . '|mime_in[file,application/pdf]'
@@ -73,23 +88,18 @@ class TimPembinaSk extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-
             return redirect()
                 ->back()
                 ->withInput()
                 ->with(
                     'error',
-                    implode(
-                        '<br>',
-                        $this->validator->getErrors()
-                    )
+                    implode('<br>', $this->validator->getErrors())
                 );
         }
 
         $file = $this->request->getFile('file');
 
         if (!$file || !$file->isValid()) {
-
             return redirect()
                 ->back()
                 ->withInput()
@@ -100,8 +110,11 @@ class TimPembinaSk extends BaseController
         }
 
         /*
-         * Folder upload
-         */
+        |--------------------------------------------------------------------------
+        | FOLDER UPLOAD
+        |--------------------------------------------------------------------------
+        */
+
         $uploadPath = FCPATH . 'uploads/tim_pembina_sk/';
 
         if (!is_dir($uploadPath)) {
@@ -109,62 +122,107 @@ class TimPembinaSk extends BaseController
         }
 
         /*
-         * Nama file
-         */
-        $namaAsli = $file->getClientName();
+        |--------------------------------------------------------------------------
+        | NAMA FILE
+        |--------------------------------------------------------------------------
+        */
 
+        $namaAsli = $file->getClientName();
         $namaFile = $file->getRandomName();
 
         /*
-         * Upload file
-         */
-        $file->move(
-            $uploadPath,
-            $namaFile
-        );
+        |--------------------------------------------------------------------------
+        | UPLOAD
+        |--------------------------------------------------------------------------
+        */
+
+        try {
+            $file->move(
+                $uploadPath,
+                $namaFile
+            );
+        } catch (\Throwable $e) {
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Gagal mengunggah berkas PDF.'
+                );
+        }
 
         /*
-         * Simpan ke database
-         */
+        |--------------------------------------------------------------------------
+        | SIMPAN DATABASE
+        |--------------------------------------------------------------------------
+        */
+
         $this->timPembinaSkModel->insert([
-            'no_sk' => $this->request->getPost('no_sk'),
 
-            'periode' => $this->request->getPost('periode'),
+            'no_sk' =>
+                trim($this->request->getPost('no_sk')),
 
-            'keterangan' => $this->request->getPost('keterangan'),
+            'periode' =>
+                trim($this->request->getPost('periode')),
 
-            'nama_file' => $namaFile,
+            'keterangan' =>
+                trim($this->request->getPost('keterangan')),
 
-            'nama_asli' => $namaAsli,
+            'nama_file' =>
+                $namaFile,
 
-            'file_path' => 'uploads/tim_pembina_sk/' . $namaFile,
+            'nama_asli' =>
+                $namaAsli,
 
-            'ukuran_file' => $file->getSize(),
+            'file_path' =>
+                'uploads/tim_pembina_sk/' . $namaFile,
 
-            'created_at' => date('Y-m-d H:i:s'),
+            'ukuran_file' =>
+                $file->getSize(),
 
-            'updated_at' => date('Y-m-d H:i:s')
+            /*
+            | Status awal
+            */
+
+            'status' =>
+                'pending',
+
+            'keterangan_penolakan' =>
+                null,
+
+            'verified_at' =>
+                null,
+
+            'verified_by' =>
+                null,
+
+            'created_at' =>
+                date('Y-m-d H:i:s'),
+
+            'updated_at' =>
+                date('Y-m-d H:i:s')
         ]);
 
         return redirect()
             ->to(base_url('tim-pembina/sk'))
             ->with(
                 'success',
-                'SK Tim Pembina berhasil ditambahkan.'
+                'SK Tim Pembina berhasil ditambahkan dan menunggu pemeriksaan Admin.'
             );
     }
 
-    /**
-     * =========================================================
-     * FORM EDIT SK
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT
+    |--------------------------------------------------------------------------
+    */
+
     public function edit($id)
     {
         $data = $this->timPembinaSkModel->find($id);
 
         if (!$data) {
-
             return redirect()
                 ->to(base_url('tim-pembina/sk'))
                 ->with(
@@ -181,17 +239,17 @@ class TimPembinaSk extends BaseController
         );
     }
 
-    /**
-     * =========================================================
-     * UPDATE SK
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE
+    |--------------------------------------------------------------------------
+    */
+
     public function update($id)
     {
         $data = $this->timPembinaSkModel->find($id);
 
         if (!$data) {
-
             return redirect()
                 ->to(base_url('tim-pembina/sk'))
                 ->with(
@@ -218,7 +276,8 @@ class TimPembinaSk extends BaseController
 
             'file' => [
                 'label' => 'Berkas Surat Keputusan',
-                'rules' => 'permit_empty'
+                'rules' =>
+                    'permit_empty'
                     . '|max_size[file,10240]'
                     . '|ext_in[file,pdf]'
                     . '|mime_in[file,application/pdf]'
@@ -226,100 +285,141 @@ class TimPembinaSk extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-
             return redirect()
                 ->back()
                 ->withInput()
                 ->with(
                     'error',
-                    implode(
-                        '<br>',
-                        $this->validator->getErrors()
-                    )
+                    implode('<br>', $this->validator->getErrors())
                 );
         }
 
         /*
-         * Data yang akan diperbarui
-         */
+        |--------------------------------------------------------------------------
+        | DATA DASAR
+        |--------------------------------------------------------------------------
+        */
+
         $updateData = [
 
-            'no_sk' => $this->request->getPost('no_sk'),
+            'no_sk' =>
+                trim($this->request->getPost('no_sk')),
 
-            'periode' => $this->request->getPost('periode'),
+            'periode' =>
+                trim($this->request->getPost('periode')),
 
-            'keterangan' => $this->request->getPost('keterangan'),
+            'keterangan' =>
+                trim($this->request->getPost('keterangan')),
 
-            'updated_at' => date('Y-m-d H:i:s')
+            'updated_at' =>
+                date('Y-m-d H:i:s')
         ];
 
         /*
-         * Ambil file baru
-         */
+        |--------------------------------------------------------------------------
+        | CEK FILE BARU
+        |--------------------------------------------------------------------------
+        */
+
         $file = $this->request->getFile('file');
 
-        /*
-         * Jika user memilih file PDF baru
-         */
         if (
             $file &&
             $file->isValid() &&
             !$file->hasMoved()
         ) {
 
-            /*
-             * Folder upload
-             */
-            $uploadPath = FCPATH . 'uploads/tim_pembina_sk/';
+            $uploadPath =
+                FCPATH . 'uploads/tim_pembina_sk/';
 
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
 
-            /*
-             * Nama file baru
-             */
-            $namaAsli = $file->getClientName();
+            $namaAsli =
+                $file->getClientName();
 
-            $namaFile = $file->getRandomName();
+            $namaFile =
+                $file->getRandomName();
 
             /*
-             * Hapus file lama
-             */
+            | Hapus file lama
+            */
+
             if (!empty($data['file_path'])) {
 
-                $oldFile = FCPATH . $data['file_path'];
+                $oldFile =
+                    FCPATH . $data['file_path'];
 
                 if (is_file($oldFile)) {
-                    unlink($oldFile);
+                    @unlink($oldFile);
                 }
             }
 
             /*
-             * Upload file baru
-             */
-            $file->move(
-                $uploadPath,
-                $namaFile
-            );
+            | Upload file baru
+            */
+
+            try {
+
+                $file->move(
+                    $uploadPath,
+                    $namaFile
+                );
+
+            } catch (\Throwable $e) {
+
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Gagal mengunggah berkas PDF baru.'
+                    );
+            }
 
             /*
-             * Update informasi file
-             */
-            $updateData['nama_file'] = $namaFile;
+            | Update informasi file
+            */
 
-            $updateData['nama_asli'] = $namaAsli;
+            $updateData['nama_file'] =
+                $namaFile;
+
+            $updateData['nama_asli'] =
+                $namaAsli;
 
             $updateData['file_path'] =
                 'uploads/tim_pembina_sk/' . $namaFile;
 
             $updateData['ukuran_file'] =
                 $file->getSize();
+
+            /*
+            |--------------------------------------------------------------------------
+            | BERKAS BERUBAH
+            | KEMBALI PENDING
+            |--------------------------------------------------------------------------
+            */
+
+            $updateData['status'] =
+                'pending';
+
+            $updateData['keterangan_penolakan'] =
+                null;
+
+            $updateData['verified_at'] =
+                null;
+
+            $updateData['verified_by'] =
+                null;
         }
 
         /*
-         * Update database
-         */
+        |--------------------------------------------------------------------------
+        | UPDATE DATABASE
+        |--------------------------------------------------------------------------
+        */
+
         $this->timPembinaSkModel->update(
             $id,
             $updateData
@@ -333,17 +433,18 @@ class TimPembinaSk extends BaseController
             );
     }
 
-    /**
-     * =========================================================
-     * LIHAT BERKAS
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | LIHAT BERKAS PDF
+    |--------------------------------------------------------------------------
+    */
+
     public function view($id)
     {
-        $data = $this->timPembinaSkModel->find($id);
+        $data =
+            $this->timPembinaSkModel->find($id);
 
         if (!$data) {
-
             return redirect()
                 ->to(base_url('tim-pembina/sk'))
                 ->with(
@@ -352,17 +453,64 @@ class TimPembinaSk extends BaseController
                 );
         }
 
-        if (empty($data['file_path'])) {
+        /*
+        |--------------------------------------------------------------------------
+        | CEK PATH FILE
+        |--------------------------------------------------------------------------
+        */
 
-            return redirect()
-                ->to(base_url('tim-pembina/sk'))
-                ->with(
-                    'error',
-                    'Berkas SK tidak tersedia.'
-                );
+        $relativePath =
+            trim($data['file_path'] ?? '');
+
+        /*
+        | Kalau file_path kosong, coba gunakan nama_file
+        */
+
+        if ($relativePath === '') {
+
+            if (!empty($data['nama_file'])) {
+
+                $relativePath =
+                    'uploads/tim_pembina_sk/' .
+                    $data['nama_file'];
+
+            } else {
+
+                return redirect()
+                    ->to(base_url('tim-pembina/sk'))
+                    ->with(
+                        'error',
+                        'Berkas SK tidak tersedia.'
+                    );
+            }
         }
 
-        $filePath = FCPATH . $data['file_path'];
+        /*
+        |--------------------------------------------------------------------------
+        | NORMALISASI PATH
+        |--------------------------------------------------------------------------
+        */
+
+        $relativePath =
+            str_replace('\\', '/', $relativePath);
+
+        $relativePath =
+            ltrim($relativePath, '/');
+
+        /*
+        |--------------------------------------------------------------------------
+        | PATH FISIK
+        |--------------------------------------------------------------------------
+        */
+
+        $filePath =
+            FCPATH . $relativePath;
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK FILE
+        |--------------------------------------------------------------------------
+        */
 
         if (!is_file($filePath)) {
 
@@ -370,13 +518,28 @@ class TimPembinaSk extends BaseController
                 ->to(base_url('tim-pembina/sk'))
                 ->with(
                     'error',
-                    'File SK tidak ditemukan di server.'
+                    'File SK tidak ditemukan di server: ' .
+                    $relativePath
                 );
         }
 
         /*
-         * Tampilkan PDF langsung di browser
-         */
+        |--------------------------------------------------------------------------
+        | NAMA FILE
+        |--------------------------------------------------------------------------
+        */
+
+        $namaTampil =
+            $data['nama_asli']
+            ?? $data['nama_file']
+            ?? 'SK_Tim_Pembina.pdf';
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUKA PDF DI BROWSER
+        |--------------------------------------------------------------------------
+        */
+
         return $this->response
 
             ->setHeader(
@@ -387,11 +550,18 @@ class TimPembinaSk extends BaseController
             ->setHeader(
                 'Content-Disposition',
                 'inline; filename="' .
-                basename(
-                    $data['nama_asli']
-                    ?? $data['nama_file']
-                ) .
+                basename($namaTampil) .
                 '"'
+            )
+
+            ->setHeader(
+                'Content-Length',
+                (string) filesize($filePath)
+            )
+
+            ->setHeader(
+                'Cache-Control',
+                'private, max-age=0, must-revalidate'
             )
 
             ->setBody(
@@ -399,14 +569,32 @@ class TimPembinaSk extends BaseController
             );
     }
 
-    /**
-     * =========================================================
-     * HAPUS SK
-     * =========================================================
-     */
+    /*
+    |--------------------------------------------------------------------------
+    | HAPUS
+    |--------------------------------------------------------------------------
+    */
+
     public function delete($id)
     {
-        $data = $this->timPembinaSkModel->find($id);
+        /*
+        |--------------------------------------------------------------------------
+        | USER TIDAK BOLEH HAPUS
+        |--------------------------------------------------------------------------
+        */
+
+        if (!$this->isAdmin()) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Hanya Admin yang dapat menghapus SK.'
+                );
+        }
+
+        $data =
+            $this->timPembinaSkModel->find($id);
 
         if (!$data) {
 
@@ -419,20 +607,27 @@ class TimPembinaSk extends BaseController
         }
 
         /*
-         * Hapus file fisik
-         */
+        |--------------------------------------------------------------------------
+        | HAPUS FILE
+        |--------------------------------------------------------------------------
+        */
+
         if (!empty($data['file_path'])) {
 
-            $filePath = FCPATH . $data['file_path'];
+            $filePath =
+                FCPATH . $data['file_path'];
 
             if (is_file($filePath)) {
-                unlink($filePath);
+                @unlink($filePath);
             }
         }
 
         /*
-         * Hapus data database
-         */
+        |--------------------------------------------------------------------------
+        | HAPUS DATABASE
+        |--------------------------------------------------------------------------
+        */
+
         $this->timPembinaSkModel->delete($id);
 
         return redirect()
@@ -440,6 +635,169 @@ class TimPembinaSk extends BaseController
             ->with(
                 'success',
                 'SK Tim Pembina berhasil dihapus.'
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | DITERIMA + DIVERIFIKASI
+    |--------------------------------------------------------------------------
+    |
+    | HANYA ADMIN
+    |
+    */
+
+    public function verifikasi($id)
+    {
+        if (!$this->isAdmin()) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Hanya Admin yang dapat menerima dan memverifikasi SK.'
+                );
+        }
+
+        $data =
+            $this->timPembinaSkModel->find($id);
+
+        if (!$data) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Data SK tidak ditemukan.'
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | TERIMA + VERIFIKASI
+        |--------------------------------------------------------------------------
+        */
+
+        $this->timPembinaSkModel->update(
+            $id,
+            [
+
+                'status' =>
+                    'diterima',
+
+                'keterangan_penolakan' =>
+                    null,
+
+                'verified_at' =>
+                    date('Y-m-d H:i:s'),
+
+                'verified_by' =>
+                    session()->get('user_id'),
+
+                'updated_at' =>
+                    date('Y-m-d H:i:s')
+            ]
+        );
+
+        return redirect()
+            ->to(base_url('tim-pembina/sk'))
+            ->with(
+                'success',
+                'SK Tim Pembina berhasil diterima dan diverifikasi.'
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | TOLAK
+    |--------------------------------------------------------------------------
+    |
+    | HANYA ADMIN
+    | KETERANGAN WAJIB
+    |
+    */
+
+    public function tolak($id)
+    {
+        if (!$this->isAdmin()) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Hanya Admin yang dapat menolak SK.'
+                );
+        }
+
+        $data =
+            $this->timPembinaSkModel->find($id);
+
+        if (!$data) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Data SK tidak ditemukan.'
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | ALASAN PENOLAKAN
+        |--------------------------------------------------------------------------
+        */
+
+        $alasan =
+            trim(
+                (string)
+                $this->request->getPost(
+                    'keterangan_penolakan'
+                )
+            );
+
+        if ($alasan === '') {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Keterangan alasan penolakan wajib diisi.'
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DITOLAK
+        |--------------------------------------------------------------------------
+        */
+
+        $this->timPembinaSkModel->update(
+            $id,
+            [
+
+                'status' =>
+                    'ditolak',
+
+                'keterangan_penolakan' =>
+                    $alasan,
+
+                'verified_at' =>
+                    null,
+
+                'verified_by' =>
+                    null,
+
+                'updated_at' =>
+                    date('Y-m-d H:i:s')
+            ]
+        );
+
+        return redirect()
+            ->to(base_url('tim-pembina/sk'))
+            ->with(
+                'success',
+                'SK Tim Pembina ditolak dan alasan penolakan telah disimpan.'
             );
     }
 }

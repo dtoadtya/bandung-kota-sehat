@@ -2,854 +2,1675 @@
 
 <?= $this->section('content') ?>
 
-<style>
-    .page-wrapper {
-        background: #f4f8fc;
-        min-height: calc(100vh - 70px);
-        padding: 28px;
-    }
-
-    /* ================================
-       HEADER
-    ================================= */
-
-    .page-header {
-        background: linear-gradient(135deg, #eef7ff, #e5f2ff);
-        border-left: 6px solid #1687e8;
-        border-radius: 14px;
-        padding: 28px 30px;
-        margin-bottom: 24px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .page-header::after {
-        content: "";
-        position: absolute;
-        width: 160px;
-        height: 160px;
-        right: -45px;
-        top: -75px;
-        background: rgba(22, 135, 232, 0.08);
-        border-radius: 50%;
-    }
-
-    .page-header h1 {
-        margin: 0 0 8px;
-        color: #07366d;
-        font-size: 30px;
-        font-weight: 800;
-    }
-
-    .page-header p {
-        margin: 0;
-        color: #5d7898;
-        font-size: 14px;
-    }
-
-    .header-actions {
-        position: absolute;
-        right: 28px;
-        top: 25px;
-        z-index: 2;
-    }
-
-    .btn-tambah {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-
-        text-decoration: none;
-
-        background: #087ff5;
-        color: #fff;
-
-        border: 1px solid #087ff5;
-        border-radius: 8px;
-
-        padding: 11px 18px;
 
-        font-size: 13px;
-        font-weight: 700;
+<div class="container-fluid py-4">
 
-        transition: .2s;
-    }
 
-    .btn-tambah:hover {
-        background: #066fd6;
-        color: #fff;
-        transform: translateY(-1px);
-    }
+    <!-- =====================================================
+         PESAN SUCCESS
+    ====================================================== -->
 
+    <?php if (session()->getFlashdata('success')): ?>
 
-    /* ================================
-       CARD DATA
-    ================================= */
+        <div class="alert alert-success alert-dismissible fade show">
 
-    .content-card {
-        background: #fff;
-        border: 1px solid #d8e7f5;
-        border-radius: 14px;
-        overflow: hidden;
-        box-shadow: 0 3px 12px rgba(22, 82, 130, 0.05);
-    }
+            <i class="bi bi-check-circle-fill me-2"></i>
 
-    .card-header {
-        padding: 22px 26px;
-        border-bottom: 1px solid #e3edf6;
+            <?= session()->getFlashdata('success') ?>
 
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+            </button>
 
-    .card-icon {
-        width: 44px;
-        height: 44px;
+        </div>
 
-        border-radius: 10px;
+    <?php endif; ?>
 
-        background: #e7f3ff;
-        color: #087ff5;
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    <!-- =====================================================
+         PESAN ERROR
+    ====================================================== -->
 
-        font-size: 21px;
+    <?php if (session()->getFlashdata('error')): ?>
 
-        flex-shrink: 0;
-    }
+        <div class="alert alert-danger alert-dismissible fade show">
 
-    .card-header h2 {
-        margin: 0;
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
 
-        color: #07366d;
+            <?= session()->getFlashdata('error') ?>
 
-        font-size: 20px;
-        font-weight: 800;
-    }
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+            </button>
 
-    .card-header p {
-        margin: 4px 0 0;
+        </div>
 
-        color: #6d87a4;
+    <?php endif; ?>
 
-        font-size: 12px;
-    }
 
-
-    /* ================================
-       TABLE
-    ================================= */
-
-    .table-wrapper {
-        width: 100%;
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-
-        min-width: 900px;
-    }
-
-    thead th {
-        background: #eef7ff;
-
-        color: #174b7e;
-
-        padding: 14px 16px;
-
-        text-align: left;
-
-        font-size: 12px;
-        font-weight: 800;
-
-        border-bottom: 1px solid #d8e7f5;
-
-        white-space: nowrap;
-    }
-
-    tbody td {
-        padding: 14px 16px;
-
-        color: #465d73;
-
-        font-size: 13px;
-
-        border-bottom: 1px solid #edf2f7;
-
-        vertical-align: middle;
-    }
-
-    tbody tr:hover {
-        background: #f8fbfe;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-
-    /* ================================
-       FILE
-    ================================= */
-
-    .badge-file {
-        display: inline-flex;
-
-        align-items: center;
-        gap: 6px;
-
-        padding: 6px 10px;
-
-        border-radius: 6px;
-
-        background: #eef7ff;
-        color: #087ff5;
-
-        font-size: 11px;
-        font-weight: 700;
-
-        max-width: 230px;
-
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-
-    /* ================================
-       AKSI
-       SEMUA TOMBOL SAMA UKURAN
-    ================================= */
-
-    .action-wrapper {
-        display: flex;
-
-        align-items: center;
-
-        justify-content: flex-start;
-
-        gap: 7px;
-
-        flex-wrap: nowrap;
-    }
-
-    /*
-     * Semua tombol aksi:
-     * Lebar  : 115px
-     * Tinggi : 36px
-     */
-    .btn-action {
-        width: 115px;
-        height: 36px;
-
-        box-sizing: border-box;
-
-        display: inline-flex;
-
-        align-items: center;
-        justify-content: center;
-
-        padding: 0 8px;
-
-        margin: 0;
-
-        border-radius: 6px;
-
-        font-size: 11px;
-        font-weight: 700;
-
-        line-height: 1;
-
-        text-decoration: none;
-
-        border: 1px solid transparent;
-
-        cursor: pointer;
-
-        white-space: nowrap;
-
-        transition: .2s;
-    }
-
-
-    /* ================================
-       LIHAT BERKAS
-    ================================= */
-
-    .btn-view {
-        background: #eef7ff;
-
-        color: #087ff5;
-
-        border-color: #c9e2fa;
-    }
-
-    .btn-view:hover {
-        background: #dceeff;
-
-        color: #066fd6;
-    }
-
-
-    /* ================================
-       EDIT BERKAS
-    ================================= */
-
-    .btn-edit {
-        background: #fff7e6;
-
-        color: #c27a00;
-
-        border-color: #f2d28b;
-    }
-
-    .btn-edit:hover {
-        background: #fff0cc;
-
-        color: #a76400;
-    }
-
-
-    /* ================================
-       HAPUS
-    ================================= */
-
-    .btn-delete {
-        background: #fff1f1;
-
-        color: #d9534f;
-
-        border-color: #f1c8c7;
-    }
-
-    .btn-delete:hover {
-        background: #ffe2e1;
-
-        color: #c9302c;
-    }
-
-
-    /*
-     * Form hapus tidak boleh
-     * mengubah ukuran tombol
-     */
-    .action-wrapper form {
-        display: block;
-
-        margin: 0;
-
-        padding: 0;
-    }
-
-
-    /* ================================
-       EMPTY STATE
-    ================================= */
-
-    .empty-state {
-        padding: 55px 25px;
-
-        text-align: center;
-
-        color: #718096;
-    }
-
-    .empty-icon {
-        width: 64px;
-        height: 64px;
-
-        margin: 0 auto 15px;
-
-        border-radius: 50%;
-
-        background: #eef7ff;
-        color: #087ff5;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        font-size: 28px;
-    }
-
-    .empty-state h3 {
-        margin: 0 0 7px;
-
-        color: #40566d;
-
-        font-size: 17px;
-        font-weight: 800;
-    }
-
-    .empty-state p {
-        margin: 0;
-
-        font-size: 13px;
-
-        color: #8193a6;
-    }
-
-
-    /* ================================
-       ALERT
-    ================================= */
-
-    .alert {
-        padding: 12px 15px;
-
-        border-radius: 8px;
-
-        margin-bottom: 18px;
-
-        font-size: 13px;
-    }
-
-    .alert-success {
-        background: #edf9f2;
-
-        color: #176b3c;
-
-        border: 1px solid #c9ead7;
-    }
-
-    .alert-error {
-        background: #fff1f1;
-
-        color: #a33a37;
-
-        border: 1px solid #f1c8c7;
-    }
-
-
-    /* ================================
-       RESPONSIVE
-    ================================= */
-
-    @media (max-width: 768px) {
-
-        .page-wrapper {
-            padding: 15px;
-        }
-
-        .page-header {
-            padding: 22px;
-        }
-
-        .page-header h1 {
-            font-size: 23px;
-
-            padding-right: 0;
-
-            margin-bottom: 55px;
-        }
-
-        .header-actions {
-            left: 22px;
-            right: 22px;
-
-            top: auto;
-            bottom: 20px;
-        }
-
-        .btn-tambah {
-            width: 100%;
-
-            justify-content: center;
-        }
-
-        .card-header {
-            padding: 18px;
-        }
-
-        /*
-         * Pada layar kecil tombol tetap
-         * memiliki ukuran yang sama.
-         */
-        .action-wrapper {
-            flex-wrap: nowrap;
-        }
-
-        .btn-action {
-            width: 115px;
-            min-width: 115px;
-        }
-    }
-</style>
-
-
-<div class="page-wrapper">
-
-
-    <!-- =========================================================
+    <!-- =====================================================
          HEADER
-    ========================================================== -->
+    ====================================================== -->
 
-    <div class="page-header">
+    <div class="sk-header">
 
-        <div class="header-actions">
+        <div class="sk-header-content">
 
-            <a href="<?= base_url('tim-pembina/sk/create') ?>"
-               class="btn-tambah">
+            <div class="sk-header-text">
 
-                + &nbsp;Tambah SK
+                <h2>
+
+                    <i class="bi bi-file-earmark-check me-2"></i>
+
+                    SK Tim Pembina
+
+                </h2>
+
+                <p>
+                    Kelola Surat Keputusan Tim Pembina Bandung Sehat.
+                </p>
+
+            </div>
+
+
+            <!-- TOMBOL TAMBAH SK -->
+
+            <a
+                href="<?= base_url('tim-pembina/sk/create') ?>"
+                class="btn-tambah-sk"
+            >
+
+                <i class="bi bi-plus-lg"></i>
+
+                <span>
+                    Tambah SK
+                </span>
 
             </a>
 
         </div>
 
-
-        <h1>
-            SK Tim Pembina
-        </h1>
-
-
-        <p>
-            Kelola Surat Keputusan Tim Pembina Bandung Sehat.
-        </p>
-
     </div>
 
 
-    <!-- =========================================================
-         FLASH MESSAGE
-    ========================================================== -->
+    <!-- =====================================================
+         CARD DATA
+    ====================================================== -->
 
-    <?php if (session()->getFlashdata('success')): ?>
-
-        <div class="alert alert-success">
-
-            <?= esc(session()->getFlashdata('success')) ?>
-
-        </div>
-
-    <?php endif; ?>
+    <div class="card border-0 shadow-sm sk-card">
 
 
-    <?php if (session()->getFlashdata('error')): ?>
+        <!-- CARD HEADER -->
 
-        <div class="alert alert-error">
+        <div class="card-header bg-white border-0 py-4">
 
-            <?= esc(session()->getFlashdata('error')) ?>
+            <div class="d-flex align-items-center">
 
-        </div>
+                <div class="icon-box me-3">
 
-    <?php endif; ?>
+                    <i class="bi bi-file-earmark-text"></i>
 
-
-    <!-- =========================================================
-         DATA SK
-    ========================================================== -->
-
-    <div class="content-card">
+                </div>
 
 
-        <div class="card-header">
+                <div>
 
-            <div class="card-icon">
-                ▣
-            </div>
+                    <h4 class="fw-bold mb-1">
+                        Data SK Tim Pembina
+                    </h4>
 
+                    <p class="text-muted mb-0">
+                        Daftar Surat Keputusan Tim Pembina Bandung Sehat.
+                    </p>
 
-            <div>
-
-                <h2>
-                    Data SK Tim Pembina
-                </h2>
-
-
-                <p>
-                    Daftar Surat Keputusan Tim Pembina Bandung Sehat.
-                </p>
+                </div>
 
             </div>
 
         </div>
 
 
-        <?php if (!empty($data)): ?>
+        <!-- =================================================
+             TABLE
+        ================================================== -->
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead>
+
+                    <tr>
+
+                        <th width="60">
+                            No
+                        </th>
+
+                        <th>
+                            Nomor SK
+                        </th>
+
+                        <th width="120">
+                            Periode
+                        </th>
+
+                        <th>
+                            Keterangan
+                        </th>
+
+                        <th>
+                            Nama File
+                        </th>
+
+                        <th width="360">
+                            Aksi
+                        </th>
+
+                        <th width="220">
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
 
 
-            <div class="table-wrapper">
-
-                <table>
+                <tbody>
 
 
-                    <thead>
+                <?php if (!empty($data)): ?>
+
+
+                    <?php $no = 1; ?>
+
+
+                    <?php foreach ($data as $row): ?>
+
+
+                        <?php
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | STATUS
+                            |--------------------------------------------------------------------------
+                            */
+
+                            $status =
+                                strtolower(
+                                    trim(
+                                        $row['status']
+                                        ?? 'pending'
+                                    )
+                                );
+
+                            $role =
+                                session()->get('role');
+
+                        ?>
+
 
                         <tr>
 
-                            <th
-                                class="text-center"
-                                style="width:60px;"
-                            >
-                                No
-                            </th>
+
+                            <!-- =================================================
+                                 NO
+                            ================================================== -->
+
+                            <td>
+
+                                <?= $no++ ?>
+
+                            </td>
 
 
-                            <th>
-                                Nomor SK
-                            </th>
+                            <!-- =================================================
+                                 NOMOR SK
+                            ================================================== -->
+
+                            <td>
+
+                                <strong>
+
+                                    <?= esc(
+                                        $row['no_sk']
+                                        ?? '-'
+                                    ) ?>
+
+                                </strong>
+
+                            </td>
 
 
-                            <th>
-                                Periode
-                            </th>
+                            <!-- =================================================
+                                 PERIODE
+                            ================================================== -->
+
+                            <td>
+
+                                <?= esc(
+                                    $row['periode']
+                                    ?? '-'
+                                ) ?>
+
+                            </td>
 
 
-                            <th>
-                                Keterangan
-                            </th>
+                            <!-- =================================================
+                                 KETERANGAN
+                            ================================================== -->
+
+                            <td>
+
+                                <?= esc(
+                                    $row['keterangan']
+                                    ?? '-'
+                                ) ?>
+
+                            </td>
 
 
-                            <th>
-                                Nama File
-                            </th>
+                            <!-- =================================================
+                                 FILE
+                            ================================================== -->
 
+                            <td>
 
-                            <th
-                                style="width:380px;"
-                            >
-                                Aksi
-                            </th>
+                                <?php if (!empty($row['nama_asli'])): ?>
 
-                        </tr>
+                                    <span class="file-name">
 
-                    </thead>
-
-
-                    <tbody>
-
-
-                        <?php $no = 1; ?>
-
-
-                        <?php foreach ($data as $row): ?>
-
-
-                            <tr>
-
-
-                                <td class="text-center">
-
-                                    <?= $no++ ?>
-
-                                </td>
-
-
-                                <td>
-
-                                    <strong>
+                                        <i
+                                            class="bi bi-file-earmark-pdf text-danger me-1">
+                                        </i>
 
                                         <?= esc(
-                                            $row['no_sk'] ?? '-'
+                                            $row['nama_asli']
                                         ) ?>
 
-                                    </strong>
+                                    </span>
 
-                                </td>
+                                <?php elseif (!empty($row['nama_file'])): ?>
 
+                                    <span class="file-name">
 
-                                <td>
+                                        <i
+                                            class="bi bi-file-earmark-pdf text-danger me-1">
+                                        </i>
 
-                                    <?= esc(
-                                        $row['periode'] ?? '-'
-                                    ) ?>
+                                        <?= esc(
+                                            $row['nama_file']
+                                        ) ?>
 
-                                </td>
+                                    </span>
 
+                                <?php else: ?>
 
-                                <td>
+                                    <span class="text-muted">
+                                        -
+                                    </span>
 
-                                    <?= esc(
-                                        $row['keterangan'] ?? '-'
-                                    ) ?>
+                                <?php endif; ?>
 
-                                </td>
-
-
-                                <td>
-
-
-                                    <?php if (!empty($row['nama_asli'])): ?>
-
-                                        <span class="badge-file">
-
-                                            PDF
-
-                                            <?= esc(
-                                                $row['nama_asli']
-                                            ) ?>
-
-                                        </span>
+                            </td>
 
 
-                                    <?php elseif (!empty($row['nama_file'])): ?>
+                            <!-- =================================================
+                                 AKSI
+                            ================================================== -->
 
-                                        <span class="badge-file">
+                            <td>
 
-                                            PDF
-
-                                            <?= esc(
-                                                $row['nama_file']
-                                            ) ?>
-
-                                        </span>
+                                <div class="d-flex gap-2 flex-wrap">
 
 
-                                    <?php else: ?>
+                                    <!-- LIHAT BERKAS -->
 
-                                        <span
-                                            style="color:#9aa9b8;"
+                                    <a
+                                        href="<?= base_url(
+                                            'tim-pembina/sk/view/' .
+                                            $row['id']
+                                        ) ?>"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+
+                                        <i class="bi bi-eye"></i>
+
+                                        Lihat Berkas
+
+                                    </a>
+
+
+                                    <?php
+                                    /*
+                                    |--------------------------------------------------------------------------
+                                    | EDIT DAN HAPUS
+                                    |--------------------------------------------------------------------------
+                                    |
+                                    | User tetap dapat melihat.
+                                    | Tombol pengelolaan hanya untuk Admin.
+                                    |
+                                    */
+                                    ?>
+
+                                    <?php if ($role === 'admin'): ?>
+
+
+                                        <!-- EDIT -->
+
+                                        <a
+                                            href="<?= base_url(
+                                                'tim-pembina/sk/edit/' .
+                                                $row['id']
+                                            ) ?>"
+                                            class="btn btn-sm btn-outline-warning"
                                         >
-                                            Tidak ada berkas
-                                        </span>
+
+                                            <i class="bi bi-pencil"></i>
+
+                                            Edit Berkas
+
+                                        </a>
+
+
+                                        <!-- HAPUS -->
+
+                                        <form
+                                            action="<?= base_url(
+                                                'tim-pembina/sk/delete/' .
+                                                $row['id']
+                                            ) ?>"
+                                            method="post"
+                                            class="d-inline"
+                                            onsubmit="return confirm(
+                                                'Yakin ingin menghapus SK ini?'
+                                            );"
+                                        >
+
+                                            <?= csrf_field() ?>
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                            >
+
+                                                <i class="bi bi-trash"></i>
+
+                                                Hapus
+
+                                            </button>
+
+                                        </form>
+
 
                                     <?php endif; ?>
 
 
-                                </td>
+                                </div>
+
+                            </td>
 
 
-                                <!-- =================================================
-                                     AKSI
-                                ================================================== -->
+                            <!-- =================================================
+                                 STATUS
+                            ================================================== -->
 
-                                <td>
-
-
-                                    <div class="action-wrapper">
+                            <td>
 
 
-                                        <?php if (!empty($row['id'])): ?>
+                                <?php if ($role === 'admin'): ?>
+
+
+                                    <!-- =========================================
+                                         ADMIN
+                                    ========================================== -->
+
+
+                                    <?php if ($status === 'diterima'): ?>
+
+
+                                        <!-- DITERIMA -->
+
+                                        <div class="status-wrapper">
+
+                                            <span
+                                                class="badge-status badge-diterima"
+                                            >
+
+                                                <i class="bi bi-check-circle-fill"></i>
+
+                                                Diterima
+
+                                            </span>
+
+
+                                            <!-- HASIL -->
+
+                                            <span
+                                                class="badge-status badge-diverifikasi"
+                                            >
+
+                                                <i class="bi bi-shield-check"></i>
+
+                                                Diverifikasi
+
+                                            </span>
+
+                                        </div>
+
+
+                                    <?php elseif ($status === 'ditolak'): ?>
+
+
+                                        <!-- DITOLAK -->
+
+                                        <div class="status-wrapper">
+
+                                            <span
+                                                class="badge-status badge-ditolak"
+                                            >
+
+                                                <i class="bi bi-x-circle-fill"></i>
+
+                                                Ditolak
+
+                                            </span>
 
 
                                             <?php if (
-                                                !empty($row['file_path']) ||
-                                                !empty($row['nama_file'])
+                                                !empty(
+                                                    $row[
+                                                        'keterangan_penolakan'
+                                                    ]
+                                                )
                                             ): ?>
 
-
-                                                <!-- LIHAT BERKAS -->
-
-                                                <a
-                                                    href="<?= base_url(
-                                                        'tim-pembina/sk/view/' .
-                                                        $row['id']
-                                                    ) ?>"
-
-                                                    class="btn-action btn-view"
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#alasanModal<?= $row['id'] ?>"
                                                 >
-                                                    👁 Lihat Berkas
-                                                </a>
 
+                                                    <i class="bi bi-info-circle"></i>
 
-                                                <!-- EDIT BERKAS -->
+                                                    Lihat Keterangan
 
-                                                <a
-                                                    href="<?= base_url(
-                                                        'tim-pembina/sk/edit/' .
-                                                        $row['id']
-                                                    ) ?>"
-
-                                                    class="btn-action btn-edit"
-                                                >
-                                                    ✎ Edit Berkas
-                                                </a>
-
+                                                </button>
 
                                             <?php endif; ?>
 
+                                        </div>
 
-                                            <!-- HAPUS -->
 
-                                            <form
-                                                action="<?= base_url(
-                                                    'tim-pembina/sk/delete/' .
-                                                    $row['id']
-                                                ) ?>"
+                                    <?php else: ?>
 
-                                                method="post"
 
-                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus SK ini?');"
+                                        <!-- PENDING -->
+
+                                        <div class="status-wrapper">
+
+                                            <span
+                                                class="badge-status badge-pending"
                                             >
 
-                                                <?= csrf_field() ?>
+                                                <i class="bi bi-clock-fill"></i>
+
+                                                Pending
+
+                                            </span>
+
+
+                                            <div
+                                                class="d-flex gap-2 flex-wrap mt-2"
+                                            >
+
+
+                                                <!-- =================================
+                                                     DITERIMA
+                                                ================================== -->
+
+                                                <form
+                                                    action="<?= base_url(
+                                                        'tim-pembina/sk/verifikasi/' .
+                                                        $row['id']
+                                                    ) ?>"
+                                                    method="post"
+                                                    class="d-inline"
+                                                >
+
+                                                    <?= csrf_field() ?>
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-sm btn-outline-success"
+                                                        onclick="return confirm(
+                                                            'Apakah Anda yakin menerima SK ini?'
+                                                        );"
+                                                    >
+
+                                                        <i
+                                                            class="bi bi-check-lg">
+                                                        </i>
+
+                                                        Diterima
+
+                                                    </button>
+
+                                                </form>
+
+
+                                                <!-- =================================
+                                                     DITOLAK
+                                                ================================== -->
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#tolakModal<?= $row['id'] ?>"
+                                                >
+
+                                                    <i class="bi bi-x-lg"></i>
+
+                                                    Ditolak
+
+                                                </button>
+
+
+                                            </div>
+
+                                        </div>
+
+
+                                    <?php endif; ?>
+
+
+                                <?php else: ?>
+
+
+                                    <!-- =========================================
+                                         USER
+                                         HANYA MELIHAT
+                                    ========================================== -->
+
+
+                                    <?php if ($status === 'diterima'): ?>
+
+
+                                        <div class="status-wrapper">
+
+                                            <span
+                                                class="badge-status badge-diterima"
+                                            >
+
+                                                <i
+                                                    class="bi bi-check-circle-fill">
+                                                </i>
+
+                                                Diterima
+
+                                            </span>
+
+
+                                            <span
+                                                class="badge-status badge-diverifikasi"
+                                            >
+
+                                                <i
+                                                    class="bi bi-shield-check">
+                                                </i>
+
+                                                Diverifikasi
+
+                                            </span>
+
+                                        </div>
+
+
+                                    <?php elseif ($status === 'ditolak'): ?>
+
+
+                                        <div class="status-wrapper">
+
+                                            <span
+                                                class="badge-status badge-ditolak"
+                                            >
+
+                                                <i
+                                                    class="bi bi-x-circle-fill">
+                                                </i>
+
+                                                Ditolak
+
+                                            </span>
+
+
+                                            <?php if (
+                                                !empty(
+                                                    $row[
+                                                        'keterangan_penolakan'
+                                                    ]
+                                                )
+                                            ): ?>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#alasanModal<?= $row['id'] ?>"
+                                                >
+
+                                                    <i
+                                                        class="bi bi-info-circle">
+                                                    </i>
+
+                                                    Lihat Keterangan
+
+                                                </button>
+
+                                            <?php endif; ?>
+
+                                        </div>
+
+
+                                    <?php else: ?>
+
+
+                                        <span
+                                            class="badge-status badge-pending"
+                                        >
+
+                                            <i
+                                                class="bi bi-clock-fill">
+                                            </i>
+
+                                            Pending
+
+                                        </span>
+
+
+                                    <?php endif; ?>
+
+
+                                <?php endif; ?>
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                        <!-- =====================================================
+                             MODAL TOLAK
+                        ====================================================== -->
+
+                        <?php if ($role === 'admin'): ?>
+
+
+                            <div
+                                class="modal fade"
+                                id="tolakModal<?= $row['id'] ?>"
+                                tabindex="-1"
+                                aria-hidden="true"
+                            >
+
+                                <div
+                                    class="modal-dialog modal-dialog-centered"
+                                >
+
+                                    <div class="modal-content">
+
+
+                                        <div class="modal-header">
+
+                                            <h5
+                                                class="modal-title fw-bold text-danger"
+                                            >
+
+                                                <i
+                                                    class="bi bi-x-circle me-2">
+                                                </i>
+
+                                                Tolak Berkas SK
+
+                                            </h5>
+
+
+                                            <button
+                                                type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                            ></button>
+
+                                        </div>
+
+
+                                        <form
+                                            action="<?= base_url(
+                                                'tim-pembina/sk/tolak/' .
+                                                $row['id']
+                                            ) ?>"
+                                            method="post"
+                                        >
+
+                                            <?= csrf_field() ?>
+
+
+                                            <div class="modal-body">
+
+
+                                                <!-- NOMOR SK -->
+
+                                                <div class="mb-3">
+
+                                                    <label
+                                                        class="form-label fw-semibold"
+                                                    >
+                                                        Nomor SK
+                                                    </label>
+
+
+                                                    <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        value="<?= esc(
+                                                            $row['no_sk']
+                                                            ?? '-'
+                                                        ) ?>"
+                                                        readonly
+                                                    >
+
+                                                </div>
+
+
+                                                <!-- ALASAN -->
+
+                                                <div class="mb-3">
+
+                                                    <label
+                                                        class="form-label fw-semibold"
+                                                    >
+
+                                                        Alasan Penolakan
+
+                                                        <span class="text-danger">
+                                                            *
+                                                        </span>
+
+                                                    </label>
+
+
+                                                    <textarea
+                                                        name="keterangan_penolakan"
+                                                        class="form-control"
+                                                        rows="5"
+                                                        placeholder="Masukkan alasan mengapa berkas SK ditolak..."
+                                                        required
+                                                    ></textarea>
+
+
+                                                    <small
+                                                        class="text-muted"
+                                                    >
+
+                                                        Keterangan penolakan
+                                                        wajib diisi.
+
+                                                    </small>
+
+                                                </div>
+
+
+                                            </div>
+
+
+                                            <div class="modal-footer">
+
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-secondary"
+                                                    data-bs-dismiss="modal"
+                                                >
+
+                                                    Batal
+
+                                                </button>
 
 
                                                 <button
                                                     type="submit"
-                                                    class="btn-action btn-delete"
+                                                    class="btn btn-danger"
                                                 >
-                                                    🗑 Hapus
+
+                                                    <i
+                                                        class="bi bi-x-circle me-1">
+                                                    </i>
+
+                                                    Tolak Berkas
+
                                                 </button>
 
 
-                                            </form>
+                                            </div>
 
 
-                                        <?php endif; ?>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                        <?php endif; ?>
+
+
+                        <!-- =====================================================
+                             MODAL ALASAN PENOLAKAN
+                        ====================================================== -->
+
+                        <?php if (
+                            !empty(
+                                $row[
+                                    'keterangan_penolakan'
+                                ]
+                            )
+                        ): ?>
+
+
+                            <div
+                                class="modal fade"
+                                id="alasanModal<?= $row['id'] ?>"
+                                tabindex="-1"
+                                aria-hidden="true"
+                            >
+
+                                <div
+                                    class="modal-dialog modal-dialog-centered"
+                                >
+
+                                    <div class="modal-content">
+
+
+                                        <div class="modal-header">
+
+                                            <h5
+                                                class="modal-title fw-bold text-danger"
+                                            >
+
+                                                <i
+                                                    class="bi bi-exclamation-circle me-2">
+                                                </i>
+
+                                                Alasan Penolakan
+
+                                            </h5>
+
+
+                                            <button
+                                                type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                            ></button>
+
+                                        </div>
+
+
+                                        <div class="modal-body">
+
+
+                                            <div
+                                                class="alert alert-danger mb-0"
+                                            >
+
+                                                <div class="fw-bold mb-2">
+
+                                                    Keterangan Penolakan:
+
+                                                </div>
+
+
+                                                <?= nl2br(
+                                                    esc(
+                                                        $row[
+                                                            'keterangan_penolakan'
+                                                        ]
+                                                    )
+                                                ) ?>
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <div class="modal-footer">
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary"
+                                                data-bs-dismiss="modal"
+                                            >
+
+                                                Tutup
+
+                                            </button>
+
+                                        </div>
 
 
                                     </div>
 
+                                </div>
 
-                                </td>
-
-
-                            </tr>
+                            </div>
 
 
-                        <?php endforeach; ?>
+                        <?php endif; ?>
 
 
-                    </tbody>
+                    <?php endforeach; ?>
 
 
-                </table>
-
-            </div>
+                <?php else: ?>
 
 
-        <?php else: ?>
+                    <!-- =================================================
+                         DATA KOSONG
+                    ================================================== -->
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="text-center py-5"
+                        >
+
+                            <div class="text-muted">
+
+                                <i
+                                    class="bi bi-folder-x fs-1">
+                                </i>
 
 
-            <!-- =================================================
-                 EMPTY STATE
-            ================================================== -->
+                                <p class="mt-3 mb-0">
 
-            <div class="empty-state">
+                                    Belum ada data SK Tim Pembina.
 
+                                </p>
 
-                <div class="empty-icon">
-                    ▣
-                </div>
+                            </div>
 
+                        </td>
 
-                <h3>
-                    Belum ada data SK Tim Pembina
-                </h3>
+                    </tr>
 
 
-                <p>
-                    Silakan tambahkan SK Tim Pembina terlebih dahulu.
-                </p>
+                <?php endif; ?>
 
 
-            </div>
+                </tbody>
 
+            </table>
 
-        <?php endif; ?>
-
+        </div>
 
     </div>
 
 </div>
+
+
+<!-- =====================================================
+     STYLE
+====================================================== -->
+
+<style>
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.sk-header {
+
+    background:
+        linear-gradient(
+            135deg,
+            #eaf3ff,
+            #dceeff
+        );
+
+    border-left:
+        5px solid #1590ef;
+
+    border-radius:
+        15px;
+
+    padding:
+        25px 35px;
+
+    margin-bottom:
+        24px;
+
+    min-height:
+        120px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    position:
+        relative;
+
+    overflow:
+        hidden;
+}
+
+
+.sk-header::after {
+
+    content:
+        "";
+
+    position:
+        absolute;
+
+    width:
+        150px;
+
+    height:
+        150px;
+
+    border-radius:
+        50%;
+
+    background:
+        rgba(255,255,255,.35);
+
+    right:
+        -40px;
+
+    top:
+        -50px;
+}
+
+
+.sk-header-content {
+
+    width:
+        100%;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    position:
+        relative;
+
+    z-index:
+        2;
+}
+
+
+.sk-header h2 {
+
+    color:
+        #07366d;
+
+    font-size:
+        30px;
+
+    font-weight:
+        700;
+
+    margin:
+        0 0 6px 0;
+}
+
+
+.sk-header p {
+
+    color:
+        #5b79a2;
+
+    margin:
+        0;
+}
+
+
+/* =====================================================
+   TAMBAH SK
+===================================================== */
+
+.btn-tambah-sk {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    gap:
+        7px;
+
+    background:
+        #0b82ef;
+
+    color:
+        #ffffff;
+
+    border:
+        none;
+
+    border-radius:
+        8px;
+
+    padding:
+        12px 20px;
+
+    text-decoration:
+        none;
+
+    font-weight:
+        600;
+
+    position:
+        relative;
+
+    z-index:
+        5;
+
+    transition:
+        .2s;
+}
+
+
+.btn-tambah-sk:hover {
+
+    background:
+        #07366d;
+
+    color:
+        #ffffff;
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.sk-card {
+
+    border-radius:
+        15px;
+
+    overflow:
+        hidden;
+
+    border:
+        1px solid #dce6f2;
+}
+
+
+/* =====================================================
+   ICON
+===================================================== */
+
+.icon-box {
+
+    width:
+        45px;
+
+    height:
+        45px;
+
+    border-radius:
+        12px;
+
+    background:
+        #eaf3ff;
+
+    color:
+        #0b4f9c;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    font-size:
+        20px;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.table-responsive {
+
+    overflow-x:
+        auto;
+}
+
+
+.table {
+
+    min-width:
+        1150px;
+}
+
+
+.table thead th {
+
+    background:
+        #eaf3ff;
+
+    color:
+        #07366d;
+
+    font-weight:
+        700;
+
+    white-space:
+        nowrap;
+
+    border-bottom:
+        1px solid #d9e6f5;
+
+    padding:
+        14px;
+}
+
+
+.table tbody td {
+
+    vertical-align:
+        middle;
+
+    white-space:
+        nowrap;
+
+    padding:
+        14px;
+}
+
+
+.table-hover tbody tr:hover {
+
+    background-color:
+        #f8fbff;
+}
+
+
+/* =====================================================
+   FILE
+===================================================== */
+
+.file-name {
+
+    display:
+        inline-block;
+
+    max-width:
+        280px;
+
+    overflow:
+        hidden;
+
+    text-overflow:
+        ellipsis;
+
+    white-space:
+        nowrap;
+
+    background:
+        #eef7ff;
+
+    color:
+        #0b4f9c;
+
+    padding:
+        7px 10px;
+
+    border-radius:
+        8px;
+
+    font-size:
+        13px;
+}
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+.btn {
+
+    border-radius:
+        8px;
+}
+
+
+.btn-outline-primary {
+
+    color:
+        #0b82ef;
+
+    border-color:
+        #9bc7f5;
+
+    background:
+        #ffffff;
+}
+
+
+.btn-outline-primary:hover {
+
+    color:
+        #ffffff;
+
+    background:
+        #0b82ef;
+
+    border-color:
+        #0b82ef;
+}
+
+
+.btn-outline-warning {
+
+    color:
+        #b77900;
+
+    border-color:
+        #f0c36d;
+
+    background:
+        #ffffff;
+}
+
+
+.btn-outline-warning:hover {
+
+    color:
+        #ffffff;
+
+    background:
+        #f2b705;
+
+    border-color:
+        #f2b705;
+}
+
+
+.btn-outline-danger {
+
+    color:
+        #d9534f;
+
+    border-color:
+        #efb0ad;
+
+    background:
+        #ffffff;
+}
+
+
+.btn-outline-danger:hover {
+
+    color:
+        #ffffff;
+
+    background:
+        #d9534f;
+
+    border-color:
+        #d9534f;
+}
+
+
+.btn-outline-success {
+
+    color:
+        #159957;
+
+    border-color:
+        #9eddbb;
+
+    background:
+        #ffffff;
+}
+
+
+.btn-outline-success:hover {
+
+    color:
+        #ffffff;
+
+    background:
+        #159957;
+
+    border-color:
+        #159957;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status-wrapper {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    align-items:
+        flex-start;
+
+    gap:
+        7px;
+}
+
+
+/* PENDING */
+
+.badge-status {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    gap:
+        6px;
+
+    min-width:
+        110px;
+
+    padding:
+        8px 13px;
+
+    border-radius:
+        20px;
+
+    font-size:
+        12px;
+
+    font-weight:
+        700;
+
+    white-space:
+        nowrap;
+}
+
+
+.badge-pending {
+
+    background:
+        #fff8e1;
+
+    color:
+        #b77900;
+
+    border:
+        1px solid #f2c94c;
+}
+
+
+/* DITERIMA */
+
+.badge-diterima {
+
+    background:
+        #eafaf1;
+
+    color:
+        #159957;
+
+    border:
+        1px solid #9eddbb;
+}
+
+
+/* DIVERIFIKASI */
+
+.badge-diverifikasi {
+
+    background:
+        #eaf3ff;
+
+    color:
+        #0b4f9c;
+
+    border:
+        1px solid #9bc7f5;
+}
+
+
+/* DITOLAK */
+
+.badge-ditolak {
+
+    background:
+        #fff0f0;
+
+    color:
+        #d9534f;
+
+    border:
+        1px solid #f0aaaa;
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal-content {
+
+    border:
+        0;
+
+    border-radius:
+        15px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.15);
+}
+
+
+.modal-header {
+
+    border-bottom:
+        1px solid #e5eaf0;
+}
+
+
+.modal-footer {
+
+    border-top:
+        1px solid #e5eaf0;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:768px) {
+
+    .sk-header {
+
+        padding:
+            20px;
+
+    }
+
+
+    .sk-header-content {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+        gap:
+            20px;
+
+    }
+
+
+    .sk-header h2 {
+
+        font-size:
+            24px;
+
+    }
+
+
+    .btn-tambah-sk {
+
+        width:
+            100%;
+
+        justify-content:
+            center;
+
+    }
+
+}
+
+</style>
 
 
 <?= $this->endSection() ?>

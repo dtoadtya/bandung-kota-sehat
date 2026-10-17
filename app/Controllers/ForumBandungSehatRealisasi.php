@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Controllers\BaseController;
 use App\Models\ForumBandungSehatRealisasiModel;
 
 class ForumBandungSehatRealisasi extends BaseController
@@ -15,10 +16,11 @@ class ForumBandungSehatRealisasi extends BaseController
 
     private function isAdmin(): bool
     {
-        return in_array(session()->get('role'), [
-            'admin',
-            'user',
-        ], true);
+        return in_array(
+            session()->get('role'),
+            ['admin', 'user'],
+            true
+        );
     }
 
     /*
@@ -29,20 +31,32 @@ class ForumBandungSehatRealisasi extends BaseController
     public function index()
     {
         if (!$this->isAdmin()) {
-            return redirect()->to('/dashboard')
-                ->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+            return redirect()
+                ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
         }
 
-        $data = $this->realisasiModel
-            ->orderBy('tahun', 'DESC')
-            ->orderBy('waktu_kegiatan', 'DESC')
-            ->orderBy('id', 'DESC')
-            ->findAll();
+        $tahun = $this->request->getGet('tahun');
 
-        return view('forum_bandung_sehat_realisasi/index', [
-            'title' => 'Realisasi Kegiatan Forum Bandung Sehat',
-            'data'  => $data,
-        ]);
+        $builder = $this->realisasiModel
+            ->orderBy('tahun', 'ASC')
+            ->orderBy('waktu_kegiatan', 'DESC')
+            ->orderBy('id', 'DESC');
+
+        if ($tahun !== null && $tahun !== '') {
+            $builder->where('tahun', $tahun);
+        }
+
+        $data = $builder->findAll();
+
+        return view(
+            'forum_bandung_sehat_realisasi/index',
+            [
+                'title' => 'Realisasi Kegiatan Forum Bandung Sehat',
+                'data'  => $data,
+                'tahun' => $tahun,
+            ]
+        );
     }
 
     /*
@@ -53,13 +67,24 @@ class ForumBandungSehatRealisasi extends BaseController
     public function create()
     {
         if (!$this->isAdmin()) {
-            return redirect()->to('/dashboard')
-                ->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+            return redirect()
+                ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
         }
 
-        return view('forum_bandung_sehat_realisasi/create', [
-            'title' => 'Tambah Realisasi Kegiatan Forum Bandung Sehat',
-        ]);
+        $tahun = $this->request->getGet('tahun');
+
+        if (!in_array($tahun, ['1', '2'], true)) {
+            $tahun = '';
+        }
+
+        return view(
+            'forum_bandung_sehat_realisasi/create',
+            [
+                'title' => 'Tambah Realisasi Kegiatan',
+                'tahun' => $tahun,
+            ]
+        );
     }
 
     /*
@@ -70,65 +95,132 @@ class ForumBandungSehatRealisasi extends BaseController
     public function store()
     {
         if (!$this->isAdmin()) {
-            return redirect()->to('/dashboard')
-                ->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+            return redirect()
+                ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
         }
 
         $rules = [
             'tahun' => [
-                'label' => 'Tahun',
-                'rules' => 'required|regex_match[/^\d{4}$/]',
+                'rules' => 'required|in_list[1,2]',
+                'errors' => [
+                    'required' =>
+                        'Tahun wajib dipilih.',
+                    'in_list' =>
+                        'Tahun hanya dapat dipilih Tahun 1 atau Tahun 2.',
+                ],
             ],
 
             'nama_kegiatan' => [
-                'label' => 'Nama Kegiatan',
                 'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' =>
+                        'Nama kegiatan wajib diisi.',
+                    'max_length' =>
+                        'Nama kegiatan terlalu panjang.',
+                ],
             ],
 
             'waktu_kegiatan' => [
-                'label' => 'Waktu Kegiatan',
                 'rules' => 'permit_empty|valid_date[Y-m-d]',
+                'errors' => [
+                    'valid_date' =>
+                        'Format waktu kegiatan tidak valid.',
+                ],
             ],
 
-            'anggaran' => [
-                'label' => 'Anggaran',
-                'rules' => 'permit_empty|decimal',
+            'peserta' => [
+                'rules' => 'permit_empty',
             ],
 
             'sumber_pendanaan' => [
-                'label' => 'Sumber Pendanaan',
-                'rules' => 'permit_empty|in_list[APBD Kota,DAK,Swadaya]',
+                'rules' =>
+                    'permit_empty|in_list[APBD Kota,DAK,Swadaya]',
+                'errors' => [
+                    'in_list' =>
+                        'Sumber pendanaan tidak valid.',
+                ],
+            ],
+
+            'link_drive' => [
+                'rules' => 'permit_empty|valid_url',
+                'errors' => [
+                    'valid_url' =>
+                        'Link Drive/Cloud tidak valid.',
+                ],
             ],
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()
+            return redirect()
+                ->back()
                 ->withInput()
-                ->with('errors', $this->validator->getErrors());
+                ->with(
+                    'errors',
+                    $this->validator->getErrors()
+                );
         }
 
         $anggaran = $this->request->getPost('anggaran');
 
         if ($anggaran !== null && $anggaran !== '') {
-            $anggaran = str_replace('.', '', $anggaran);
+
+            $anggaran = preg_replace(
+                '/\D/',
+                '',
+                $anggaran
+            );
+
+            if ($anggaran === '') {
+                $anggaran = 0;
+            }
+
         } else {
             $anggaran = 0;
         }
 
-        $this->realisasiModel->insert([
-            'tahun'             => $this->request->getPost('tahun'),
-            'nama_kegiatan'     => $this->request->getPost('nama_kegiatan'),
-            'waktu_kegiatan'    => $this->request->getPost('waktu_kegiatan') ?: null,
-            'peserta'           => $this->request->getPost('peserta'),
-            'hasil_pelaksanaan' => $this->request->getPost('hasil_pelaksanaan'),
-            'anggaran'          => $anggaran,
-            'sumber_pendanaan'  => $this->request->getPost('sumber_pendanaan'),
-            'link_drive'        => $this->request->getPost('link_drive'),
-            'data_dukung'       => $this->request->getPost('data_dukung'),
-        ]);
+        $data = [
+            'tahun'             => trim(
+                (string) $this->request->getPost('tahun')
+            ),
 
-        return redirect()->to('/forum-bandung-sehat/realisasi')
-            ->with('success', 'Data realisasi kegiatan berhasil ditambahkan.');
+            'nama_kegiatan'     => trim(
+                (string) $this->request->getPost('nama_kegiatan')
+            ),
+
+            'waktu_kegiatan'    =>
+                $this->request->getPost('waktu_kegiatan') ?: null,
+
+            'peserta'           =>
+                $this->request->getPost('peserta'),
+
+            'hasil_pelaksanaan' =>
+                $this->request->getPost('hasil_pelaksanaan'),
+
+            'anggaran'          =>
+                $anggaran,
+
+            'sumber_pendanaan'  =>
+                $this->request->getPost('sumber_pendanaan'),
+
+            'link_drive'        =>
+                $this->request->getPost('link_drive'),
+
+            'data_dukung'       =>
+                $this->request->getPost('data_dukung'),
+        ];
+
+        $this->realisasiModel->insert($data);
+
+        return redirect()
+            ->to(
+                '/forum-bandung-sehat/realisasi?tahun='
+                . $data['tahun']
+            )
+            ->with(
+                'success',
+                'Realisasi kegiatan berhasil ditambahkan.'
+            );
     }
 
     /*
@@ -139,21 +231,29 @@ class ForumBandungSehatRealisasi extends BaseController
     public function edit($id)
     {
         if (!$this->isAdmin()) {
-            return redirect()->to('/dashboard')
-                ->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+            return redirect()
+                ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
         }
 
-        $data = $this->realisasiModel->find($id);
+        $data = $this->realisasiModel->find((int) $id);
 
         if (!$data) {
-            return redirect()->to('/forum-bandung-sehat/realisasi')
-                ->with('error', 'Data realisasi tidak ditemukan.');
+            return redirect()
+                ->to('/forum-bandung-sehat/realisasi')
+                ->with(
+                    'error',
+                    'Data realisasi kegiatan tidak ditemukan.'
+                );
         }
 
-        return view('forum_bandung_sehat_realisasi/edit', [
-            'title' => 'Edit Realisasi Kegiatan Forum Bandung Sehat',
-            'data'  => $data,
-        ]);
+        return view(
+            'forum_bandung_sehat_realisasi/edit',
+            [
+                'title' => 'Edit Realisasi Kegiatan',
+                'data'  => $data,
+            ]
+        );
     }
 
     /*
@@ -164,72 +264,146 @@ class ForumBandungSehatRealisasi extends BaseController
     public function update($id)
     {
         if (!$this->isAdmin()) {
-            return redirect()->to('/dashboard')
-                ->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+            return redirect()
+                ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
         }
 
-        $dataLama = $this->realisasiModel->find($id);
+        $dataLama = $this->realisasiModel->find((int) $id);
 
         if (!$dataLama) {
-            return redirect()->to('/forum-bandung-sehat/realisasi')
-                ->with('error', 'Data realisasi tidak ditemukan.');
+            return redirect()
+                ->to('/forum-bandung-sehat/realisasi')
+                ->with(
+                    'error',
+                    'Data realisasi kegiatan tidak ditemukan.'
+                );
         }
 
         $rules = [
             'tahun' => [
-                'label' => 'Tahun',
-                'rules' => 'required|regex_match[/^\d{4}$/]',
+                'rules' => 'required|in_list[1,2]',
+                'errors' => [
+                    'required' =>
+                        'Tahun wajib dipilih.',
+                    'in_list' =>
+                        'Tahun hanya dapat dipilih Tahun 1 atau Tahun 2.',
+                ],
             ],
 
             'nama_kegiatan' => [
-                'label' => 'Nama Kegiatan',
                 'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' =>
+                        'Nama kegiatan wajib diisi.',
+                    'max_length' =>
+                        'Nama kegiatan terlalu panjang.',
+                ],
             ],
 
             'waktu_kegiatan' => [
-                'label' => 'Waktu Kegiatan',
                 'rules' => 'permit_empty|valid_date[Y-m-d]',
+                'errors' => [
+                    'valid_date' =>
+                        'Format waktu kegiatan tidak valid.',
+                ],
             ],
 
-            'anggaran' => [
-                'label' => 'Anggaran',
-                'rules' => 'permit_empty|decimal',
+            'peserta' => [
+                'rules' => 'permit_empty',
             ],
 
             'sumber_pendanaan' => [
-                'label' => 'Sumber Pendanaan',
-                'rules' => 'permit_empty|in_list[APBD Kota,DAK,Swadaya]',
+                'rules' =>
+                    'permit_empty|in_list[APBD Kota,DAK,Swadaya]',
+                'errors' => [
+                    'in_list' =>
+                        'Sumber pendanaan tidak valid.',
+                ],
+            ],
+
+            'link_drive' => [
+                'rules' => 'permit_empty|valid_url',
+                'errors' => [
+                    'valid_url' =>
+                        'Link Drive/Cloud tidak valid.',
+                ],
             ],
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()
+            return redirect()
+                ->back()
                 ->withInput()
-                ->with('errors', $this->validator->getErrors());
+                ->with(
+                    'errors',
+                    $this->validator->getErrors()
+                );
         }
 
         $anggaran = $this->request->getPost('anggaran');
 
         if ($anggaran !== null && $anggaran !== '') {
-            $anggaran = str_replace('.', '', $anggaran);
+
+            $anggaran = preg_replace(
+                '/\D/',
+                '',
+                $anggaran
+            );
+
+            if ($anggaran === '') {
+                $anggaran = 0;
+            }
+
         } else {
             $anggaran = 0;
         }
 
-        $this->realisasiModel->update($id, [
-            'tahun'             => $this->request->getPost('tahun'),
-            'nama_kegiatan'     => $this->request->getPost('nama_kegiatan'),
-            'waktu_kegiatan'    => $this->request->getPost('waktu_kegiatan') ?: null,
-            'peserta'           => $this->request->getPost('peserta'),
-            'hasil_pelaksanaan' => $this->request->getPost('hasil_pelaksanaan'),
-            'anggaran'          => $anggaran,
-            'sumber_pendanaan'  => $this->request->getPost('sumber_pendanaan'),
-            'link_drive'        => $this->request->getPost('link_drive'),
-            'data_dukung'       => $this->request->getPost('data_dukung'),
-        ]);
+        $data = [
+            'tahun'             => trim(
+                (string) $this->request->getPost('tahun')
+            ),
 
-        return redirect()->to('/forum-bandung-sehat/realisasi')
-            ->with('success', 'Data realisasi kegiatan berhasil diperbarui.');
+            'nama_kegiatan'     => trim(
+                (string) $this->request->getPost('nama_kegiatan')
+            ),
+
+            'waktu_kegiatan'    =>
+                $this->request->getPost('waktu_kegiatan') ?: null,
+
+            'peserta'           =>
+                $this->request->getPost('peserta'),
+
+            'hasil_pelaksanaan' =>
+                $this->request->getPost('hasil_pelaksanaan'),
+
+            'anggaran'          =>
+                $anggaran,
+
+            'sumber_pendanaan'  =>
+                $this->request->getPost('sumber_pendanaan'),
+
+            'link_drive'        =>
+                $this->request->getPost('link_drive'),
+
+            'data_dukung'       =>
+                $this->request->getPost('data_dukung'),
+        ];
+
+        $this->realisasiModel->update(
+            (int) $id,
+            $data
+        );
+
+        return redirect()
+            ->to(
+                '/forum-bandung-sehat/realisasi?tahun='
+                . $data['tahun']
+            )
+            ->with(
+                'success',
+                'Realisasi kegiatan berhasil diperbarui.'
+            );
     }
 
     /*
@@ -240,20 +414,34 @@ class ForumBandungSehatRealisasi extends BaseController
     public function delete($id)
     {
         if (!$this->isAdmin()) {
-            return redirect()->to('/dashboard')
-                ->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+            return redirect()
+                ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
         }
 
-        $data = $this->realisasiModel->find($id);
+        $data = $this->realisasiModel->find((int) $id);
 
         if (!$data) {
-            return redirect()->to('/forum-bandung-sehat/realisasi')
-                ->with('error', 'Data realisasi tidak ditemukan.');
+            return redirect()
+                ->to('/forum-bandung-sehat/realisasi')
+                ->with(
+                    'error',
+                    'Data tidak ditemukan.'
+                );
         }
 
-        $this->realisasiModel->delete($id);
+        $tahun = $data['tahun'] ?? '';
 
-        return redirect()->to('/forum-bandung-sehat/realisasi')
-            ->with('success', 'Data realisasi kegiatan berhasil dihapus.');
+        $this->realisasiModel->delete((int) $id);
+
+        return redirect()
+            ->to(
+                '/forum-bandung-sehat/realisasi?tahun='
+                . $tahun
+            )
+            ->with(
+                'success',
+                'Realisasi kegiatan berhasil dihapus.'
+            );
     }
 }

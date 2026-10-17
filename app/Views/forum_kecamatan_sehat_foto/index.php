@@ -2,143 +2,350 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid">
+<style>
+    .foto-page {
+        background: #f4f8fc;
+        min-height: calc(100vh - 70px);
+        padding: 28px;
+    }
 
-    <div class="kelembagaan-header mb-4">
-        <div>
-            <h1>Foto Kegiatan</h1>
-            <p>Forum Kecamatan Sehat</p>
-        </div>
+    .foto-header {
+        background: linear-gradient(135deg, #0b4f9c, #07366d);
+        color: #fff;
+        border-radius: 14px;
+        padding: 24px 28px;
+        margin-bottom: 22px;
+    }
 
-        <a href="<?= site_url('forum-kecamatan-sehat/create') ?>"
-           class="btn">
-            <i class="bi bi-arrow-left"></i>
-            Kembali ke Menu
+    .foto-header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .foto-header p {
+        margin: 7px 0 0;
+        font-size: 14px;
+        opacity: .92;
+    }
+
+    .btn-kembali {
+        display: inline-block;
+        color: #fff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .foto-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 28px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.06);
+    }
+
+    .foto-card + .foto-card {
+        margin-top: 22px;
+    }
+
+    .foto-card h2 {
+        margin: 0 0 7px;
+        color: #243447;
+        font-size: 19px;
+    }
+
+    .description {
+        color: #718096;
+        font-size: 13px;
+        margin-bottom: 22px;
+    }
+
+    .upload-info {
+        background: #f4f8fc;
+        border: 1px solid #e5eaf0;
+        border-radius: 9px;
+        padding: 13px 15px;
+        margin-bottom: 20px;
+        color: #718096;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #243447;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .form-control {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #d9e2ec;
+        border-radius: 8px;
+        padding: 11px 13px;
+        font-size: 13px;
+    }
+
+    .btn-upload {
+        margin-top: 5px;
+        border: none;
+        background: #0b4f9c;
+        color: #fff;
+        padding: 11px 22px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-upload:hover {
+        background: #07366d;
+    }
+
+    .alert {
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 18px;
+        font-size: 13px;
+    }
+
+    .alert-success {
+        background: #eaf7ef;
+        color: #159957;
+    }
+
+    .alert-danger {
+        background: #fff1f1;
+        color: #d9534f;
+    }
+
+    .preview-wrapper {
+        max-width: 750px;
+        margin: auto;
+        padding: 15px;
+        background: #f4f8fc;
+        border: 1px solid #e5eaf0;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .preview-image {
+        width: 100%;
+        max-height: 450px;
+        object-fit: contain;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .file-name {
+        margin-top: 15px;
+        padding: 11px 14px;
+        background: #f4f8fc;
+        border-radius: 8px;
+        color: #718096;
+        font-size: 12px;
+        word-break: break-word;
+    }
+</style>
+
+
+<div class="foto-page">
+
+    <div class="foto-header">
+
+        <a
+            href="<?= base_url('forum-kecamatan-sehat') ?>"
+            class="btn-kembali"
+        >
+            ← &nbsp;Kembali
         </a>
+
+        <h1>Foto Sekretariat</h1>
+
+        <p>
+            Upload foto sekretariat Forum Kecamatan Sehat.
+        </p>
+
     </div>
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="mb-1">
-                        Dokumentasi Foto Kegiatan
-                    </h4>
+    <?php if (session()->getFlashdata('success')) : ?>
 
-                    <p class="text-muted mb-0">
-                        Maksimal satu foto dengan ukuran maksimal 5 MB.
-                    </p>
-                </div>
+        <div class="alert alert-success">
+            <?= esc(session()->getFlashdata('success')) ?>
+        </div>
 
-                <?php if (empty($data)): ?>
-                    <a href="<?= site_url('forum-kecamatan-sehat/foto-kegiatan/create') ?>"
-                       class="btn btn-primary">
-                        <i class="bi bi-upload"></i>
-                        Upload Foto
-                    </a>
-                <?php endif; ?>
+    <?php endif; ?>
+
+
+    <?php if (session()->getFlashdata('error')) : ?>
+
+        <div class="alert alert-danger">
+            <?= esc(session()->getFlashdata('error')) ?>
+        </div>
+
+    <?php endif; ?>
+
+
+    <?php if (session()->getFlashdata('errors')) : ?>
+
+        <div class="alert alert-danger">
+
+            <?php foreach (
+                session()->getFlashdata('errors')
+                as $error
+            ) : ?>
+
+                <div><?= esc($error) ?></div>
+
+            <?php endforeach; ?>
+
+        </div>
+
+    <?php endif; ?>
+
+
+    <div class="foto-card">
+
+        <h2>Upload Foto Sekretariat</h2>
+
+        <div class="description">
+            Upload satu foto sekretariat Forum Kecamatan Sehat.
+            Upload baru akan menggantikan foto lama.
+        </div>
+
+        <div class="upload-info">
+
+            <strong>Ketentuan:</strong><br>
+
+            • Maksimal <strong>2 MB</strong><br>
+            • JPG, JPEG, PNG, atau WEBP<br>
+            • Hanya satu foto yang digunakan
+
+        </div>
+
+
+        <form
+            action="<?= base_url(
+                'forum-kecamatan-sehat/foto-kegiatan/store'
+            ) ?>"
+            method="post"
+            enctype="multipart/form-data"
+        >
+
+            <?= csrf_field() ?>
+
+            <label
+                for="foto"
+                class="form-label"
+            >
+                Pilih Foto Sekretariat
+            </label>
+
+            <input
+                type="file"
+                name="foto"
+                id="foto"
+                class="form-control"
+                accept=".jpg,.jpeg,.png,.webp"
+                required
+            >
+
+            <button
+                type="submit"
+                class="btn-upload"
+            >
+                Upload Foto
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <?php if (!empty($foto)) : ?>
+
+        <div class="foto-card">
+
+            <h2>Foto Sekretariat Saat Ini</h2>
+
+            <div class="description">
+                Foto yang saat ini tersimpan di sistem.
+                Klik foto untuk melihat ukuran penuh.
             </div>
 
-            <?php if (session()->getFlashdata('success')): ?>
-                <div class="alert alert-success">
-                    <?= esc(session()->getFlashdata('success')) ?>
-                </div>
-            <?php endif; ?>
+            <div class="preview-wrapper">
 
-            <?php if (session()->getFlashdata('error')): ?>
-                <div class="alert alert-danger">
-                    <?= esc(session()->getFlashdata('error')) ?>
-                </div>
-            <?php endif; ?>
+                <a
+                    href="<?= base_url($foto['file_path']) ?>"
+                    target="_blank"
+                >
 
-            <?php if (empty($data)): ?>
+                    <img
+                        src="<?= base_url($foto['file_path']) ?>"
+                        alt="Foto Sekretariat Forum Kecamatan Sehat"
+                        class="preview-image"
+                    >
 
-                <div class="text-center py-5">
-                    <i class="bi bi-image"
-                       style="font-size: 64px; color: #b8c9d9;"></i>
+                </a>
 
-                    <h5 class="mt-3 text-muted">
-                        Belum ada foto kegiatan
-                    </h5>
+            </div>
 
-                    <p class="text-muted">
-                        Silakan unggah foto dokumentasi kegiatan.
-                    </p>
-                </div>
+            <div class="file-name">
 
-            <?php else: ?>
+                <strong>Nama file:</strong>
+                <?= esc($foto['nama_asli']) ?>
 
-                <div class="row g-4">
-
-                    <?php foreach ($data as $row): ?>
-
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card h-100 border-0 shadow-sm">
-
-                                <div class="card-body">
-
-                                    <?php if ($isAdmin): ?>
-                                        <span class="badge bg-primary mb-2">
-                                            <?= esc(
-                                                $row['nama_kecamatan'] ?? '-'
-                                            ) ?>
-                                        </span>
-                                    <?php endif; ?>
-
-                                    <div class="mb-3">
-                                        <i class="bi bi-file-earmark-image me-2"></i>
-                                        <?= esc($row['nama_asli']) ?>
-                                    </div>
-
-                                    <small class="text-muted d-block mb-3">
-                                        Ukuran:
-                                        <?= number_format(
-                                            ((int) $row['ukuran_file']) / 1024,
-                                            2
-                                        ) ?>
-                                        KB
-                                    </small>
-
-                                    <div class="d-flex gap-2">
-
-                                        <a href="<?= site_url('forum-kecamatan-sehat/foto-kegiatan/view/' . $row['id']) ?>"
-                                           target="_blank"
-                                           class="btn btn-sm btn-primary">
-                                            <i class="bi bi-eye"></i>
-                                            Lihat
-                                        </a>
-
-                                        <form action="<?= site_url('forum-kecamatan-sehat/foto-kegiatan/delete/' . $row['id']) ?>"
-                                              method="post"
-                                              onsubmit="return confirm('Yakin ingin menghapus foto ini?')">
-
-                                            <?= csrf_field() ?>
-
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i>
-                                                Hapus
-                                            </button>
-
-                                        </form>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </div>
-
-                    <?php endforeach; ?>
-
-                </div>
-
-            <?php endif; ?>
+            </div>
 
         </div>
-    </div>
+
+    <?php endif; ?>
 
 </div>
+
+
+<script>
+document.getElementById('foto')?.addEventListener(
+    'change',
+    function () {
+
+        const file = this.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+
+            alert('Ukuran foto maksimal 2 MB.');
+
+            this.value = '';
+
+            return;
+        }
+
+        const allowed = [
+            'image/jpeg',
+            'image/png',
+            'image/webp'
+        ];
+
+        if (!allowed.includes(file.type)) {
+
+            alert(
+                'Format foto harus JPG, JPEG, PNG, atau WEBP.'
+            );
+
+            this.value = '';
+        }
+
+    }
+);
+</script>
+
 
 <?= $this->endSection() ?>

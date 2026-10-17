@@ -3,525 +3,330 @@
 <?= $this->section('content') ?>
 
 <style>
-    .fks-page {
-        background: #f4f8fd;
+    .fk-page {
         min-height: calc(100vh - 70px);
-        padding: 32px 24px 40px;
+        background: #f5f8fc;
+        padding: 28px 28px 45px;
     }
 
-    .fks-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20px;
-        margin-bottom: 28px;
+    .fk-banner {
+        position: relative;
+        overflow: hidden;
+        min-height: 118px;
+        padding: 28px 34px;
+        margin-bottom: 24px;
+        border-radius: 14px;
+        background: linear-gradient(
+            135deg,
+            #eef8ff 0%,
+            #e3f2ff 100%
+        );
+        border-left: 6px solid #1687e8;
     }
 
-    .fks-title {
+    .fk-banner::after {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        right: -35px;
+        top: -75px;
+        border-radius: 50%;
+        background: rgba(22, 135, 232, .08);
+    }
+
+    .fk-banner h1 {
+        position: relative;
+        z-index: 2;
         margin: 0;
-        color: #07366d;
-        font-size: 34px;
+        color: #063b78;
+        font-size: 32px;
         font-weight: 800;
-        line-height: 1.2;
     }
 
-    .fks-subtitle {
-        margin: 10px 0 0;
-        color: #718096;
-        font-size: 15px;
+    .fk-banner p {
+        position: relative;
+        z-index: 2;
+        margin: 7px 0 0;
+        color: #5c7897;
+        font-size: 14px;
     }
 
-    .btn-fks-add {
+    .fk-menu {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .fk-card {
+        min-height: 205px;
+        background: #ffffff;
+        border: 1px solid #d7e5f2;
+        border-radius: 15px;
+        padding: 24px;
+        box-shadow: 0 3px 12px rgba(22, 82, 130, .04);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: .2s ease;
+    }
+
+    .fk-card:hover {
+        border-color: #087ff5;
+        box-shadow: 0 7px 20px rgba(22, 127, 230, .10);
+    }
+
+    .fk-card-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .fk-icon {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: #e7f2ff;
+        color: #087ff5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .fk-card h2 {
+        margin: 3px 0 7px;
+        color: #063b78;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .fk-card p {
+        margin: 0;
+        color: #7087a1;
+        font-size: 14px;
+        line-height: 1.65;
+    }
+
+    .fk-card-action {
+        margin-top: 22px;
+    }
+
+    .fk-btn {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        background: #0b7ff3;
+        justify-content: center;
+        gap: 7px;
+        min-height: 42px;
+        padding: 10px 18px;
+        border-radius: 8px;
+        background: #087ff5;
         color: #ffffff;
-        border: none;
-        border-radius: 10px;
-        padding: 13px 20px;
-        font-size: 14px;
-        font-weight: 700;
         text-decoration: none;
-        transition: all 0.2s ease;
-        white-space: nowrap;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s ease;
     }
 
-    .btn-fks-add:hover {
-        background: #07366d;
+    .fk-btn:hover {
+        background: #066fd6;
         color: #ffffff;
         transform: translateY(-1px);
     }
 
-    .btn-fks-add .plus-icon {
-        width: 18px;
-        height: 18px;
-        border: 1.8px solid #ffffff;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        line-height: 1;
-    }
-
-    .fks-card {
-        background: #ffffff;
-        border: 1px solid #dce8f5;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(26, 70, 110, 0.06);
-        overflow: hidden;
-    }
-
-    .fks-card-header {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        padding: 27px 28px;
-        border-bottom: 1px solid #e7eef6;
-    }
-
-    .fks-card-icon {
-        width: 49px;
-        height: 49px;
-        border-radius: 13px;
-        background: #e8f3ff;
-        color: #087cf0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .fks-card-icon svg {
-        width: 27px;
-        height: 27px;
-    }
-
-    .fks-card-title {
-        margin: 0;
-        color: #07366d;
-        font-size: 24px;
-        font-weight: 800;
-        line-height: 1.2;
-    }
-
-    .fks-card-description {
-        margin: 6px 0 0;
-        color: #718096;
-        font-size: 14px;
-    }
-
-    .fks-empty {
-        min-height: 285px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 45px 20px;
-    }
-
-    .fks-empty-icon {
-        width: 90px;
-        height: 90px;
-        border-radius: 20px;
-        background: #e8f3ff;
-        color: #087cf0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 22px;
-    }
-
-    .fks-empty-icon svg {
-        width: 53px;
-        height: 53px;
-    }
-
-    .fks-empty-title {
-        margin: 0;
-        color: #07366d;
-        font-size: 20px;
-        font-weight: 800;
-    }
-
-    .fks-empty-text {
-        margin: 10px 0 0;
-        color: #718096;
-        font-size: 14px;
-    }
-
-    .fks-alert {
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-
-    /* Tampilan ketika data sudah tersedia */
-    .fks-data-wrapper {
-        padding: 24px 28px 28px;
-    }
-
-    .fks-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .fks-table th {
-        background: #f4f8fd;
-        color: #07366d;
-        font-size: 13px;
-        font-weight: 700;
-        padding: 14px 12px;
-        border-bottom: 1px solid #dce8f5;
-        text-align: left;
-    }
-
-    .fks-table td {
-        color: #4a5568;
-        font-size: 14px;
-        padding: 14px 12px;
-        border-bottom: 1px solid #edf2f7;
-        vertical-align: middle;
-    }
-
-    .fks-table tr:last-child td {
-        border-bottom: none;
-    }
-
-    .fks-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 7px 11px;
-        border-radius: 7px;
-        text-decoration: none;
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    .fks-action-view {
-        color: #0b7ff3;
-        background: #eaf3ff;
-    }
-
-    .fks-action-edit {
-        color: #159957;
-        background: #e9f8f0;
-    }
-
-    .fks-action-delete {
-        color: #d9534f;
-        background: #fff0ef;
-        border: none;
-        cursor: pointer;
-    }
-
     @media (max-width: 768px) {
 
-        .fks-page {
-            padding: 24px 16px;
+        .fk-page {
+            padding: 20px 15px 35px;
         }
 
-        .fks-header {
-            flex-direction: column;
+        .fk-banner {
+            padding: 24px;
         }
 
-        .btn-fks-add {
-            width: 100%;
-            justify-content: center;
+        .fk-banner h1 {
+            font-size: 27px;
         }
 
-        .fks-title {
-            font-size: 28px;
-        }
-
-        .fks-card-header {
-            padding: 22px 20px;
-        }
-
-        .fks-card-title {
-            font-size: 20px;
-        }
-
-        .fks-empty {
-            min-height: 250px;
-        }
-
-        .fks-table {
-            min-width: 700px;
+        .fk-menu {
+            grid-template-columns: 1fr;
         }
     }
 </style>
 
 
-<div class="fks-page">
+<div class="fk-page">
 
-    <!-- HEADER HALAMAN -->
-    <div class="fks-header">
+    <!-- HEADER -->
 
-        <div>
-            <h1 class="fks-title">
-                Forum Kecamatan Sehat
-            </h1>
+    <div class="fk-banner">
 
-            <p class="fks-subtitle">
-                Pengelolaan data Forum Kecamatan Sehat.
-            </p>
-        </div>
+        <h1>Forum Kecamatan Sehat</h1>
 
-
-        <a href="<?= base_url('forum-kecamatan-sehat/create') ?>"
-           class="btn-fks-add">
-
-            <span class="plus-icon">+</span>
-
-            Tambah Data
-
-        </a>
+        <p>
+            Kelola data kelembagaan Forum Kecamatan Sehat.
+        </p>
 
     </div>
 
 
-    <!-- PESAN BERHASIL -->
-    <?php if (session()->getFlashdata('success')) : ?>
+    <!-- MENU -->
 
-        <div class="alert alert-success fks-alert">
-            <?= esc(session()->getFlashdata('success')) ?>
-        </div>
+    <div class="fk-menu">
 
-    <?php endif; ?>
 
+        <!-- SK -->
 
-    <!-- PESAN ERROR -->
-    <?php if (session()->getFlashdata('error')) : ?>
+        <div class="fk-card">
 
-        <div class="alert alert-danger fks-alert">
-            <?= esc(session()->getFlashdata('error')) ?>
-        </div>
+            <div class="fk-card-top">
 
-    <?php endif; ?>
+                <div class="fk-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                </div>
 
+                <div>
 
-    <!-- CARD DATA -->
-    <div class="fks-card">
+                    <h2>SK</h2>
 
-        <!-- HEADER CARD -->
-        <div class="fks-card-header">
-
-            <div class="fks-card-icon">
-
-                <svg viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="1.8"
-                     stroke-linecap="round"
-                     stroke-linejoin="round">
-
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-
-                    <circle cx="9" cy="7" r="4"></circle>
-
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-
-                </svg>
-
-            </div>
-
-
-            <div>
-
-                <h2 class="fks-card-title">
-                    Data Forum Kecamatan Sehat
-                </h2>
-
-                <p class="fks-card-description">
-                    Daftar anggota dan informasi Forum Kecamatan Sehat.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <?php if (!empty($data)) : ?>
-
-            <!-- DATA SUDAH ADA -->
-            <div class="fks-data-wrapper">
-
-                <div class="table-responsive">
-
-                    <table class="fks-table">
-
-                        <thead>
-
-                            <tr>
-
-                                <th width="60">
-                                    No
-                                </th>
-
-                                <th>
-                                    Kecamatan
-                                </th>
-
-                                <th>
-                                    Nama Ketua
-                                </th>
-
-                                <th>
-                                    Periode
-                                </th>
-
-                                <th>
-                                    Keterangan
-                                </th>
-
-                                <th width="180">
-                                    Aksi
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            <?php $no = 1; ?>
-
-                            <?php foreach ($data as $row) : ?>
-
-                                <tr>
-
-                                    <td>
-                                        <?= $no++ ?>
-                                    </td>
-
-
-                                    <td>
-                                        <?= esc(
-                                            $row['nama_kecamatan']
-                                            ?? '-'
-                                        ) ?>
-                                    </td>
-
-
-                                    <td>
-                                        <?= esc(
-                                            $row['nama_ketua']
-                                            ?? '-'
-                                        ) ?>
-                                    </td>
-
-
-                                    <td>
-                                        <?= esc(
-                                            $row['periode']
-                                            ?? '-'
-                                        ) ?>
-                                    </td>
-
-
-                                    <td>
-                                        <?= esc(
-                                            $row['keterangan']
-                                            ?? '-'
-                                        ) ?>
-                                    </td>
-
-
-                                    <td>
-
-                                        <?php if (!empty($row['id'])) : ?>
-
-                                            <a href="<?= base_url(
-                                                'forum-kecamatan-sehat/edit/'
-                                                . $row['id']
-                                            ) ?>"
-                                               class="fks-action fks-action-edit">
-
-                                                Edit
-
-                                            </a>
-
-                                            <form action="<?= base_url(
-                                                'forum-kecamatan-sehat/delete/'
-                                                . $row['id']
-                                            ) ?>"
-                                                  method="post"
-                                                  style="display:inline;"
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-
-                                                <?= csrf_field() ?>
-
-                                                <button type="submit"
-                                                        class="fks-action fks-action-delete">
-
-                                                    Hapus
-
-                                                </button>
-
-                                            </form>
-
-                                        <?php endif; ?>
-
-                                    </td>
-
-                                </tr>
-
-                            <?php endforeach; ?>
-
-                        </tbody>
-
-                    </table>
+                    <p>
+                        Upload Surat Keputusan Forum Kecamatan Sehat.
+                        File harus berupa PDF dengan ukuran maksimal 5 MB.
+                    </p>
 
                 </div>
 
             </div>
 
+            <div class="fk-card-action">
 
-        <?php else : ?>
-
-            <!-- KONDISI BELUM ADA DATA -->
-            <div class="fks-empty">
-
-                <div class="fks-empty-icon">
-
-                    <svg viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.7"
-                         stroke-linecap="round"
-                         stroke-linejoin="round">
-
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-
-                        <circle cx="9" cy="7" r="4"></circle>
-
-                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-
-                    </svg>
-
-                </div>
-
-
-                <h3 class="fks-empty-title">
-                    Belum ada data Forum Kecamatan Sehat
-                </h3>
-
-
-                <p class="fks-empty-text">
-                    Silakan tambahkan data Forum Kecamatan Sehat terlebih dahulu.
-                </p>
+                <a
+                    href="<?= site_url('forum-kecamatan-sehat/sk') ?>"
+                    class="fk-btn"
+                >
+                    <i class="bi bi-upload"></i>
+                    Kelola SK
+                </a>
 
             </div>
 
-        <?php endif; ?>
+        </div>
+
+
+        <!-- RENCANA KERJA -->
+
+        <div class="fk-card">
+
+            <div class="fk-card-top">
+
+                <div class="fk-icon">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+
+                <div>
+
+                    <h2>Rencana Kerja</h2>
+
+                    <p>
+                        Kelola rencana kerja Forum Kecamatan Sehat
+                        berdasarkan tahun yang dapat ditentukan sendiri.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="fk-card-action">
+
+                <a
+                    href="<?= site_url('forum-kecamatan-sehat/rencana-kerja') ?>"
+                    class="fk-btn"
+                >
+                    <i class="bi bi-journal-check"></i>
+                    Kelola Rencana Kerja
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- REALISASI -->
+
+        <div class="fk-card">
+
+            <div class="fk-card-top">
+
+                <div class="fk-icon">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                </div>
+
+                <div>
+
+                    <h2>Realisasi Kegiatan</h2>
+
+                    <p>
+                        Input laporan kegiatan, waktu, peserta,
+                        hasil pelaksanaan, anggaran dan sumber pendanaan.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="fk-card-action">
+
+                <a
+                    href="<?= site_url('forum-kecamatan-sehat/realisasi') ?>"
+                    class="fk-btn"
+                >
+                    <i class="bi bi-clipboard-data"></i>
+                    Kelola Realisasi
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOTO -->
+
+        <div class="fk-card">
+
+            <div class="fk-card-top">
+
+                <div class="fk-icon">
+                    <i class="bi bi-camera-fill"></i>
+                </div>
+
+                <div>
+
+                    <h2>Foto Sekretariat</h2>
+
+                    <p>
+                        Upload satu foto Sekretariat
+                        dengan ukuran maksimal 2 MB.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="fk-card-action">
+
+                <a
+                    href="<?= site_url('forum-kecamatan-sehat/foto-kegiatan') ?>"
+                    class="fk-btn"
+                >
+                    <i class="bi bi-image"></i>
+                    Kelola Foto
+                </a>
+
+            </div>
+
+        </div>
+
 
     </div>
 

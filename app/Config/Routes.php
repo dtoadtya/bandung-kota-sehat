@@ -63,7 +63,10 @@ $routes->group(
     ['filter' => 'role:admin'],
     static function ($routes) {
 
-        $routes->get('/', 'Kecamatan::index');
+        $routes->get(
+            '/',
+            'Kecamatan::index'
+        );
 
         $routes->get(
             'create',
@@ -79,7 +82,6 @@ $routes->group(
             'delete/(:num)',
             'Kecamatan::delete/$1'
         );
-
     }
 );
 
@@ -97,7 +99,10 @@ $routes->group(
     ['filter' => 'role:admin'],
     static function ($routes) {
 
-        $routes->get('/', 'Kelurahan::index');
+        $routes->get(
+            '/',
+            'Kelurahan::index'
+        );
 
         $routes->get(
             'create',
@@ -113,7 +118,6 @@ $routes->group(
             'delete/(:num)',
             'Kelurahan::delete/$1'
         );
-
     }
 );
 
@@ -130,6 +134,13 @@ $routes->group(
     'tim-pembina',
     ['filter' => 'role:user,admin'],
     static function ($routes) {
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA TIM PEMBINA
+        |--------------------------------------------------------------------------
+        */
 
         $routes->get(
             '/',
@@ -161,194 +172,236 @@ $routes->group(
             'TimPembina::delete/$1'
         );
 
-    }
-);
+
+        /*
+        |--------------------------------------------------------------------------
+        | SK TIM PEMBINA
+        |--------------------------------------------------------------------------
+        | USER:
+        | - Lihat daftar
+        | - Lihat berkas
+        |
+        | ADMIN:
+        | - Tambah
+        | - Edit
+        | - Hapus
+        | - Verifikasi
+        | - Tolak
+        |--------------------------------------------------------------------------
+        */
 
 
-/*
-|--------------------------------------------------------------------------
-| TIM PEMBINA - SK
-|--------------------------------------------------------------------------
-| User dan Admin
-|--------------------------------------------------------------------------
-*/
-
-$routes->group(
-    'tim-pembina/sk',
-    ['filter' => 'role:user,admin'],
-    static function ($routes) {
+        // -------------------------------------------------
+        // USER + ADMIN : LIHAT DATA
+        // -------------------------------------------------
 
         $routes->get(
-            '/',
+            'sk',
             'TimPembinaSk::index'
         );
 
         $routes->get(
-            'create',
-            'TimPembinaSk::create'
-        );
-
-        $routes->post(
-            'store',
-            'TimPembinaSk::store'
-        );
-
-        $routes->get(
-            'edit/(:num)',
-            'TimPembinaSk::edit/$1'
-        );
-
-        $routes->post(
-            'update/(:num)',
-            'TimPembinaSk::update/$1'
-        );
-
-        $routes->get(
-            'view/(:num)',
+            'sk/view/(:num)',
             'TimPembinaSk::view/$1'
         );
 
-        $routes->post(
-            'delete/(:num)',
-            'TimPembinaSk::delete/$1'
-        );
 
-    }
-);
-
-
-/*
-|--------------------------------------------------------------------------
-| TIM PEMBINA - RENCANA KERJA
-|--------------------------------------------------------------------------
-| User dan Admin
-|--------------------------------------------------------------------------
-*/
-
-$routes->group(
-    'tim-pembina/rencana-kerja',
-    ['filter' => 'role:user,admin'],
-    static function ($routes) {
+        // -------------------------------------------------
+        // ADMIN : KELOLA SK
+        // -------------------------------------------------
 
         $routes->get(
-            '/',
+            'sk/create',
+            'TimPembinaSk::create',
+            ['filter' => 'role:admin']
+        );
+
+        $routes->post(
+            'sk/store',
+            'TimPembinaSk::store',
+            ['filter' => 'role:admin']
+        );
+
+        $routes->get(
+            'sk/edit/(:num)',
+            'TimPembinaSk::edit/$1',
+            ['filter' => 'role:admin']
+        );
+
+        $routes->post(
+            'sk/update/(:num)',
+            'TimPembinaSk::update/$1',
+            ['filter' => 'role:admin']
+        );
+
+        $routes->post(
+            'sk/delete/(:num)',
+            'TimPembinaSk::delete/$1',
+            ['filter' => 'role:admin']
+        );
+
+
+        // -------------------------------------------------
+        // ADMIN : VERIFIKASI
+        // -------------------------------------------------
+
+        $routes->post(
+            'sk/verifikasi/(:num)',
+            'TimPembinaSk::verifikasi/$1',
+            ['filter' => 'role:admin']
+        );
+
+        $routes->post(
+            'sk/tolak/(:num)',
+            'TimPembinaSk::tolak/$1',
+            ['filter' => 'role:admin']
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RENCANA KERJA TIM PEMBINA
+        |--------------------------------------------------------------------------
+        |
+        | Rencana Kerja
+        | ├── Tahun Ganjil
+        | └── Tahun Genap
+        |
+        */
+
+
+        // -------------------------------------------------
+        // HALAMAN UTAMA
+        // -------------------------------------------------
+
+        $routes->get(
+            'rencana-kerja',
             'TimPembinaRencanaKerja::index'
         );
 
+
+        // -------------------------------------------------
+        // TAHUN GANJIL
+        // -------------------------------------------------
+
         $routes->get(
-            'create',
-            'TimPembinaRencanaKerja::create'
+            'rencana-kerja/ganjil',
+            'TimPembinaRencanaKerja::periode/ganjil'
         );
 
+        $routes->get(
+            'rencana-kerja/create/ganjil',
+            'TimPembinaRencanaKerja::create/ganjil'
+        );
+
+
+        // -------------------------------------------------
+        // TAHUN GENAP
+        // -------------------------------------------------
+
+        $routes->get(
+            'rencana-kerja/genap',
+            'TimPembinaRencanaKerja::periode/genap'
+        );
+
+        $routes->get(
+            'rencana-kerja/create/genap',
+            'TimPembinaRencanaKerja::create/genap'
+        );
+
+
+        // -------------------------------------------------
+        // RENCANA KERJA - PROSES
+        // -------------------------------------------------
+
         $routes->post(
-            'store',
+            'rencana-kerja/store',
             'TimPembinaRencanaKerja::store'
         );
 
         $routes->get(
-            'edit/(:num)',
-            'TimPembinaRencanaKerja::edit/$1'
+            'rencana-kerja/view/(:num)',
+            'TimPembinaRencanaKerja::view/$1'
         );
 
-        $routes->post(
-            'update/(:num)',
-            'TimPembinaRencanaKerja::update/$1'
+        $routes->get(
+            'rencana-kerja/download/(:num)',
+            'TimPembinaRencanaKerja::download/$1'
         );
 
-        $routes->post(
-            'delete/(:num)',
+        $routes->get(
+            'rencana-kerja/delete/(:num)',
             'TimPembinaRencanaKerja::delete/$1'
         );
 
-    }
-);
 
-
-/*
-|--------------------------------------------------------------------------
-| TIM PEMBINA - REALISASI KEGIATAN
-|--------------------------------------------------------------------------
-| User dan Admin
-|--------------------------------------------------------------------------
-*/
-
-$routes->group(
-    'tim-pembina/realisasi',
-    ['filter' => 'role:user,admin'],
-    static function ($routes) {
+        /*
+        |--------------------------------------------------------------------------
+        | REALISASI KEGIATAN
+        |--------------------------------------------------------------------------
+        */
 
         $routes->get(
-            '/',
+            'realisasi',
             'TimPembinaRealisasi::index'
         );
 
         $routes->get(
-            'create',
+            'realisasi/create',
             'TimPembinaRealisasi::create'
         );
 
         $routes->post(
-            'store',
+            'realisasi/store',
             'TimPembinaRealisasi::store'
         );
 
         $routes->get(
-            'edit/(:num)',
+            'realisasi/edit/(:num)',
             'TimPembinaRealisasi::edit/$1'
         );
 
         $routes->post(
-            'update/(:num)',
+            'realisasi/update/(:num)',
             'TimPembinaRealisasi::update/$1'
         );
 
         $routes->post(
-            'delete/(:num)',
+            'realisasi/delete/(:num)',
             'TimPembinaRealisasi::delete/$1'
         );
 
-    }
-);
 
-
-/*
-|--------------------------------------------------------------------------
-| TIM PEMBINA - FOTO KEGIATAN
-|--------------------------------------------------------------------------
-| User dan Admin
-|--------------------------------------------------------------------------
-*/
-
-$routes->group(
-    'tim-pembina/foto-kegiatan',
-    ['filter' => 'role:user,admin'],
-    static function ($routes) {
+        /*
+        |--------------------------------------------------------------------------
+        | FOTO KEGIATAN
+        |--------------------------------------------------------------------------
+        */
 
         $routes->get(
-            '/',
+            'foto-kegiatan',
             'TimPembinaFotoKegiatan::index'
         );
 
         $routes->get(
-            'create',
+            'foto-kegiatan/create',
             'TimPembinaFotoKegiatan::create'
         );
 
         $routes->post(
-            'store',
+            'foto-kegiatan/store',
             'TimPembinaFotoKegiatan::store'
         );
 
         $routes->get(
-            'view/(:num)',
+            'foto-kegiatan/view/(:num)',
             'TimPembinaFotoKegiatan::view/$1'
         );
 
         $routes->post(
-            'delete/(:num)',
+            'foto-kegiatan/delete/(:num)',
             'TimPembinaFotoKegiatan::delete/$1'
         );
-
     }
 );
 
@@ -366,9 +419,10 @@ $routes->group(
     ['filter' => 'role:user,admin'],
     static function ($routes) {
 
+
         /*
         |--------------------------------------------------------------------------
-        | DATA FORUM
+        | DATA FORUM BANDUNG SEHAT
         |--------------------------------------------------------------------------
         */
 
@@ -405,7 +459,7 @@ $routes->group(
 
         /*
         |--------------------------------------------------------------------------
-        | SK
+        | SK FORUM BANDUNG SEHAT
         |--------------------------------------------------------------------------
         */
 
@@ -447,8 +501,13 @@ $routes->group(
 
         /*
         |--------------------------------------------------------------------------
-        | RENCANA KERJA
+        | RENCANA KERJA FORUM BANDUNG SEHAT
         |--------------------------------------------------------------------------
+        |
+        | Rencana Kerja
+        | ├── Tahun Ganjil
+        | └── Tahun Genap
+        |
         */
 
         $routes->get(
@@ -457,8 +516,23 @@ $routes->group(
         );
 
         $routes->get(
-            'rencana-kerja/create',
-            'ForumBandungSehatRencanaKerja::create'
+            'rencana-kerja/ganjil',
+            'ForumBandungSehatRencanaKerja::periode/ganjil'
+        );
+
+        $routes->get(
+            'rencana-kerja/genap',
+            'ForumBandungSehatRencanaKerja::periode/genap'
+        );
+
+        $routes->get(
+            'rencana-kerja/create/ganjil',
+            'ForumBandungSehatRencanaKerja::create/ganjil'
+        );
+
+        $routes->get(
+            'rencana-kerja/create/genap',
+            'ForumBandungSehatRencanaKerja::create/genap'
         );
 
         $routes->post(
@@ -467,16 +541,16 @@ $routes->group(
         );
 
         $routes->get(
-            'rencana-kerja/edit/(:num)',
-            'ForumBandungSehatRencanaKerja::edit/$1'
+            'rencana-kerja/view/(:num)',
+            'ForumBandungSehatRencanaKerja::view/$1'
         );
 
-        $routes->post(
-            'rencana-kerja/update/(:num)',
-            'ForumBandungSehatRencanaKerja::update/$1'
+        $routes->get(
+            'rencana-kerja/download/(:num)',
+            'ForumBandungSehatRencanaKerja::download/$1'
         );
 
-        $routes->post(
+        $routes->get(
             'rencana-kerja/delete/(:num)',
             'ForumBandungSehatRencanaKerja::delete/$1'
         );
@@ -549,7 +623,6 @@ $routes->group(
             'foto-kegiatan/delete/(:num)',
             'ForumBandungSehatFotoKegiatan::delete/$1'
         );
-
     }
 );
 
@@ -567,9 +640,10 @@ $routes->group(
     ['filter' => 'role:user,admin'],
     static function ($routes) {
 
+
         /*
         |--------------------------------------------------------------------------
-        | DATA FORUM
+        | DATA FORUM KECAMATAN
         |--------------------------------------------------------------------------
         */
 
@@ -653,8 +727,13 @@ $routes->group(
 
         /*
         |--------------------------------------------------------------------------
-        | RENCANA KERJA
+        | RENCANA KERJA FORUM KECAMATAN SEHAT
         |--------------------------------------------------------------------------
+        |
+        | Rencana Kerja
+        | ├── Tahun Ganjil
+        | └── Tahun Genap
+        |
         */
 
         $routes->get(
@@ -663,8 +742,23 @@ $routes->group(
         );
 
         $routes->get(
-            'rencana-kerja/create',
-            'ForumKecamatanSehatRencanaKerja::create'
+            'rencana-kerja/ganjil',
+            'ForumKecamatanSehatRencanaKerja::periode/ganjil'
+        );
+
+        $routes->get(
+            'rencana-kerja/genap',
+            'ForumKecamatanSehatRencanaKerja::periode/genap'
+        );
+
+        $routes->get(
+            'rencana-kerja/create/ganjil',
+            'ForumKecamatanSehatRencanaKerja::create/ganjil'
+        );
+
+        $routes->get(
+            'rencana-kerja/create/genap',
+            'ForumKecamatanSehatRencanaKerja::create/genap'
         );
 
         $routes->post(
@@ -673,16 +767,16 @@ $routes->group(
         );
 
         $routes->get(
-            'rencana-kerja/edit/(:num)',
-            'ForumKecamatanSehatRencanaKerja::edit/$1'
+            'rencana-kerja/view/(:num)',
+            'ForumKecamatanSehatRencanaKerja::view/$1'
         );
 
-        $routes->post(
-            'rencana-kerja/update/(:num)',
-            'ForumKecamatanSehatRencanaKerja::update/$1'
+        $routes->get(
+            'rencana-kerja/download/(:num)',
+            'ForumKecamatanSehatRencanaKerja::download/$1'
         );
 
-        $routes->post(
+        $routes->get(
             'rencana-kerja/delete/(:num)',
             'ForumKecamatanSehatRencanaKerja::delete/$1'
         );
@@ -755,7 +849,6 @@ $routes->group(
             'foto-kegiatan/delete/(:num)',
             'ForumKecamatanSehatFotoKegiatan::delete/$1'
         );
-
     }
 );
 
@@ -772,6 +865,7 @@ $routes->group(
     'pokja-kelurahan-sehat',
     ['filter' => 'role:user,admin'],
     static function ($routes) {
+
 
         /*
         |--------------------------------------------------------------------------
@@ -850,7 +944,6 @@ $routes->group(
             'sk/delete/(:num)',
             'PokjaKelurahanSehatSk::delete/$1'
         );
-
     }
 );
 
@@ -861,6 +954,12 @@ $routes->group(
 |--------------------------------------------------------------------------
 | User dan Admin
 |--------------------------------------------------------------------------
+|
+| Struktur:
+| Rencana Kerja
+| ├── Tahun Ganjil
+| └── Tahun Genap
+|
 */
 
 $routes->group(
@@ -874,8 +973,23 @@ $routes->group(
         );
 
         $routes->get(
-            'create',
-            'PokjaKelurahanSehatRencanaKerja::create'
+            'ganjil',
+            'PokjaKelurahanSehatRencanaKerja::periode/ganjil'
+        );
+
+        $routes->get(
+            'genap',
+            'PokjaKelurahanSehatRencanaKerja::periode/genap'
+        );
+
+        $routes->get(
+            'create/ganjil',
+            'PokjaKelurahanSehatRencanaKerja::create/ganjil'
+        );
+
+        $routes->get(
+            'create/genap',
+            'PokjaKelurahanSehatRencanaKerja::create/genap'
         );
 
         $routes->post(
@@ -884,20 +998,19 @@ $routes->group(
         );
 
         $routes->get(
-            'edit/(:num)',
-            'PokjaKelurahanSehatRencanaKerja::edit/$1'
+            'view/(:num)',
+            'PokjaKelurahanSehatRencanaKerja::view/$1'
         );
 
-        $routes->post(
-            'update/(:num)',
-            'PokjaKelurahanSehatRencanaKerja::update/$1'
+        $routes->get(
+            'download/(:num)',
+            'PokjaKelurahanSehatRencanaKerja::download/$1'
         );
 
-        $routes->post(
+        $routes->get(
             'delete/(:num)',
             'PokjaKelurahanSehatRencanaKerja::delete/$1'
         );
-
     }
 );
 
@@ -944,23 +1057,144 @@ $routes->group(
             'delete/(:num)',
             'PokjaKelurahanSehatRealisasi::delete/$1'
         );
-
     }
 );
 
 
 /*
 |--------------------------------------------------------------------------
-| FORUM KECAMATAN SEHAT - TAHUN
+| POKJA KELURAHAN SEHAT - FOTO KEGIATAN
+|--------------------------------------------------------------------------
+| User dan Admin
 |--------------------------------------------------------------------------
 */
 
-$routes->get(
-    'forum-kecamatan-sehat/realisasi/tahun-1',
-    'ForumKecamatanSehatRealisasi::tahun1'
+$routes->group(
+    'pokja-kelurahan-sehat/foto-kegiatan',
+    ['filter' => 'role:user,admin'],
+    static function ($routes) {
+
+        $routes->get(
+            '/',
+            'PokjaKelurahanSehatFoto::index'
+        );
+
+        $routes->get(
+            'create',
+            'PokjaKelurahanSehatFoto::create'
+        );
+
+        $routes->post(
+            'store',
+            'PokjaKelurahanSehatFoto::store'
+        );
+
+        $routes->post(
+            'delete/(:num)',
+            'PokjaKelurahanSehatFoto::delete/$1'
+        );
+    }
 );
 
-$routes->get(
-    'forum-kecamatan-sehat/realisasi/tahun-2',
-    'ForumKecamatanSehatRealisasi::tahun2'
+
+/*
+|--------------------------------------------------------------------------
+| INOVASI KECAMATAN
+|--------------------------------------------------------------------------
+| User dan Admin
+|--------------------------------------------------------------------------
+*/
+
+$routes->group(
+    'inovasi/kecamatan',
+    ['filter' => 'role:user,admin'],
+    static function ($routes) {
+
+        $routes->get(
+            '/',
+            'InovasiKecamatan::index'
+        );
+
+        $routes->get(
+            'create',
+            'InovasiKecamatan::create'
+        );
+
+        $routes->post(
+            'store',
+            'InovasiKecamatan::store'
+        );
+
+        $routes->get(
+            'edit/(:num)',
+            'InovasiKecamatan::edit/$1'
+        );
+
+        $routes->post(
+            'update/(:num)',
+            'InovasiKecamatan::update/$1'
+        );
+
+        $routes->post(
+            'delete/(:num)',
+            'InovasiKecamatan::delete/$1'
+        );
+    }
 );
+
+
+/*
+|--------------------------------------------------------------------------
+| INOVASI KELURAHAN
+|--------------------------------------------------------------------------
+| User dan Admin
+|--------------------------------------------------------------------------
+*/
+
+$routes->group(
+    'inovasi/kelurahan',
+    ['filter' => 'role:user,admin'],
+    static function ($routes) {
+
+        $routes->get(
+            '/',
+            'InovasiKelurahan::index'
+        );
+
+        $routes->get(
+            'create',
+            'InovasiKelurahan::create'
+        );
+
+        $routes->post(
+            'store',
+            'InovasiKelurahan::store'
+        );
+
+        $routes->get(
+            'edit/(:num)',
+            'InovasiKelurahan::edit/$1'
+        );
+
+        $routes->post(
+            'update/(:num)',
+            'InovasiKelurahan::update/$1'
+        );
+
+        $routes->post(
+            'delete/(:num)',
+            'InovasiKelurahan::delete/$1'
+        );
+    }
+);
+
+// =====================================================
+// INOVASI - PERANGKAT DAERAH
+// =====================================================
+
+$routes->get('inovasi/perangkat-daerah', 'InovasiPerangkatDaerah::index');
+$routes->get('inovasi/perangkat-daerah/create', 'InovasiPerangkatDaerah::create');
+$routes->post('inovasi/perangkat-daerah/store', 'InovasiPerangkatDaerah::store');
+$routes->get('inovasi/perangkat-daerah/edit/(:num)', 'InovasiPerangkatDaerah::edit/$1');
+$routes->post('inovasi/perangkat-daerah/update/(:num)', 'InovasiPerangkatDaerah::update/$1');
+$routes->get('inovasi/perangkat-daerah/delete/(:num)', 'InovasiPerangkatDaerah::delete/$1');

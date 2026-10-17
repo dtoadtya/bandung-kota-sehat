@@ -66,8 +66,7 @@
 
             display: flex;
 
-            background:
-                #f4f8fc;
+            background: #f4f8fc;
         }
 
 
@@ -415,6 +414,135 @@
 
 
         .kelembagaan-items a i {
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           INOVASI DROPDOWN
+        ===================================================== */
+
+        .inovasi-dropdown {
+
+            margin-bottom: 6px;
+        }
+
+
+        .inovasi-button {
+
+            width: 100%;
+
+            min-height: 48px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: transparent;
+
+            color:
+                rgba(255,255,255,.88);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                11px 14px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                .2s ease;
+        }
+
+
+        .inovasi-button:hover {
+
+            background:
+                rgba(255,255,255,.10);
+
+            color:
+                #ffffff;
+        }
+
+
+        .inovasi-button-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+        }
+
+
+        .inovasi-button i {
+
+            width: 22px;
+
+            text-align: center;
+
+            font-size: 18px;
+        }
+
+
+        .inovasi-arrow {
+
+            font-size: 12px;
+
+            transition:
+                transform .2s ease;
+        }
+
+
+        .inovasi-dropdown.open
+        .inovasi-arrow {
+
+            transform:
+                rotate(180deg);
+        }
+
+
+        .inovasi-items {
+
+            display: none;
+
+            padding:
+                4px 0 4px 20px;
+        }
+
+
+        .inovasi-dropdown.open
+        .inovasi-items {
+
+            display: block;
+        }
+
+
+        .inovasi-items a {
+
+            min-height: 42px;
+
+            padding:
+                9px 14px;
+
+            margin-bottom: 4px;
+
+            font-size: 13px;
+
+            border-radius: 8px;
+        }
+
+
+        .inovasi-items a i {
 
             font-size: 15px;
         }
@@ -773,6 +901,7 @@
         id="appSidebar"
     >
 
+
         <!-- BRAND -->
 
         <div class="app-brand">
@@ -803,20 +932,28 @@
         <nav class="app-menu">
 
             <?php
+
                 $currentRole =
                     session()->get('role');
 
                 $currentSegment =
                     service('uri')->getSegment(1);
+
+                $currentSubSegment =
+                    service('uri')->getSegment(2);
+
             ?>
 
 
             <!-- =================================================
-                 UTAMA
+                 DASHBOARD
             ================================================== -->
+
             <a
                 href="<?= base_url('dashboard') ?>"
-                class="<?= $currentSegment === 'dashboard' ? 'active' : '' ?>"
+                class="<?= $currentSegment === 'dashboard'
+                    ? 'active'
+                    : '' ?>"
             >
 
                 <i class="bi bi-grid-fill"></i>
@@ -831,6 +968,7 @@
             <!-- =================================================
                  KELEMBAGAAN
             ================================================== -->
+
             <div
                 class="
                     kelembagaan-dropdown
@@ -850,7 +988,6 @@
                 "
                 id="kelembagaanDropdown"
             >
-
 
                 <button
                     type="button"
@@ -893,14 +1030,16 @@
                             $currentRole,
                             [
                                 'user',
-                                'admin',
+                                'admin'
                             ],
                             true
                         )
                     ): ?>
 
                         <a
-                            href="<?= base_url('tim-pembina') ?>"
+                            href="<?= base_url(
+                                'tim-pembina'
+                            ) ?>"
                             class="<?= in_array(
                                 $currentSegment,
                                 [
@@ -1006,8 +1145,132 @@
 
 
             <!-- =================================================
-                 AKUN
+                 INOVASI DROPDOWN
             ================================================== -->
+
+            <div
+                class="
+                    inovasi-dropdown
+                    <?= $currentSegment === 'inovasi'
+                        ? 'open'
+                        : '' ?>
+                "
+                id="inovasiDropdown"
+            >
+
+
+                <button
+                    type="button"
+                    class="inovasi-button"
+                    onclick="toggleInovasi()"
+                >
+
+                    <span class="inovasi-button-left">
+
+                        <i class="bi bi-lightbulb-fill"></i>
+
+                        <span>
+                            Inovasi
+                        </span>
+
+                    </span>
+
+
+                    <i
+                        class="
+                            bi
+                            bi-chevron-down
+                            inovasi-arrow
+                        "
+                    ></i>
+
+                </button>
+
+
+                <div
+                    class="inovasi-items"
+                    id="inovasiItems"
+                >
+
+
+                    <!-- PERANGKAT DAERAH -->
+
+                    <a
+                        href="<?= base_url(
+                            'inovasi/perangkat-daerah'
+                        ) ?>"
+                        class="<?= (
+                            $currentSegment === 'inovasi'
+                            && $currentSubSegment === 'perangkat-daerah'
+                        )
+                        ? 'active'
+                        : '' ?>"
+                    >
+
+                        <i class="bi bi-building-fill"></i>
+
+                        <span>
+                            Perangkat Daerah
+                        </span>
+
+                    </a>
+
+
+                    <!-- KECAMATAN -->
+
+                    <a
+                        href="<?= base_url(
+                            'inovasi/kecamatan'
+                        ) ?>"
+                        class="<?= (
+                            $currentSegment === 'inovasi'
+                            && $currentSubSegment === 'kecamatan'
+                        )
+                        ? 'active'
+                        : '' ?>"
+                    >
+
+                        <i class="bi bi-building"></i>
+
+                        <span>
+                            Kecamatan
+                        </span>
+
+                    </a>
+
+
+                    <!-- KELURAHAN -->
+
+                    <a
+                        href="<?= base_url(
+                            'inovasi/kelurahan'
+                        ) ?>"
+                        class="<?= (
+                            $currentSegment === 'inovasi'
+                            && $currentSubSegment === 'kelurahan'
+                        )
+                        ? 'active'
+                        : '' ?>"
+                    >
+
+                        <i class="bi bi-house-fill"></i>
+
+                        <span>
+                            Kelurahan
+                        </span>
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 LOGOUT
+            ================================================== -->
+
             <a
                 href="<?= base_url('logout') ?>"
                 onclick="
@@ -1062,7 +1325,7 @@
             <div class="topbar-title">
 
                 <?= esc(
-                    $title ?? 'Tim Pembina'
+                    $title ?? 'Bandung Sehat'
                 ) ?>
 
             </div>
@@ -1175,11 +1438,34 @@
 
 <script>
 
+/* =====================================================
+   DROPDOWN KELEMBAGAAN
+===================================================== */
+
 function toggleKelembagaan()
 {
     const menu =
         document.getElementById(
             'kelembagaanDropdown'
+        );
+
+    if (!menu) {
+        return;
+    }
+
+    menu.classList.toggle('open');
+}
+
+
+/* =====================================================
+   DROPDOWN INOVASI
+===================================================== */
+
+function toggleInovasi()
+{
+    const menu =
+        document.getElementById(
+            'inovasiDropdown'
         );
 
     if (!menu) {

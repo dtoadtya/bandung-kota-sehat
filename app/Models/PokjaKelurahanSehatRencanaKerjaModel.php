@@ -15,20 +15,12 @@ class PokjaKelurahanSehatRencanaKerjaModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
-        'kelurahan_id',
         'tahun',
-        'nama_kegiatan',
-        'waktu_kegiatan',
-        'peserta',
-        'hasil_pelaksanaan',
-        'anggaran',
-        'sumber_pendanaan',
-        'link_drive',
-        'data_dukung',
-        'data_rencana',
-        'tanggal',
-        'lokasi',
-        'keterangan',
+        'periode',
+        'nama_file',
+        'nama_asli',
+        'file_path',
+        'ukuran_file',
         'created_at',
         'updated_at',
     ];

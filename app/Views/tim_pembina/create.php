@@ -43,28 +43,12 @@
         color: #063b78;
     }
 
-    .btn-card {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 18px;
-        background: #0d84f3;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 9px;
-        font-size: 14px;
-        font-weight: 700;
-        transition: 0.2s ease;
-    }
-
-    .btn-card:hover {
-        background: #086dcc;
-        color: #fff;
-        transform: translateY(-1px);
-    }
-
-    .btn-card i {
-        font-size: 14px;
+    .kelembagaan-card {
+        background: #ffffff;
+        border: 1px solid #e0ebf5;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(22, 73, 121, 0.06);
+        overflow: hidden;
     }
 
     .kelembagaan-card-header {
@@ -85,7 +69,6 @@
         background: #e8f3ff;
         color: #087cf0;
         font-size: 24px;
-        flex-shrink: 0;
     }
 
     .kelembagaan-card-header h2 {
@@ -199,6 +182,7 @@
     }
 
     @media (max-width: 768px) {
+
         .kelembagaan-header {
             flex-direction: column;
         }
@@ -222,11 +206,23 @@
     }
 </style>
 
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
 <div class="kelembagaan-header">
+
     <div>
+
         <h1>Tim Pembina</h1>
-        <p>Kelola seluruh dokumen dan kegiatan Tim Pembina Bandung Sehat.</p>
+
+        <p>
+            Kelola seluruh dokumen dan kegiatan Tim Pembina Bandung Sehat.
+        </p>
+
     </div>
+
 
     <a
         href="<?= site_url('tim-pembina') ?>"
@@ -235,42 +231,80 @@
         <i class="bi bi-arrow-left"></i>
         Kembali
     </a>
+
 </div>
+
+
+<!-- =========================================================
+     CARD MENU
+========================================================= -->
 
 <div class="kelembagaan-card">
 
+
+    <!-- =====================================================
+         HEADER MENU
+    ====================================================== -->
+
     <div class="kelembagaan-card-header">
+
         <div class="kelembagaan-card-icon">
+
             <i class="bi bi-people-fill"></i>
+
         </div>
 
         <div>
+
             <h2>Menu Tim Pembina</h2>
+
             <p>
                 Pilih jenis data yang ingin ditambahkan atau dikelola.
             </p>
+
         </div>
+
     </div>
+
+
+    <!-- =====================================================
+         MENU
+    ====================================================== -->
 
     <div class="kelembagaan-menu">
 
-        <!-- SK -->
+
+        <!-- =================================================
+             SK
+        ================================================== -->
+
         <div class="menu-item">
+
             <div class="menu-item-top">
+
                 <div class="menu-item-icon">
+
                     <i class="bi bi-file-earmark-pdf-fill"></i>
+
                 </div>
 
                 <div>
+
                     <h3>SK</h3>
+
                     <p>
                         Upload Surat Keputusan Tim Pembina.
-                        File harus berupa PDF dengan ukuran maksimal 5 MB.
+                        File harus berupa PDF dengan ukuran
+                        maksimal 5 MB.
                     </p>
+
                 </div>
+
             </div>
 
+
             <div class="menu-item-action">
+
                 <a
                     href="<?= site_url('tim-pembina/sk') ?>"
                     class="btn-menu"
@@ -278,100 +312,128 @@
                     <i class="bi bi-upload"></i>
                     Kelola SK
                 </a>
+
             </div>
+
         </div>
 
-        <!-- RENCANA KERJA -->
+
+        <!-- =================================================
+             RENCANA KERJA
+        ================================================== -->
+
         <div class="menu-item">
+
             <div class="menu-item-top">
+
                 <div class="menu-item-icon">
+
                     <i class="bi bi-journal-text"></i>
+
                 </div>
 
                 <div>
+
                     <h3>Rencana Kerja</h3>
+
                     <p>
-                        Kelola rencana kerja Tim Pembina berdasarkan
-                        tahun yang dapat ditentukan sendiri.
+                        Kelola rencana kerja Tim Pembina
+                        berdasarkan tahun yang dapat ditentukan sendiri.
                     </p>
+
                 </div>
+
             </div>
+
 
             <div class="menu-item-action">
-                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:24px;">
 
-                <!-- TAHUN 1 -->
-                <a href="<?= base_url('tim-pembina/rencana-kerja/create?tahun=1') ?>"
-                class="btn-card">
-                    <i class="bi bi-calendar-check"></i>
-                    Tahun 1
-                </a>
-
-                <!-- TAHUN 2 -->
-                <a href="<?= base_url('tim-pembina/rencana-kerja/create?tahun=2') ?>"
-                class="btn-card">
-                    <i class="bi bi-calendar-check"></i>
-                    Tahun 2
+                <a
+                    href="<?= site_url('tim-pembina/rencana-kerja') ?>"
+                    class="btn-menu"
+                >
+                    <i class="bi bi-journal-check"></i>
+                    Kelola Rencana Kerja
                 </a>
 
             </div>
-            </div>
+
         </div>
 
-        <!-- REALISASI KEGIATAN -->
+
+        <!-- =================================================
+             REALISASI KEGIATAN
+        ================================================== -->
+
         <div class="menu-item">
+
             <div class="menu-item-top">
+
                 <div class="menu-item-icon">
+
                     <i class="bi bi-bar-chart-line-fill"></i>
+
                 </div>
 
                 <div>
+
                     <h3>Realisasi Kegiatan</h3>
+
                     <p>
                         Input laporan kegiatan, waktu, peserta,
                         hasil pelaksanaan, anggaran, dan sumber pendanaan.
                     </p>
+
                 </div>
+
             </div>
+
 
             <div class="menu-item-action">
-                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:24px;">
 
-                        <!-- TAHUN 1 -->
-                        <a href="<?= base_url('tim-pembina/realisasi/create?tahun=1') ?>"
-                        class="btn-card">
-                            <i class="bi bi-calendar-check"></i>
-                            Tahun 1
-                        </a>
+                <a
+                    href="<?= site_url('tim-pembina/realisasi') ?>"
+                    class="btn-menu"
+                >
+                    <i class="bi bi-clipboard-data"></i>
+                    Kelola Realisasi
+                </a>
 
-                        <!-- TAHUN 2 -->
-                        <a href="<?= base_url('tim-pembina/realisasi/create?tahun=2') ?>"
-                        class="btn-card">
-                            <i class="bi bi-calendar-check"></i>
-                            Tahun 2
-                        </a>
-
-                    </div>
             </div>
+
         </div>
 
-        <!-- FOTO KEGIATAN -->
+
+        <!-- =================================================
+             FOTO KEGIATAN
+        ================================================== -->
+
         <div class="menu-item">
+
             <div class="menu-item-top">
+
                 <div class="menu-item-icon">
+
                     <i class="bi bi-camera-fill"></i>
+
                 </div>
 
                 <div>
-                    <h3>Foto Kegiatan</h3>
+
+                    <h3>Foto Sekretariat</h3>
+
                     <p>
-                        Upload satu foto dokumentasi kegiatan
-                        dengan ukuran maksimal 5 MB.
+                        Upload satu Foto Sekretariat
+                        dengan ukuran maksimal 2 MB.
                     </p>
+
                 </div>
+
             </div>
 
+
             <div class="menu-item-action">
+
                 <a
                     href="<?= site_url('tim-pembina/foto-kegiatan') ?>"
                     class="btn-menu"
@@ -379,17 +441,31 @@
                     <i class="bi bi-image"></i>
                     Kelola Foto
                 </a>
+
             </div>
+
         </div>
 
+
     </div>
+
+
+    <!-- =====================================================
+         INFO
+    ====================================================== -->
 
     <div class="info-box">
+
         <i class="bi bi-info-circle me-2"></i>
-        Semua data Tim Pembina dikelola melalui empat menu di atas.
-        Silakan pilih sesuai jenis dokumen atau kegiatan yang ingin dikelola.
+
+        Semua data Tim Pembina dikelola melalui empat menu
+        di atas. Silakan pilih sesuai jenis dokumen atau
+        kegiatan yang ingin dikelola.
+
     </div>
 
+
 </div>
+
 
 <?= $this->endSection() ?>

@@ -13,256 +13,157 @@ class TimPembinaFotoKegiatan extends BaseController
         $this->fotoModel = new TimPembinaFotoModel();
     }
 
-    private function isAdmin(): bool
+    /**
+     * Halaman Foto Sekretariat
+     */
+    public function index()
     {
-        return in_array(
-            session()->get('role'),
-            ['admin', 'super_admin'],
-            true
+        $role = session()->get('role');
+
+        if (!in_array($role, ['user', 'admin'], true)) {
+            return redirect()->to('/dashboard');
+        }
+
+        $data = [
+            'title' => 'Foto Sekretariat Tim Pembina',
+            'foto'  => $this->fotoModel->first(),
+        ];
+
+        return view(
+            'tim_pembina_foto_kegiatan/index',
+            $data
         );
     }
 
-    private function getUserKecamatanId()
-    {
-        if ($this->isAdmin()) {
-            return null;
-        }
-
-        $username = strtolower(trim((string) session()->get('username')));
-
-        $db = db_connect();
-
-        $kecamatanList = $db->table('kecamatan')
-            ->orderBy('nama_kecamatan', 'ASC')
-            ->get()
-            ->getResultArray();
-
-        foreach ($kecamatanList as $kecamatan) {
-            $namaKecamatan = $kecamatan['nama_kecamatan'] ?? '';
-
-            $kodeKecamatan = strtolower(
-                str_replace(' ', '_', trim($namaKecamatan))
-            );
-
-            if ($kodeKecamatan === $username) {
-                return $kecamatan['id'];
-            }
-        }
-
-        return null;
-    }
-
-    private function getKecamatanList(): array
-    {
-        return db_connect()
-            ->table('kecamatan')
-            ->orderBy('nama_kecamatan', 'ASC')
-            ->get()
-            ->getResultArray();
-    }
-
-    public function index()
-    {
-        $builder = $this->fotoModel
-            ->select('tim_pembina_foto.*, kecamatan.nama_kecamatan')
-            ->join(
-                'kecamatan',
-                'kecamatan.id = tim_pembina_foto.kecamatan_id',
-                'left'
-            )
-            ->orderBy('tim_pembina_foto.id', 'DESC');
-
-        if (!$this->isAdmin()) {
-            $kecamatanId = $this->getUserKecamatanId();
-
-            if (!$kecamatanId) {
-                return redirect()
-                    ->to('/dashboard')
-                    ->with('error', 'Kecamatan akun tidak ditemukan.');
-            }
-
-            $builder->where(
-                'tim_pembina_foto.kecamatan_id',
-                $kecamatanId
-            );
-        }
-
-        $data = $builder->findAll();
-
-        return view('tim_pembina_foto/index', [
-            'title' => 'Foto Kegiatan Tim Pembina',
-            'data' => $data,
-            'kecamatanList' => $this->isAdmin()
-                ? $this->getKecamatanList()
-                : [],
-            'isAdmin' => $this->isAdmin(),
-        ]);
-    }
-
+    /**
+     * Upload / ganti Foto Sekretariat
+     */
     public function store()
     {
-        $isAdmin = $this->isAdmin();
+        $role = session()->get('role');
 
-        if ($isAdmin) {
-            $kecamatanId = $this->request->getPost('kecamatan_id');
-
-            if (!$kecamatanId) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with('error', 'Kecamatan wajib dipilih.');
-            }
-        } else {
-            $kecamatanId = $this->getUserKecamatanId();
-
-            if (!$kecamatanId) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Kecamatan akun tidak ditemukan.');
-            }
+        if (!in_array($role, ['user', 'admin'], true)) {
+            return redirect()->to('/dashboard');
         }
 
-        $existing = $this->fotoModel
-            ->where('kecamatan_id', $kecamatanId)
-            ->first();
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI FILE
+        |--------------------------------------------------------------------------
+        */
 
-        $file = $this->request->getFile('file_foto');
+        $rules = [
+            'foto' => [
+                'label' => 'Foto Sekretariat',
+                'rules' =>
+                    'uploaded[foto]' .
+                    '|is_image[foto]' .
+                    '|mime_in[foto,image/jpg,image/jpeg,image/png,image/webp]' .
+                    '|max_size[foto,2048]',
+            ],
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'errors',
+                    $this->validator->getErrors()
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILE
+        |--------------------------------------------------------------------------
+        */
+
+        $file = $this->request->getFile('foto');
 
         if (!$file || !$file->isValid()) {
             return redirect()
                 ->back()
-                ->withInput()
-                ->with('error', 'File foto wajib diunggah.');
+                ->with(
+                    'error',
+                    'File foto tidak valid.'
+                );
         }
 
-        if ($file->getSize() > 5 * 1024 * 1024) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Ukuran foto maksimal 5 MB.');
+        /*
+        |--------------------------------------------------------------------------
+        | CEK FOTO LAMA
+        |--------------------------------------------------------------------------
+        */
+
+        $fotoLama = $this->fotoModel->first();
+
+        /*
+        |--------------------------------------------------------------------------
+        | FOLDER UPLOAD
+        |--------------------------------------------------------------------------
+        */
+
+        $folder = FCPATH . 'uploads/tim_pembina_foto';
+
+        if (!is_dir($folder)) {
+            mkdir($folder, 0777, true);
         }
 
-        $extension = strtolower($file->getClientExtension());
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS FOTO LAMA
+        |--------------------------------------------------------------------------
+        */
 
-        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'webp'], true)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Format foto harus JPG, JPEG, PNG, atau WEBP.');
-        }
+        if ($fotoLama) {
 
-        if (!$file->isImage()) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'File yang diunggah harus berupa gambar.');
-        }
+            $oldPath = FCPATH . $fotoLama['file_path'];
 
-        $uploadPath = WRITEPATH . 'uploads/tim_pembina_foto/';
-
-        if (!is_dir($uploadPath)) {
-            mkdir($uploadPath, 0777, true);
-        }
-
-        $namaFileBaru = $file->getRandomName();
-
-        if (!$file->move($uploadPath, $namaFileBaru)) {
-            return redirect()
-                ->back()
-                ->with('error', 'Foto gagal diunggah.');
-        }
-
-        if ($existing) {
-            $fileLama = WRITEPATH . $existing['file_path'];
-
-            if (is_file($fileLama)) {
-                unlink($fileLama);
+            if (is_file($oldPath)) {
+                unlink($oldPath);
             }
 
-            $this->fotoModel->update($existing['id'], [
-                'nama_file' => $namaFileBaru,
-                'nama_asli' => $file->getClientName(),
-                'file_path' => 'uploads/tim_pembina_foto/' . $namaFileBaru,
-                'ukuran_file' => $file->getSize(),
-            ]);
-        } else {
-            $this->fotoModel->insert([
-                'kecamatan_id' => $kecamatanId,
-                'nama_file' => $namaFileBaru,
-                'nama_asli' => $file->getClientName(),
-                'file_path' => 'uploads/tim_pembina_foto/' . $namaFileBaru,
-                'ukuran_file' => $file->getSize(),
-            ]);
-        }
-
-        return redirect()
-            ->to('/tim-pembina/foto-kegiatan')
-            ->with('success', 'Foto kegiatan berhasil disimpan.');
-    }
-
-    public function view($id)
-    {
-        $foto = $this->fotoModel->find($id);
-
-        if (!$foto) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(
-                'Foto tidak ditemukan.'
+            $this->fotoModel->delete(
+                $fotoLama['id']
             );
         }
 
-        if (!$this->isAdmin()) {
-            $kecamatanId = $this->getUserKecamatanId();
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN FOTO BARU
+        |--------------------------------------------------------------------------
+        */
 
-            if ((int) $foto['kecamatan_id'] !== (int) $kecamatanId) {
-                return redirect()
-                    ->to('/tim-pembina/foto-kegiatan')
-                    ->with('error', 'Anda tidak memiliki akses.');
-            }
-        }
+        $newName = $file->getRandomName();
 
-        $path = WRITEPATH . $foto['file_path'];
+        $file->move(
+            $folder,
+            $newName
+        );
 
-        if (!is_file($path)) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound(
-                'File foto tidak ditemukan.'
-            );
-        }
+        $relativePath =
+            'uploads/tim_pembina_foto/' . $newName;
 
-        return $this->response
-            ->download($path, null)
-            ->setFileName($foto['nama_asli']);
-    }
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN DATABASE
+        |--------------------------------------------------------------------------
+        */
 
-    public function delete($id)
-    {
-        $foto = $this->fotoModel->find($id);
-
-        if (!$foto) {
-            return redirect()
-                ->back()
-                ->with('error', 'Foto tidak ditemukan.');
-        }
-
-        if (!$this->isAdmin()) {
-            $kecamatanId = $this->getUserKecamatanId();
-
-            if ((int) $foto['kecamatan_id'] !== (int) $kecamatanId) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Anda tidak memiliki akses.');
-            }
-        }
-
-        $path = WRITEPATH . $foto['file_path'];
-
-        if (is_file($path)) {
-            unlink($path);
-        }
-
-        $this->fotoModel->delete($id);
+        $this->fotoModel->insert([
+            'kecamatan_id' => null,
+            'nama_file'    => $newName,
+            'nama_asli'    => $file->getClientName(),
+            'file_path'    => $relativePath,
+            'ukuran_file'  => $file->getSize(),
+        ]);
 
         return redirect()
             ->to('/tim-pembina/foto-kegiatan')
-            ->with('success', 'Foto kegiatan berhasil dihapus.');
+            ->with(
+                'success',
+                'Foto Sekretariat berhasil diunggah.'
+            );
     }
 }

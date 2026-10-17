@@ -1,519 +1,586 @@
-<!DOCTYPE html>
-<html lang="id">
+<?= $this->extend('layouts/main') ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<?= $this->section('content') ?>
 
-    <title><?= esc($title) ?></title>
+<style>
+    .page-wrapper {
+        background: #f4f8fc;
+        min-height: calc(100vh - 70px);
+        padding: 28px;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
+    .page-header {
+        background: linear-gradient(135deg, #eef7ff, #e5f2ff);
+        border-left: 6px solid #1687e8;
+        border-radius: 14px;
+        padding: 28px 30px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::after {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        right: -40px;
+        top: -70px;
+        background: rgba(22, 135, 232, 0.08);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        margin: 0 0 8px;
+        color: #07366d;
+        font-size: 30px;
+        font-weight: 800;
+    }
+
+    .page-header p {
+        margin: 0;
+        color: #5d7898;
+        font-size: 14px;
+    }
+
+    .header-actions {
+        position: absolute;
+        right: 28px;
+        top: 25px;
+        z-index: 2;
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-header {
+        text-decoration: none;
+        background: #fff;
+        color: #0b4f9c;
+        border: 1px solid #cbdff2;
+        border-radius: 8px;
+        padding: 11px 18px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .btn-header:hover {
+        background: #eef7ff;
+        color: #0b4f9c;
+    }
+
+    .btn-tambah {
+        background: #087ff5;
+        color: #fff;
+        border-color: #087ff5;
+    }
+
+    .btn-tambah:hover {
+        background: #066fd6;
+        color: #fff;
+    }
+
+    .tahun-card,
+    .table-card {
+        background: #fff;
+        border: 1px solid #d8e7f5;
+        border-radius: 14px;
+        margin-bottom: 24px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(22, 82, 130, 0.05);
+    }
+
+    .tahun-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 22px 26px;
+        border-bottom: 1px solid #e3edf6;
+    }
+
+    .tahun-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: #e7f3ff;
+        color: #087ff5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+    }
+
+    .tahun-header h2 {
+        margin: 0;
+        color: #07366d;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .tahun-header p {
+        margin: 4px 0 0;
+        color: #6d87a4;
+        font-size: 12px;
+    }
+
+    .tahun-buttons {
+        display: flex;
+        gap: 10px;
+        padding: 20px 26px 22px;
+    }
+
+    .btn-tahun {
+        min-width: 110px;
+        padding: 11px 18px;
+        border-radius: 7px;
+        border: 1px solid #087ff5;
+        background: #087ff5;
+        color: #fff;
+        text-decoration: none;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+    .btn-tahun:hover {
+        background: #066fd6;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .btn-tahun.active {
+        background: #07366d;
+        border-color: #07366d;
+    }
+
+    .table-header {
+        padding: 22px 26px;
+        border-bottom: 1px solid #e2ebf4;
+    }
+
+    .table-header h2 {
+        margin: 0;
+        color: #07366d;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .table-header p {
+        margin: 4px 0 0;
+        color: #6d87a4;
+        font-size: 12px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1150px;
+    }
+
+    th {
+        background: #f4f8fc;
+        color: #315777;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 13px 14px;
+        border-bottom: 1px solid #dce8f2;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 13px 14px;
+        color: #465d73;
+        font-size: 12px;
+        border-bottom: 1px solid #edf2f6;
+        vertical-align: top;
+    }
+
+    tbody tr:hover {
+        background: #f9fcff;
+    }
+
+    .badge-tahun {
+        display: inline-block;
+        background: #e7f3ff;
+        color: #087ff5;
+        padding: 5px 9px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .aksi {
+        display: flex;
+        gap: 6px;
+        flex-wrap: nowrap;
+    }
+
+    .btn-aksi {
+        min-width: 70px;
+        height: 34px;
+        padding: 0 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+    .btn-edit {
+        background: #fff7e0;
+        color: #b27800;
+        border-color: #f0cf70;
+    }
+
+    .btn-edit:hover {
+        background: #ffefbd;
+        color: #8f6200;
+    }
+
+    .btn-hapus {
+        background: #fff0f0;
+        color: #d43d3d;
+        border-color: #f0b8b8;
+    }
+
+    .btn-hapus:hover {
+        background: #ffe0e0;
+        color: #b92e2e;
+    }
+
+    .empty-data {
+        text-align: center;
+        padding: 45px 20px;
+        color: #7890a8;
+    }
+
+    .empty-data-icon {
+        font-size: 35px;
+        margin-bottom: 8px;
+    }
+
+    .link-data {
+        color: #087ff5;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .link-data:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+
+        .page-wrapper {
+            padding: 15px;
         }
 
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: #f4f7fb;
-            color: #243447;
+        .page-header {
+            padding: 22px;
         }
 
-        .content {
-            margin-left: 270px;
-            min-height: 100vh;
+        .page-header h1 {
+            font-size: 23px;
+            padding-right: 100px;
         }
 
-        .top-header {
-            height: 82px;
-            background: white;
-            border-bottom: 1px solid #dfe8f2;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 28px;
+        .header-actions {
+            right: 18px;
+            top: 20px;
         }
 
-        .page-title {
-            color: #07366d;
-            font-size: 20px;
-            font-weight: 800;
+        .btn-header {
+            padding: 9px 12px;
         }
 
-        .user-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 7px 14px 7px 8px;
-            border: 1px solid #d7e4f1;
-            border-radius: 9px;
-            background: white;
-        }
-
-        .user-circle {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: #eaf3ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #0b4f9c;
-            font-weight: 800;
-        }
-
-        .user-name {
-            color: #07366d;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .main {
-            padding: 28px;
-        }
-
-        .hero {
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(
-                105deg,
-                #eaf5ff,
-                #ffffff
-            );
-            border: 1px solid #d6e6f5;
-            border-left: 5px solid #268ad0;
-            border-radius: 13px;
-            padding: 26px 38px;
-            margin-bottom: 22px;
-        }
-
-        .hero h1 {
-            margin: 0;
-            color: #07366d;
-            font-size: 30px;
-            font-weight: 800;
-        }
-
-        .hero p {
-            margin: 7px 0 0;
-            color: #6683a5;
-            font-size: 12px;
-        }
-
-        .back-button {
-            position: absolute;
-            right: 30px;
-            top: 29px;
-            padding: 11px 17px;
-            border: 1px solid #cfe0f0;
-            border-radius: 8px;
-            background: white;
-            color: #0b4f9c;
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .card {
-            background: white;
-            border: 1px solid #dce8f3;
-            border-radius: 13px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 23px 28px;
-            border-bottom: 1px solid #e4ebf2;
-        }
-
-        .card-title {
-            color: #07366d;
-            font-size: 21px;
-            font-weight: 800;
-        }
-
-        .card-desc {
-            margin-top: 5px;
-            color: #718096;
-            font-size: 11px;
-        }
-
-        .btn-add {
-            background: #087cf5;
-            color: white;
-            text-decoration: none;
-            padding: 12px 18px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .table-wrapper {
-            padding: 20px 25px 25px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            min-width: 1000px;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #07366d;
-            color: white;
-            padding: 13px 10px;
-            font-size: 11px;
-            text-align: left;
-        }
-
-        td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #e3eaf2;
-            font-size: 11px;
-            vertical-align: top;
-        }
-
-        tr:hover td {
-            background: #f8fbff;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 55px 20px;
-            color: #718096;
-        }
-
-        .empty-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 18px;
-            border-radius: 18px;
-            background: #eaf3ff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #087cf5;
-            font-size: 32px;
-        }
-
-        .empty-title {
-            color: #07366d;
-            font-size: 19px;
-            font-weight: 800;
-            margin-bottom: 7px;
-        }
-
-        .aksi {
-            display: flex;
-            gap: 5px;
+        .tahun-buttons {
             flex-wrap: wrap;
         }
+    }
+</style>
 
-        .btn {
-            display: inline-block;
-            padding: 7px 9px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 10px;
-            font-weight: 700;
-            border: 0;
-            cursor: pointer;
-        }
+<div class="page-wrapper">
 
-        .btn-edit {
-            color: #9a7100;
-            background: #fff5d6;
-        }
+    <!-- HEADER -->
 
-        .btn-delete {
-            color: #b33;
-            background: #fff0f0;
-        }
+    <div class="page-header">
 
-        .alert {
-            margin-bottom: 18px;
-            padding: 12px 15px;
-            border-radius: 7px;
-            font-size: 11px;
-        }
+        <div class="header-actions">
 
-        .success {
-            background: #eaf8f0;
-            border: 1px solid #bce5ce;
-            color: #267345;
-        }
-
-        .error {
-            background: #fff0f0;
-            border: 1px solid #efc2c2;
-            color: #a33;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="content">
-
-    <header class="top-header">
-
-        <div class="page-title">
-            Realisasi Kegiatan Tim Pembina
-        </div>
-
-        <div class="user-box">
-            <div class="user-circle">
-                S
-            </div>
-
-            <div class="user-name">
-                Super Administrator
-            </div>
-        </div>
-
-    </header>
-
-
-    <main class="main">
-
-        <section class="hero">
-
-            <h1>
-                Realisasi Kegiatan
-            </h1>
-
-            <p>
-                Kelola laporan realisasi kegiatan dan pendanaan Tim Pembina.
-            </p>
-
-            <a
-                href="<?= base_url('tim-pembina') ?>"
-                class="back-button"
-            >
-                ←&nbsp;&nbsp; Kembali
+            <a href="<?= base_url('tim-pembina') ?>"
+               class="btn-header">
+                ← &nbsp;Kembali
             </a>
 
-        </section>
+            <a href="<?= base_url('tim-pembina/realisasi/create?tahun=' . ($tahun ?? '1')) ?>"
+               class="btn-header btn-tambah">
+                + &nbsp;Tambah Realisasi
+            </a>
+
+        </div>
+
+        <h1>
+            Realisasi Kegiatan Tim Pembina
+        </h1>
+
+        <p>
+            Kelola realisasi kegiatan dan pendanaan Tim Pembina berdasarkan tahun kegiatan.
+        </p>
+
+    </div>
 
 
-        <?php if (session()->getFlashdata('success')): ?>
+    <!-- TAHUN -->
 
-            <div class="alert success">
-                <?= esc(session()->getFlashdata('success')) ?>
+    <div class="tahun-card">
+
+        <div class="tahun-header">
+
+            <div class="tahun-icon">
+                ▤
             </div>
 
-        <?php endif; ?>
+            <div>
 
+                <h2>
+                    Realisasi Kegiatan
+                </h2>
 
-        <?php if (session()->getFlashdata('error')): ?>
-
-            <div class="alert error">
-                <?= esc(session()->getFlashdata('error')) ?>
-            </div>
-
-        <?php endif; ?>
-
-
-        <section class="card">
-
-            <div class="card-header">
-
-                <div>
-
-                    <div class="card-title">
-                        📊 Data Realisasi Kegiatan
-                    </div>
-
-                    <div class="card-desc">
-                        Daftar laporan realisasi kegiatan dan pendanaan Tim Pembina.
-                    </div>
-
-                </div>
-
-
-                <a
-                    href="<?= base_url('tim-pembina/realisasi/create') ?>"
-                    class="btn-add"
-                >
-                    ⊕ Tambah Data
-                </a>
+                <p>
+                    Pilih tahun untuk melihat dan mengelola realisasi kegiatan.
+                </p>
 
             </div>
 
+        </div>
 
-            <?php if (empty($data)): ?>
+        <div class="tahun-buttons">
 
-                <div class="empty">
+            <a href="<?= base_url('tim-pembina/realisasi?tahun=1') ?>"
+               class="btn-tahun <?= ($tahun ?? '') == '1' ? 'active' : '' ?>">
+                ▣ &nbsp; Tahun Ganjil
+            </a>
 
-                    <div class="empty-icon">
-                        📊
-                    </div>
+            <a href="<?= base_url('tim-pembina/realisasi?tahun=2') ?>"
+               class="btn-tahun <?= ($tahun ?? '') == '2' ? 'active' : '' ?>">
+                ▣ &nbsp; Tahun Genap
+            </a>
 
-                    <div class="empty-title">
-                        Belum ada data realisasi kegiatan
-                    </div>
+        </div>
 
-                    <div>
-                        Silakan tambahkan data realisasi kegiatan terlebih dahulu.
-                    </div>
-
-                </div>
-
-            <?php else: ?>
+    </div>
 
 
-                <div class="table-wrapper">
+    <!-- TABLE -->
 
-                    <table>
+    <div class="table-card">
 
-                        <thead>
+        <div class="table-header">
 
-                            <tr>
+            <h2>
+                Data Realisasi Kegiatan
+                <?php if (($tahun ?? '') !== ''): ?>
+                    Tahun <?= esc($tahun) ?>
+                <?php endif; ?>
+            </h2>
 
-                                <th>No</th>
+            <p>
+                Daftar realisasi kegiatan Tim Pembina.
+            </p>
 
-                                <th>Nama Kegiatan</th>
-
-                                <th>Waktu</th>
-
-                                <th>Peserta</th>
-
-                                <th>Hasil</th>
-
-                                <th>Anggaran Pelaksanaan</th>
-
-                                <th>Sumber Pendanaan</th>
-
-                                <th>Link Drive/Cloud</th>
-
-                                <th>Aksi</th>
-
-                            </tr>
-
-                        </thead>
+        </div>
 
 
-                        <tbody>
+        <div class="table-responsive">
 
-                        <?php $no = 1; ?>
+            <table>
 
-                        <?php foreach ($data as $row): ?>
+                <thead>
 
-                            <tr>
+                    <tr>
+                        <th width="50">No</th>
+                        <th>Tahun</th>
+                        <th>Nama Kegiatan</th>
+                        <th>Waktu Kegiatan</th>
+                        <th>Peserta</th>
+                        <th>Hasil Pelaksanaan</th>
+                        <th>Anggaran</th>
+                        <th>Sumber Pendanaan</th>
+                        <th>Link Drive</th>
+                        <th>Data Dukung</th>
+                        <th>Aksi</th>
+                    </tr>
 
-                                <td>
-                                    <?= $no++ ?>
-                                </td>
+                </thead>
 
-                                <td>
-                                    <?= esc($row['nama_kegiatan']) ?>
-                                </td>
+                <tbody>
 
-                                <td>
-                                    <?= !empty($row['waktu_kegiatan'])
-                                        ? date('d/m/Y', strtotime($row['waktu_kegiatan']))
-                                        : '-'
-                                    ?>
-                                </td>
+                <?php if (!empty($data)): ?>
 
-                                <td>
-                                    <?= esc($row['peserta'] ?: '-') ?>
-                                </td>
+                    <?php $no = 1; ?>
 
-                                <td>
-                                    <?= esc($row['hasil'] ?: '-') ?>
-                                </td>
+                    <?php foreach ($data as $row): ?>
 
-                                <td>
-                                    Rp <?= number_format(
-                                        (float) ($row['anggaran'] ?? 0),
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) ?>
-                                </td>
+                        <tr>
 
-                                <td>
-                                    <?= esc($row['sumber_pendanaan'] ?: '-') ?>
-                                </td>
+                            <td>
+                                <?= $no++ ?>
+                            </td>
 
-                                <td>
+                            <td>
 
-                                    <?php if (!empty($row['link_data'])): ?>
+                                <span class="badge-tahun">
+                                    <?= esc($row['tahun'] ?? '-') ?>
+                                </span>
 
-                                        <a
-                                            href="<?= esc($row['link_data']) ?>"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            Lihat Data
-                                        </a>
+                            </td>
 
-                                    <?php else: ?>
+                            <td>
+                                <?= esc($row['nama_kegiatan'] ?? '-') ?>
+                            </td>
 
-                                        -
+                            <td>
 
-                                    <?php endif; ?>
+                                <?= !empty($row['waktu_kegiatan'])
+                                    ? date(
+                                        'd-m-Y',
+                                        strtotime($row['waktu_kegiatan'])
+                                    )
+                                    : '-' ?>
 
-                                </td>
+                            </td>
 
+                            <td>
+                                <?= esc($row['peserta'] ?? '-') ?>
+                            </td>
 
-                                <td>
+                            <td>
+                                <?= esc($row['hasil_pelaksanaan'] ?? '-') ?>
+                            </td>
 
-                                    <div class="aksi">
+                            <td>
 
-                                        <a
-                                            href="<?= base_url('tim-pembina/realisasi/edit/' . $row['id']) ?>"
-                                            class="btn btn-edit"
-                                        >
-                                            Ubah
-                                        </a>
+                                <?php
+                                    $anggaran = $row['anggaran'] ?? '';
 
+                                    if (
+                                        $anggaran !== ''
+                                        && $anggaran !== null
+                                    ) {
+                                        echo 'Rp ' . number_format(
+                                            (float) $anggaran,
+                                            0,
+                                            ',',
+                                            '.'
+                                        );
+                                    } else {
+                                        echo '-';
+                                    }
+                                ?>
 
-                                        <form
-                                            action="<?= base_url('tim-pembina/realisasi/delete/' . $row['id']) ?>"
-                                            method="post"
-                                            onsubmit="return confirm('Yakin ingin menghapus data ini?')"
-                                            style="display:inline;"
-                                        >
+                            </td>
 
-                                            <?= csrf_field() ?>
+                            <td>
+                                <?= esc($row['sumber_pendanaan'] ?? '-') ?>
+                            </td>
 
-                                            <button
-                                                type="submit"
-                                                class="btn btn-delete"
-                                            >
-                                                Hapus
-                                            </button>
+                            <td>
 
-                                        </form>
+                                <?php if (!empty($row['link_drive'])): ?>
 
-                                    </div>
+                                    <a href="<?= esc($row['link_drive']) ?>"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="link-data">
+                                        Lihat Link
+                                    </a>
 
-                                </td>
+                                <?php else: ?>
 
-                            </tr>
+                                    -
 
-                        <?php endforeach; ?>
+                                <?php endif; ?>
 
-                        </tbody>
+                            </td>
 
-                    </table>
+                            <td>
+                                <?= esc($row['data_dukung'] ?? '-') ?>
+                            </td>
 
-                </div>
+                            <td>
 
+                                <div class="aksi">
 
-            <?php endif; ?>
+                                    <a href="<?= base_url('tim-pembina/realisasi/edit/' . $row['id']) ?>"
+                                       class="btn-aksi btn-edit">
+                                        ✎ Edit
+                                    </a>
 
-        </section>
+                                    <form action="<?= base_url('tim-pembina/realisasi/delete/' . $row['id']) ?>"
+                                          method="post"
+                                          style="display:inline;"
+                                          onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
 
-    </main>
+                                        <?= csrf_field() ?>
+
+                                        <button type="submit"
+                                                class="btn-aksi btn-hapus">
+                                            🗑 Hapus
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    <?php endforeach; ?>
+
+                <?php else: ?>
+
+                    <tr>
+
+                        <td colspan="11">
+
+                            <div class="empty-data">
+
+                                <div class="empty-data-icon">
+                                    ▱
+                                </div>
+
+                                Belum ada data realisasi kegiatan
+                                <?= ($tahun ?? '') !== ''
+                                    ? 'untuk Tahun ' . esc($tahun)
+                                    : '' ?>.
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                <?php endif; ?>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 </div>
 
-</body>
-</html>
+<?= $this->endSection() ?>

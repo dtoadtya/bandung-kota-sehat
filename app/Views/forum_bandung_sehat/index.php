@@ -2,272 +2,346 @@
 
 <?= $this->section('content') ?>
 
-    <style>
-        .page-banner {
-            position: relative;
-            min-height: 150px;
-            margin-bottom: 28px;
-            padding: 28px 28px 26px 58px;
-            border-radius: 14px;
-            overflow: hidden;
-            background: linear-gradient(
-                135deg,
-                #f2faff 0%,
-                #e5f4ff 55%,
-                #dcefff 100%
-            );
-            border: 1px solid #d5eafa;
+<style>
+    .fb-page {
+        min-height: calc(100vh - 70px);
+        background: #f5f8fc;
+        padding: 28px 28px 45px;
+    }
+
+    /* HEADER */
+    .fb-banner {
+        position: relative;
+        overflow: hidden;
+        min-height: 118px;
+        padding: 28px 34px;
+        margin-bottom: 24px;
+        border-radius: 14px;
+        background: linear-gradient(
+            135deg,
+            #eef8ff 0%,
+            #e3f2ff 100%
+        );
+        border-left: 6px solid #1687e8;
+    }
+
+    .fb-banner::after {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        right: -35px;
+        top: -75px;
+        border-radius: 50%;
+        background: rgba(22, 135, 232, .08);
+    }
+
+    .fb-banner h1 {
+        position: relative;
+        z-index: 2;
+        margin: 0;
+        color: #063b78;
+        font-size: 32px;
+        font-weight: 800;
+    }
+
+    .fb-banner p {
+        position: relative;
+        z-index: 2;
+        margin: 7px 0 0;
+        color: #5c7897;
+        font-size: 14px;
+    }
+
+    /* GRID */
+    .fb-menu {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    /* CARD */
+    .fb-card {
+        min-height: 205px;
+        background: #ffffff;
+        border: 1px solid #d7e5f2;
+        border-radius: 15px;
+        padding: 24px;
+        box-shadow: 0 3px 12px rgba(22, 82, 130, .04);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: .2s ease;
+    }
+
+    .fb-card:hover {
+        border-color: #087ff5;
+        box-shadow: 0 7px 20px rgba(22, 127, 230, .10);
+    }
+
+    .fb-card-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .fb-icon {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: #e7f2ff;
+        color: #087ff5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .fb-card h2 {
+        margin: 3px 0 7px;
+        color: #063b78;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .fb-card p {
+        margin: 0;
+        color: #7087a1;
+        font-size: 14px;
+        line-height: 1.65;
+    }
+
+    .fb-card-action {
+        margin-top: 22px;
+    }
+
+    .fb-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 42px;
+        padding: 10px 18px;
+        border-radius: 8px;
+        background: #087ff5;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s ease;
+    }
+
+    .fb-btn:hover {
+        background: #066fd6;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+
+        .fb-page {
+            padding: 20px 15px 35px;
         }
 
-        .page-banner::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 9px;
-            background: linear-gradient(
-                180deg,
-                #087df5,
-                #f0b429
-            );
+        .fb-banner {
+            padding: 24px;
         }
 
-        .page-banner h1 {
-            margin: 0 0 7px;
-            color: #063b78;
-            font-size: 38px;
-            font-weight: 800;
+        .fb-banner h1 {
+            font-size: 27px;
         }
 
-        .page-banner p {
-            margin: 0;
-            color: #3c6388;
-            font-size: 18px;
+        .fb-menu {
+            grid-template-columns: 1fr;
         }
+    }
+</style>
 
-        .content-card {
-            background: #ffffff;
-            border: 1px solid #e0ebf5;
-            border-radius: 15px;
-            padding: 22px;
-            box-shadow: 0 8px 24px rgba(27, 71, 112, .07);
-        }
 
-        .card-header-custom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
+<div class="fb-page">
 
-        .card-header-custom h2 {
-            margin: 0;
-            color: #163f67;
-            font-size: 21px;
-            font-weight: 800;
-        }
+    <!-- HEADER -->
 
-        .btn-tambah {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 11px 18px;
-            border-radius: 9px;
-            background: #087df5;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 700;
-        }
+    <div class="fb-banner">
 
-        .btn-tambah:hover {
-            background: #0568cc;
-            color: #ffffff;
-        }
-
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            border: 1px solid #e1edf6;
-            border-radius: 12px;
-        }
-
-        .custom-table {
-            width: 100%;
-            min-width: 850px;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .custom-table thead th {
-            padding: 15px 14px;
-            background: linear-gradient(
-                180deg,
-                #edf7ff,
-                #e7f3fd
-            );
-            color: #214b70;
-            border-bottom: 1px solid #dcebf7;
-            font-size: 14px;
-            font-weight: 800;
-            white-space: nowrap;
-        }
-
-        .custom-table tbody td {
-            padding: 14px;
-            color: #3f5e78;
-            border-bottom: 1px solid #edf2f6;
-            font-size: 14px;
-            vertical-align: middle;
-        }
-
-        .custom-table tbody tr:last-child td {
-            border-bottom: 0;
-        }
-
-        .custom-table tbody tr:hover {
-            background: #fbfdff;
-        }
-
-        .btn-hapus {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            border: 0;
-            border-radius: 7px;
-            padding: 7px 11px;
-            background: #fff0f0;
-            color: #d64545;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .btn-hapus:hover {
-            background: #ffe0e0;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 75px 20px;
-            color: #8198ab;
-        }
-
-        .empty-state i {
-            display: block;
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: .55;
-        }
-
-        .empty-state h4 {
-            margin: 0 0 8px;
-            color: #53728d;
-            font-weight: 800;
-        }
-
-        .empty-state p {
-            margin: 0;
-            font-size: 14px;
-        }
-    </style>
-
-    <div class="page-banner">
         <h1>Forum Bandung Sehat</h1>
-        <p>Kelola data dan dokumen Forum Bandung Sehat.</p>
+
+        <p>
+            Kelola data kelembagaan Forum Bandung Sehat.
+        </p>
+
     </div>
 
-    <div class="content-card">
 
-        <div class="card-header-custom">
-        <h2>Data Forum Bandung Sehat</h2>
+    <!-- MENU 4 CARD -->
 
-        <a
-            href="<?= site_url('forum-bandung-sehat/create') ?>"
-            class="btn-tambah"
-        >
-            <i class="bi bi-plus-circle"></i>
-            Tambah Forum
-        </a>
+    <div class="fb-menu">
+
+
+        <!-- =========================
+             SK
+        ========================== -->
+
+        <div class="fb-card">
+
+            <div class="fb-card-top">
+
+                <div class="fb-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                </div>
+
+                <div>
+
+                    <h2>SK</h2>
+
+                    <p>
+                        Upload Surat Keputusan Forum Bandung Sehat.
+                        File harus berupa PDF dengan ukuran maksimal 5 MB.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="fb-card-action">
+
+                <a
+                    href="<?= site_url('forum-bandung-sehat/sk') ?>"
+                    class="fb-btn"
+                >
+                    <i class="bi bi-upload"></i>
+                    Kelola SK
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             RENCANA KERJA
+        ========================== -->
+
+        <div class="fb-card">
+
+            <div class="fb-card-top">
+
+                <div class="fb-icon">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+
+                <div>
+
+                    <h2>Rencana Kerja</h2>
+
+                    <p>
+                        Kelola rencana kerja Forum Bandung Sehat
+                        berdasarkan tahun yang dapat ditentukan sendiri.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="fb-card-action">
+
+                <a
+                    href="<?= site_url('forum-bandung-sehat/rencana-kerja') ?>"
+                    class="fb-btn"
+                >
+                    <i class="bi bi-journal-check"></i>
+                    Kelola Rencana Kerja
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             REALISASI KEGIATAN
+        ========================== -->
+
+        <div class="fb-card">
+
+            <div class="fb-card-top">
+
+                <div class="fb-icon">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                </div>
+
+                <div>
+
+                    <h2>Realisasi Kegiatan</h2>
+
+                    <p>
+                        Input laporan kegiatan, waktu, peserta,
+                        hasil pelaksanaan, anggaran dan sumber pendanaan.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="fb-card-action">
+
+                <a
+                    href="<?= site_url('forum-bandung-sehat/realisasi') ?>"
+                    class="fb-btn"
+                >
+                    <i class="bi bi-clipboard-data"></i>
+                    Kelola Realisasi
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             FOTO KEGIATAN
+        ========================== -->
+
+        <div class="fb-card">
+
+            <div class="fb-card-top">
+
+                <div class="fb-icon">
+                    <i class="bi bi-camera-fill"></i>
+                </div>
+
+                <div>
+
+                    <h2>Foto Sekretariat</h2>
+
+                    <p>
+                        Upload satu foto Sekretariat
+                        dengan ukuran maksimal 2 MB.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="fb-card-action">
+
+                <a
+                    href="<?= site_url('forum-bandung-sehat/foto-kegiatan') ?>"
+                    class="fb-btn"
+                >
+                    <i class="bi bi-image"></i>
+                    Kelola Foto
+                </a>
+
+            </div>
+
+        </div>
+
+
     </div>
-
-    <?php if (session()->getFlashdata('success')) : ?>
-        <div class="alert alert-success">
-            <?= esc(session()->getFlashdata('success')) ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if (session()->getFlashdata('error')) : ?>
-        <div class="alert alert-danger">
-            <?= esc(session()->getFlashdata('error')) ?>
-        </div>
-    <?php endif; ?>
-
-    <?php if (!empty($data)) : ?>
-
-        <div class="table-wrapper">
-            <table class="custom-table">
-                <thead>
-                    <tr>
-                        <th width="60">No</th>
-                        <th>Nama Kegiatan</th>
-                        <th>Tahun</th>
-                        <th>Tanggal</th>
-                        <th>Lokasi</th>
-                        <th>Keterangan</th>
-                        <th width="100">Aksi</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <?php $no = 1; ?>
-
-                    <?php foreach ($data as $row) : ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= esc($row['nama_kegiatan'] ?? '-') ?></td>
-                            <td><?= esc($row['tahun'] ?? '-') ?></td>
-                            <td><?= esc($row['tanggal'] ?? '-') ?></td>
-                            <td><?= esc($row['lokasi'] ?? '-') ?></td>
-                            <td><?= esc($row['keterangan'] ?? '-') ?></td>
-                            <td>
-                                <form
-                                    action="<?= site_url('forum-bandung-sehat/delete/' . $row['id']) ?>"
-                                    method="post"
-                                    onsubmit="return confirm('Yakin ingin menghapus data ini?')"
-                                >
-                                    <?= csrf_field() ?>
-
-                                    <button
-                                        type="submit"
-                                        class="btn-hapus"
-                                    >
-                                        <i class="bi bi-trash"></i>
-                                        Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-    <?php else : ?>
-
-        <div class="empty-state">
-            <i class="bi bi-building"></i>
-            <h4>Belum Ada Data Forum</h4>
-            <p>
-                Klik tombol Tambah Forum untuk membuka menu pengelolaan data.
-            </p>
-        </div>
-
-    <?php endif; ?>
 
 </div>
+
 
 <?= $this->endSection() ?>

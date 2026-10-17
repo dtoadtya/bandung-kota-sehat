@@ -2,149 +2,364 @@
 
 <?= $this->section('content') ?>
 
-<div class="container-fluid">
+<style>
+    .foto-page {
+        background: #f4f8fc;
+        min-height: calc(100vh - 70px);
+        padding: 28px;
+    }
 
-    <div class="kelembagaan-header mb-4">
-        <div>
-            <h1>Foto Kegiatan</h1>
-            <p>Dokumentasi foto kegiatan Forum Bandung Sehat.</p>
-        </div>
+    .foto-header {
+        background: linear-gradient(135deg, #0b4f9c, #07366d);
+        color: #fff;
+        border-radius: 14px;
+        padding: 24px 28px;
+        margin-bottom: 22px;
+    }
 
-        <a href="<?= site_url('forum-bandung-sehat/create') ?>"
-           class="btn btn-light">
-            <i class="bi bi-arrow-left"></i>
-            Kembali
+    .foto-header h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .foto-header p {
+        margin: 7px 0 0;
+        font-size: 14px;
+        opacity: .92;
+    }
+
+    .btn-kembali {
+        display: inline-block;
+        color: #fff;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .foto-card {
+        background: #fff;
+        border-radius: 14px;
+        padding: 28px;
+        box-shadow: 0 5px 18px rgba(0,0,0,.06);
+    }
+
+    .foto-card + .foto-card {
+        margin-top: 22px;
+    }
+
+    .foto-card h2 {
+        margin: 0 0 7px;
+        color: #243447;
+        font-size: 19px;
+    }
+
+    .description {
+        color: #718096;
+        font-size: 13px;
+        margin-bottom: 22px;
+    }
+
+    .upload-info {
+        background: #f4f8fc;
+        border: 1px solid #e5eaf0;
+        border-radius: 9px;
+        padding: 13px 15px;
+        margin-bottom: 20px;
+        color: #718096;
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        color: #243447;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .form-control {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #d9e2ec;
+        border-radius: 8px;
+        padding: 11px 13px;
+        font-size: 13px;
+    }
+
+    .btn-upload {
+        margin-top: 5px;
+        border: none;
+        background: #0b4f9c;
+        color: #fff;
+        padding: 11px 22px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-upload:hover {
+        background: #07366d;
+    }
+
+    .alert {
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 18px;
+        font-size: 13px;
+    }
+
+    .alert-success {
+        background: #eaf7ef;
+        color: #159957;
+    }
+
+    .alert-danger {
+        background: #fff1f1;
+        color: #d9534f;
+    }
+
+    .preview-wrapper {
+        max-width: 750px;
+        margin: auto;
+        padding: 15px;
+        background: #f4f8fc;
+        border: 1px solid #e5eaf0;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .preview-image {
+        width: 100%;
+        max-height: 450px;
+        object-fit: contain;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .file-name {
+        margin-top: 15px;
+        padding: 11px 14px;
+        background: #f4f8fc;
+        border-radius: 8px;
+        color: #718096;
+        font-size: 12px;
+        word-break: break-word;
+    }
+
+    @media (max-width: 768px) {
+        .foto-page {
+            padding: 18px;
+        }
+
+        .foto-card {
+            padding: 20px;
+        }
+    }
+</style>
+
+
+<div class="foto-page">
+
+    <div class="foto-header">
+
+        <a
+            href="<?= base_url('forum-bandung-sehat') ?>"
+            class="btn-kembali"
+        >
+            ← &nbsp;Kembali
         </a>
+
+        <h1>Foto Sekretariat</h1>
+
+        <p>
+            Upload foto sekretariat Forum Bandung Sehat.
+        </p>
+
     </div>
 
-    <?php if (session()->getFlashdata('success')): ?>
+
+    <?php if (session()->getFlashdata('success')) : ?>
+
         <div class="alert alert-success">
-            <?= session()->getFlashdata('success') ?>
+            <?= esc(session()->getFlashdata('success')) ?>
         </div>
+
     <?php endif; ?>
 
-    <?php if (session()->getFlashdata('error')): ?>
+
+    <?php if (session()->getFlashdata('error')) : ?>
+
         <div class="alert alert-danger">
-            <?= session()->getFlashdata('error') ?>
+            <?= esc(session()->getFlashdata('error')) ?>
         </div>
+
     <?php endif; ?>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="mb-1">Foto Kegiatan Forum Bandung Sehat</h4>
-                    <p class="text-muted mb-0">
-                        Maksimal 1 foto dengan ukuran maksimal 5 MB.
-                    </p>
-                </div>
+    <?php if (session()->getFlashdata('errors')) : ?>
 
-                <?php if (empty($data)): ?>
-                    <a href="<?= site_url('forum-bandung-sehat/foto-kegiatan/create') ?>"
-                       class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i>
-                        Upload Foto
-                    </a>
-                <?php endif; ?>
-            </div>
+        <div class="alert alert-danger">
 
-            <?php if (empty($data)): ?>
+            <?php foreach (
+                session()->getFlashdata('errors')
+                as $error
+            ) : ?>
 
-                <div class="text-center py-5">
-                <div
-                    style="
-                        width: 90px;
-                        height: 90px;
-                        margin: 0 auto 20px;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        border-radius: 22px;
-                        background: #e8f3ff;
-                        color: #087cf0;
-                    "
-                >
-                    <i class="bi bi-images" style="font-size: 48px;"></i>
-                </div>
+                <div><?= esc($error) ?></div>
 
-                <h5
-                    class="mt-3"
-                    style="
-                        color: #063b78;
-                        font-weight: 800;
-                        font-size: 20px;
-                    "
-                >
-                    Belum ada foto kegiatan
-                </h5>
-
-                <p
-                    style="
-                        color: #7890aa;
-                        font-size: 15px;
-                        margin-bottom: 0;
-                    "
-                >
-                    Silakan upload foto kegiatan Forum Bandung Sehat.
-                </p>
-            </div>
-
-            <?php else: ?>
-
-                <div class="row">
-                    <?php foreach ($data as $foto): ?>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card border rounded-4 overflow-hidden">
-
-                                <img src="<?= base_url($foto['file_path']) ?>"
-                                     alt="Foto Kegiatan"
-                                     class="img-fluid"
-                                     style="height:240px; width:100%; object-fit:cover;">
-
-                                <div class="card-body">
-                                    <h6 class="text-truncate">
-                                        <?= esc($foto['nama_asli']) ?>
-                                    </h6>
-
-                                    <small class="text-muted d-block mb-3">
-                                        Ukuran:
-                                        <?= number_format($foto['ukuran_file'] / 1024, 2) ?>
-                                        KB
-                                    </small>
-
-                                    <div class="d-flex gap-2">
-                                        <a href="<?= site_url('forum-bandung-sehat/foto-kegiatan/view/' . $foto['id']) ?>"
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-download"></i>
-                                            Lihat
-                                        </a>
-
-                                        <form action="<?= site_url('forum-bandung-sehat/foto-kegiatan/delete/' . $foto['id']) ?>"
-                                              method="post"
-                                              onsubmit="return confirm('Yakin ingin menghapus foto ini?')">
-
-                                            <?= csrf_field() ?>
-
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-trash"></i>
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-
-            <?php endif; ?>
+            <?php endforeach; ?>
 
         </div>
+
+    <?php endif; ?>
+
+
+    <!-- UPLOAD -->
+
+    <div class="foto-card">
+
+        <h2>Upload Foto Sekretariat</h2>
+
+        <div class="description">
+            Upload satu foto sekretariat Forum Bandung Sehat.
+            Upload baru akan menggantikan foto lama.
+        </div>
+
+        <div class="upload-info">
+
+            <strong>Ketentuan:</strong><br>
+
+            • Maksimal <strong>2 MB</strong><br>
+            • JPG, JPEG, PNG, atau WEBP<br>
+            • Hanya satu foto yang digunakan
+
+        </div>
+
+
+        <form
+            action="<?= base_url(
+                'forum-bandung-sehat/foto-kegiatan/store'
+            ) ?>"
+            method="post"
+            enctype="multipart/form-data"
+        >
+
+            <?= csrf_field() ?>
+
+            <label
+                for="foto"
+                class="form-label"
+            >
+                Pilih Foto Sekretariat
+            </label>
+
+            <input
+                type="file"
+                name="foto"
+                id="foto"
+                class="form-control"
+                accept=".jpg,.jpeg,.png,.webp"
+                required
+            >
+
+            <button
+                type="submit"
+                class="btn-upload"
+            >
+                Upload Foto
+            </button>
+
+        </form>
+
     </div>
+
+
+    <!-- PREVIEW -->
+
+    <?php if (!empty($foto)) : ?>
+
+        <div class="foto-card">
+
+            <h2>Foto Sekretariat Saat Ini</h2>
+
+            <div class="description">
+                Foto yang saat ini tersimpan di sistem.
+                Klik foto untuk melihat ukuran penuh.
+            </div>
+
+            <div class="preview-wrapper">
+
+                <a
+                    href="<?= base_url($foto['file_path']) ?>"
+                    target="_blank"
+                >
+
+                    <img
+                        src="<?= base_url($foto['file_path']) ?>"
+                        alt="Foto Sekretariat Forum Bandung Sehat"
+                        class="preview-image"
+                    >
+
+                </a>
+
+            </div>
+
+            <div class="file-name">
+
+                <strong>Nama file:</strong>
+                <?= esc($foto['nama_asli']) ?>
+
+            </div>
+
+        </div>
+
+    <?php endif; ?>
 
 </div>
+
+
+<script>
+document.getElementById('foto')?.addEventListener(
+    'change',
+    function () {
+
+        const file = this.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+
+            alert('Ukuran foto maksimal 2 MB.');
+
+            this.value = '';
+
+            return;
+        }
+
+        const allowed = [
+            'image/jpeg',
+            'image/png',
+            'image/webp'
+        ];
+
+        if (!allowed.includes(file.type)) {
+
+            alert(
+                'Format foto harus JPG, JPEG, PNG, atau WEBP.'
+            );
+
+            this.value = '';
+        }
+
+    }
+);
+</script>
+
 
 <?= $this->endSection() ?>

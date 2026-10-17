@@ -10,25 +10,16 @@ class TimPembinaSkModel extends Model
 
     protected $primaryKey = 'id';
 
-    protected $returnType = 'array';
-
-    protected $useAutoIncrement = true;
-
     protected $allowedFields = [
-        'no_sk',
+        'nomor_sk',
         'periode',
         'keterangan',
         'nama_file',
-        'nama_asli',
-        'file_path',
-        'ukuran_file',
-        'created_at',
-        'updated_at',
+        'status',
+        'keterangan_penolakan',
+        'verified_at',
+        'verified_by',
     ];
 
     protected $useTimestamps = true;
-
-    protected $createdField = 'created_at';
-
-    protected $updatedField = 'updated_at';
 }

@@ -25,10 +25,6 @@ class ForumKecamatanSehatRealisasiModel extends Model
         'sumber_pendanaan',
         'link_drive',
         'data_dukung',
-        'data_rencana',
-        'tanggal',
-        'lokasi',
-        'keterangan',
         'created_at',
         'updated_at',
     ];

@@ -3,694 +3,329 @@
 <?= $this->section('content') ?>
 
 <style>
-    .pokja-page {
-        min-height: calc(100vh - 60px);
+    .pk-page {
+        min-height: calc(100vh - 70px);
         background: #f5f8fc;
-        padding: 26px 37px 45px;
+        padding: 28px 28px 45px;
     }
 
-    /* =========================
-       HEADER HALAMAN
-    ========================= */
-
-    .pokja-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 28px;
+    .pk-banner {
+        position: relative;
+        overflow: hidden;
+        min-height: 118px;
+        padding: 28px 34px;
+        margin-bottom: 24px;
+        border-radius: 14px;
+        background: linear-gradient(
+            135deg,
+            #eef8ff 0%,
+            #e3f2ff 100%
+        );
+        border-left: 6px solid #1687e8;
     }
 
-    .pokja-header h1 {
+    .pk-banner::after {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        right: -35px;
+        top: -75px;
+        border-radius: 50%;
+        background: rgba(22, 135, 232, .08);
+    }
+
+    .pk-banner h1 {
+        position: relative;
+        z-index: 2;
         margin: 0;
-        color: #07366d;
-        font-size: 34px;
+        color: #063b78;
+        font-size: 32px;
         font-weight: 800;
-        line-height: 1.2;
     }
 
-    .pokja-header p {
-        margin: 9px 0 0;
-        color: #718096;
+    .pk-banner p {
+        position: relative;
+        z-index: 2;
+        margin: 7px 0 0;
+        color: #5c7897;
         font-size: 14px;
     }
 
+    .pk-menu {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
 
-    /* =========================
-       TOMBOL TAMBAH DATA
-    ========================= */
-
-    .btn-tambah-pokja {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-
-        min-width: 153px;
-        height: 46px;
-
-        background: #087cf0;
-        color: #fff;
-
-        border-radius: 10px;
-
-        text-decoration: none;
-
-        font-size: 14px;
-        font-weight: 700;
-
+    .pk-card {
+        min-height: 205px;
+        background: #ffffff;
+        border: 1px solid #d7e5f2;
+        border-radius: 15px;
+        padding: 24px;
+        box-shadow: 0 3px 12px rgba(22, 82, 130, .04);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         transition: .2s ease;
     }
 
-    .btn-tambah-pokja:hover {
-        background: #07366d;
-        color: #fff;
+    .pk-card:hover {
+        border-color: #087ff5;
+        box-shadow: 0 7px 20px rgba(22, 127, 230, .10);
     }
 
-    .btn-tambah-pokja .plus {
-        width: 17px;
-        height: 17px;
+    .pk-card-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
 
-        border: 1.5px solid #fff;
-        border-radius: 50%;
+    .pk-icon {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: #e7f2ff;
+        color: #087ff5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
 
+    .pk-card h2 {
+        margin: 3px 0 7px;
+        color: #063b78;
+        font-size: 21px;
+        font-weight: 800;
+    }
+
+    .pk-card p {
+        margin: 0;
+        color: #7087a1;
+        font-size: 14px;
+        line-height: 1.65;
+    }
+
+    .pk-card-action {
+        margin-top: 22px;
+    }
+
+    .pk-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-
-        font-size: 13px;
-        line-height: 1;
-    }
-
-
-    /* =========================
-       CARD UTAMA
-    ========================= */
-
-    .pokja-card {
-        width: 100%;
-
-        background: #fff;
-
-        border: 1px solid #dce8f5;
-
-        border-radius: 16px;
-
-        overflow: hidden;
-
-        box-shadow:
-            0 4px 14px rgba(7, 54, 109, .04);
-    }
-
-
-    /* =========================
-       CARD HEADER
-    ========================= */
-
-    .pokja-card-header {
-        min-height: 110px;
-
-        display: flex;
-        align-items: center;
-
-        gap: 15px;
-
-        padding: 27px 28px;
-
-        border-bottom: 1px solid #e5eaf0;
-    }
-
-
-    /* =========================
-       ICON CARD
-    ========================= */
-
-    .pokja-icon {
-        width: 49px;
-        height: 49px;
-
-        flex-shrink: 0;
-
-        background: #e7f2ff;
-
-        border-radius: 13px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        color: #087cf0;
-    }
-
-    .pokja-icon svg {
-        width: 28px;
-        height: 28px;
-    }
-
-
-    /* =========================
-       JUDUL CARD
-    ========================= */
-
-    .pokja-card-text h2 {
-        margin: 0;
-
-        color: #07366d;
-
-        font-size: 24px;
-        font-weight: 800;
-
-        line-height: 1.2;
-    }
-
-    .pokja-card-text p {
-        margin: 6px 0 0;
-
-        color: #718096;
-
-        font-size: 14px;
-    }
-
-
-    /* =========================
-       EMPTY STATE
-    ========================= */
-
-    .pokja-empty {
-        min-height: 285px;
-
-        display: flex;
-        flex-direction: column;
-
-        justify-content: center;
-        align-items: center;
-
-        text-align: center;
-
-        padding: 40px 20px 48px;
-    }
-
-    .pokja-empty-icon {
-        width: 90px;
-        height: 90px;
-
-        background: #e7f2ff;
-
-        border-radius: 20px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        color: #087cf0;
-
-        margin-bottom: 22px;
-    }
-
-    .pokja-empty-icon svg {
-        width: 52px;
-        height: 52px;
-    }
-
-    .pokja-empty h3 {
-        margin: 0;
-
-        color: #07366d;
-
-        font-size: 20px;
-        font-weight: 800;
-    }
-
-    .pokja-empty p {
-        margin: 9px 0 0;
-
-        color: #718096;
-
-        font-size: 14px;
-    }
-
-
-    /* =========================
-       TABEL JIKA ADA DATA
-    ========================= */
-
-    .pokja-table-wrapper {
-        padding: 24px 28px 28px;
-
-        overflow-x: auto;
-    }
-
-    .pokja-table {
-        width: 100%;
-
-        border-collapse: collapse;
-    }
-
-    .pokja-table th {
-        background: #f5f8fc;
-
-        color: #07366d;
-
-        padding: 14px;
-
-        font-size: 13px;
-        font-weight: 700;
-
-        text-align: left;
-
-        border-bottom: 1px solid #dce8f5;
-    }
-
-    .pokja-table td {
-        padding: 14px;
-
-        color: #4a5568;
-
-        font-size: 14px;
-
-        border-bottom: 1px solid #edf2f7;
-    }
-
-    .pokja-table tr:last-child td {
-        border-bottom: none;
-    }
-
-
-    /* =========================
-       BADGE
-    ========================= */
-
-    .pokja-badge {
-        display: inline-block;
-
-        padding: 5px 10px;
-
-        background: #eaf3ff;
-
-        color: #0b4f9c;
-
-        border-radius: 7px;
-
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-
-    /* =========================
-       TOMBOL AKSI
-    ========================= */
-
-    .btn-edit-pokja {
-        display: inline-block;
-
-        padding: 7px 11px;
-
-        background: #e9f8f0;
-        color: #159957;
-
-        border-radius: 7px;
-
+        gap: 7px;
+        min-height: 42px;
+        padding: 10px 18px;
+        border-radius: 8px;
+        background: #087ff5;
+        color: #ffffff;
         text-decoration: none;
-
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 700;
+        transition: .2s ease;
     }
 
-    .btn-hapus-pokja {
-        padding: 7px 11px;
-
-        background: #fff0ef;
-        color: #d9534f;
-
-        border: none;
-        border-radius: 7px;
-
-        font-size: 12px;
-        font-weight: 700;
-
-        cursor: pointer;
+    .pk-btn:hover {
+        background: #066fd6;
+        color: #ffffff;
+        transform: translateY(-1px);
     }
-
-
-    /* =========================
-       ALERT
-    ========================= */
-
-    .pokja-alert {
-        margin-bottom: 20px;
-    }
-
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
 
     @media (max-width: 768px) {
 
-        .pokja-page {
-            padding: 24px 16px 35px;
+        .pk-page {
+            padding: 20px 15px 35px;
         }
 
-        .pokja-header {
-            flex-direction: column;
-            gap: 18px;
+        .pk-banner {
+            padding: 24px;
         }
 
-        .btn-tambah-pokja {
-            width: 100%;
+        .pk-banner h1 {
+            font-size: 27px;
         }
 
-        .pokja-header h1 {
-            font-size: 29px;
+        .pk-menu {
+            grid-template-columns: 1fr;
         }
     }
 </style>
 
 
-<div class="pokja-page">
+<div class="pk-page">
 
+    <!-- HEADER -->
 
-    <!-- ======================================
-         HEADER
-    ======================================= -->
+    <div class="pk-banner">
 
-    <div class="pokja-header">
+        <h1>Pokja Kelurahan Sehat</h1>
 
-        <div>
-
-            <h1>
-                Pokja Kelurahan Sehat
-            </h1>
-
-            <p>
-                Pengelolaan data Pokja Kelurahan Sehat.
-            </p>
-
-        </div>
-
-
-        <a
-            href="<?= base_url('pokja-kelurahan-sehat/create') ?>"
-            class="btn-tambah-pokja"
-        >
-
-            <span class="plus">
-                +
-            </span>
-
-            Tambah Data
-
-        </a>
+        <p>
+            Kelola data kelembagaan Pokja Kelurahan Sehat.
+        </p>
 
     </div>
 
 
-    <!-- ======================================
-         PESAN
-    ======================================= -->
+    <!-- MENU -->
 
-    <?php if (session()->getFlashdata('success')) : ?>
-
-        <div class="alert alert-success pokja-alert">
-
-            <?= esc(
-                session()->getFlashdata('success')
-            ) ?>
-
-        </div>
-
-    <?php endif; ?>
+    <div class="pk-menu">
 
 
-    <?php if (session()->getFlashdata('error')) : ?>
+        <!-- SK -->
 
-        <div class="alert alert-danger pokja-alert">
+        <div class="pk-card">
 
-            <?= esc(
-                session()->getFlashdata('error')
-            ) ?>
+            <div class="pk-card-top">
 
-        </div>
+                <div class="pk-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                </div>
 
-    <?php endif; ?>
+                <div>
 
+                    <h2>SK</h2>
 
-    <!-- ======================================
-         CARD DATA
-    ======================================= -->
-
-    <div class="pokja-card">
-
-
-        <!-- CARD HEADER -->
-
-        <div class="pokja-card-header">
-
-
-            <!-- ICON RUMAH -->
-
-            <div class="pokja-icon">
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-
-                    <path d="M3 10.5L12 3l9 7.5"></path>
-
-                    <path d="M5 9.5V21h14V9.5"></path>
-
-                    <path d="M9 21v-6h6v6"></path>
-
-                </svg>
-
-            </div>
-
-
-            <!-- TEKS CARD -->
-
-            <div class="pokja-card-text">
-
-                <h2>
-                    Data Pokja Kelurahan Sehat
-                </h2>
-
-                <p>
-                    Daftar anggota dan informasi Pokja Kelurahan Sehat.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <!-- ==================================
-             JIKA BELUM ADA DATA
-        =================================== -->
-
-        <?php if (empty($dataPokja)) : ?>
-
-            <div class="pokja-empty">
-
-
-                <div class="pokja-empty-icon">
-
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.7"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-
-                        <path d="M3 10.5L12 3l9 7.5"></path>
-
-                        <path d="M5 9.5V21h14V9.5"></path>
-
-                        <path d="M9 21v-6h6v6"></path>
-
-                    </svg>
+                    <p>
+                        Upload Surat Keputusan Pokja Kelurahan Sehat.
+                        File harus berupa PDF dengan ukuran maksimal 5 MB.
+                    </p>
 
                 </div>
 
+            </div>
 
-                <h3>
-                    Belum ada data Pokja Kelurahan Sehat
-                </h3>
+            <div class="pk-card-action">
 
-
-                <p>
-                    Silakan tambahkan data Pokja Kelurahan Sehat terlebih dahulu.
-                </p>
-
+                <a
+                    href="<?= site_url('pokja-kelurahan-sehat/sk') ?>"
+                    class="pk-btn"
+                >
+                    <i class="bi bi-upload"></i>
+                    Kelola SK
+                </a>
 
             </div>
 
-
-        <?php else : ?>
-
-
-            <!-- ==================================
-                 JIKA SUDAH ADA DATA
-            =================================== -->
-
-            <div class="pokja-table-wrapper">
-
-                <table class="pokja-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th width="60">
-                                No
-                            </th>
-
-                            <th>
-                                Kecamatan
-                            </th>
-
-                            <th>
-                                Kelurahan
-                            </th>
-
-                            <th>
-                                Nama Pokja
-                            </th>
-
-                            <th>
-                                Tahun
-                            </th>
-
-                            <th>
-                                Ketua
-                            </th>
-
-                            <th width="140">
-                                Aksi
-                            </th>
-
-                        </tr>
-
-                    </thead>
+        </div>
 
 
-                    <tbody>
+        <!-- RENCANA KERJA -->
 
-                        <?php $no = 1; ?>
+        <div class="pk-card">
 
+            <div class="pk-card-top">
 
-                        <?php foreach ($dataPokja as $row) : ?>
+                <div class="pk-icon">
+                    <i class="bi bi-journal-text"></i>
+                </div>
 
-                            <tr>
+                <div>
 
-                                <td>
-                                    <?= $no++ ?>
-                                </td>
+                    <h2>Rencana Kerja</h2>
 
+                    <p>
+                        Kelola rencana kerja Pokja Kelurahan Sehat
+                        berdasarkan tahun yang dapat ditentukan sendiri.
+                    </p>
 
-                                <td>
-
-                                    <span class="pokja-badge">
-
-                                        <?= esc(
-                                            $row['nama_kecamatan'] ?? '-'
-                                        ) ?>
-
-                                    </span>
-
-                                </td>
-
-
-                                <td>
-
-                                    <?= esc(
-                                        $row['nama_kelurahan'] ?? '-'
-                                    ) ?>
-
-                                </td>
-
-
-                                <td>
-
-                                    <?= esc(
-                                        $row['nama_pokja'] ?? '-'
-                                    ) ?>
-
-                                </td>
-
-
-                                <td>
-
-                                    <?= esc(
-                                        $row['tahun'] ?? '-'
-                                    ) ?>
-
-                                </td>
-
-
-                                <td>
-
-                                    <?= esc(
-                                        $row['ketua'] ?? '-'
-                                    ) ?>
-
-                                </td>
-
-
-                                <td>
-
-                                    <a
-                                        href="<?= base_url(
-                                            'pokja-kelurahan-sehat/edit/'
-                                            . $row['id']
-                                        ) ?>"
-                                        class="btn-edit-pokja"
-                                    >
-                                        Edit
-                                    </a>
-
-
-                                    <form
-                                        action="<?= base_url(
-                                            'pokja-kelurahan-sehat/delete/'
-                                            . $row['id']
-                                        ) ?>"
-                                        method="post"
-                                        style="display:inline;"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');"
-                                    >
-
-                                        <?= csrf_field() ?>
-
-                                        <button
-                                            type="submit"
-                                            class="btn-hapus-pokja"
-                                        >
-                                            Hapus
-                                        </button>
-
-                                    </form>
-
-                                </td>
-
-                            </tr>
-
-                        <?php endforeach; ?>
-
-
-                    </tbody>
-
-                </table>
+                </div>
 
             </div>
 
+            <div class="pk-card-action">
 
-        <?php endif; ?>
+                <a
+                    href="<?= site_url('pokja-kelurahan-sehat/rencana-kerja') ?>"
+                    class="pk-btn"
+                >
+                    <i class="bi bi-journal-check"></i>
+                    Kelola Rencana Kerja
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- REALISASI -->
+
+        <div class="pk-card">
+
+            <div class="pk-card-top">
+
+                <div class="pk-icon">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                </div>
+
+                <div>
+
+                    <h2>Realisasi Kegiatan</h2>
+
+                    <p>
+                        Input laporan kegiatan, waktu, peserta,
+                        hasil pelaksanaan, anggaran dan sumber pendanaan.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="pk-card-action">
+
+                <a
+                    href="<?= site_url('pokja-kelurahan-sehat/realisasi') ?>"
+                    class="pk-btn"
+                >
+                    <i class="bi bi-clipboard-data"></i>
+                    Kelola Realisasi
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOTO -->
+
+        <div class="pk-card">
+
+            <div class="pk-card-top">
+
+                <div class="pk-icon">
+                    <i class="bi bi-camera-fill"></i>
+                </div>
+
+                <div>
+
+                    <h2>Foto Sekretariat</h2>
+
+                    <p>
+                        Upload satu Foto Sekretariat
+                        dengan ukuran maksimal 2 MB.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="pk-card-action">
+
+                <a
+                    href="<?= site_url('pokja-kelurahan-sehat/foto-kegiatan') ?>"
+                    class="pk-btn"
+                >
+                    <i class="bi bi-image"></i>
+                    Kelola Foto
+                </a>
+
+            </div>
+
+        </div>
 
 
     </div>

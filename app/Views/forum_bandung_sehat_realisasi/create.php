@@ -16,6 +16,18 @@
         padding: 28px 30px;
         margin-bottom: 24px;
         position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::after {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        right: -40px;
+        top: -70px;
+        background: rgba(22, 135, 232, 0.08);
+        border-radius: 50%;
     }
 
     .page-header h1 {
@@ -35,6 +47,7 @@
         position: absolute;
         right: 28px;
         top: 25px;
+        z-index: 2;
         text-decoration: none;
         background: #fff;
         color: #0b4f9c;
@@ -45,34 +58,47 @@
         font-weight: 600;
     }
 
+    .btn-kembali:hover {
+        background: #eef7ff;
+        color: #0b4f9c;
+    }
+
+    .tahun-card,
     .form-card {
         background: #fff;
         border: 1px solid #d8e7f5;
         border-radius: 14px;
         overflow: hidden;
-        box-shadow: 0 3px 12px rgba(22,82,130,.05);
+        box-shadow: 0 3px 12px rgba(22, 82, 130, 0.05);
     }
 
+    .tahun-card {
+        margin-bottom: 24px;
+    }
+
+    .tahun-header,
     .form-header {
-        padding: 22px 28px;
-        border-bottom: 1px solid #e2ebf4;
         display: flex;
         align-items: center;
         gap: 14px;
+        padding: 22px 26px;
+        border-bottom: 1px solid #e3edf6;
     }
 
+    .tahun-icon,
     .form-icon {
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
         border-radius: 10px;
         background: #e7f3ff;
         color: #087ff5;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 21px;
     }
 
+    .tahun-header h2,
     .form-header h2 {
         margin: 0;
         color: #07366d;
@@ -80,10 +106,40 @@
         font-weight: 800;
     }
 
+    .tahun-header p,
     .form-header p {
         margin: 4px 0 0;
         color: #6d87a4;
         font-size: 12px;
+    }
+
+    .tahun-buttons {
+        display: flex;
+        gap: 10px;
+        padding: 20px 26px 22px;
+    }
+
+    .btn-tahun {
+        min-width: 105px;
+        padding: 10px 18px;
+        border-radius: 7px;
+        border: 1px solid #087ff5;
+        background: #087ff5;
+        color: #fff;
+        text-decoration: none;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .btn-tahun:hover {
+        background: #066fd6;
+        color: #fff;
+    }
+
+    .btn-tahun.active {
+        background: #07366d;
+        border-color: #07366d;
     }
 
     .form-body {
@@ -131,7 +187,7 @@
     select:focus,
     textarea:focus {
         border-color: #1687e8;
-        box-shadow: 0 0 0 3px rgba(22,135,232,.10);
+        box-shadow: 0 0 0 3px rgba(22, 135, 232, 0.10);
     }
 
     textarea {
@@ -178,13 +234,41 @@
         font-weight: 600;
     }
 
-    @media(max-width:768px) {
+    .btn-batal:hover {
+        background: #f4f8fc;
+    }
+
+    .alert {
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+
         .page-wrapper {
             padding: 15px;
         }
 
+        .page-header {
+            padding: 22px;
+        }
+
+        .page-header h1 {
+            font-size: 23px;
+            padding-right: 90px;
+        }
+
+        .btn-kembali {
+            right: 18px;
+            top: 20px;
+        }
+
         .form-row {
             grid-template-columns: 1fr;
+        }
+
+        .tahun-buttons {
+            flex-wrap: wrap;
         }
     }
 </style>
@@ -194,11 +278,9 @@
 
     <div class="page-header">
 
-        <a href="<?= base_url('forum-bandung-sehat/realisasi') ?>"
+        <a href="<?= base_url('forum-bandung-sehat') ?>"
            class="btn-kembali">
-
             ← &nbsp;Kembali
-
         </a>
 
         <h1>
@@ -208,6 +290,76 @@
         <p>
             Input realisasi kegiatan dan pendanaan Forum Bandung Sehat.
         </p>
+
+    </div>
+
+
+    <?php if (session()->getFlashdata('error')): ?>
+
+        <div class="alert alert-danger">
+            <?= esc(session()->getFlashdata('error')) ?>
+        </div>
+
+    <?php endif; ?>
+
+
+    <?php $errors = session()->getFlashdata('errors'); ?>
+
+    <?php if (!empty($errors) && is_array($errors)): ?>
+
+        <div class="alert alert-danger">
+
+            <ul class="mb-0">
+
+                <?php foreach ($errors as $error): ?>
+
+                    <li><?= esc($error) ?></li>
+
+                <?php endforeach; ?>
+
+            </ul>
+
+        </div>
+
+    <?php endif; ?>
+
+
+    <div class="tahun-card">
+
+        <div class="tahun-header">
+
+            <div class="tahun-icon">
+                ▤
+            </div>
+
+            <div>
+
+                <h2>
+                    Realisasi Kegiatan
+                </h2>
+
+                <p>
+                    Kelola realisasi kegiatan Forum Bandung Sehat berdasarkan tahun kegiatan.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="tahun-buttons">
+
+            <a href="<?= base_url('forum-bandung-sehat/realisasi/create?tahunGanjil') ?>"
+               class="btn-tahun <?= ($tahun ?? '') === 'Ganjil' ? 'active' : '' ?>">
+                ▣ &nbsp;Tahun Ganjil
+            </a>
+
+            <a href="<?= base_url('forum-bandung-sehat/realisasi/create?tahunGenap') ?>"
+               class="btn-tahun <?= ($tahun ?? '') === 'Genap' ? 'active' : '' ?>">
+                ▣ &nbsp;Tahun Genap
+            </a>
+
+        </div>
 
     </div>
 
@@ -227,7 +379,7 @@
                 </h2>
 
                 <p>
-                    Silakan isi data realisasi kegiatan.
+                    Silakan isi laporan realisasi kegiatan sesuai pelaksanaan.
                 </p>
 
             </div>
@@ -237,43 +389,17 @@
 
         <div class="form-body">
 
-            <form action="<?= base_url('forum-bandung-sehat/realisasi/store') ?>"
+            <form action="<?= base_url(
+                'forum-bandung-sehat/realisasi/store'
+            ) ?>"
                   method="post">
 
                 <?= csrf_field() ?>
 
 
-                <div class="form-row">
-
-                    <div class="form-group">
-
-                        <label>
-                            Tahun <span>*</span>
-                        </label>
-
-                        <input type="number"
-                               name="tahun"
-                               value="<?= old('tahun', date('Y')) ?>"
-                               min="2000"
-                               max="2100"
-                               required>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Waktu Kegiatan
-                        </label>
-
-                        <input type="date"
-                               name="waktu_kegiatan"
-                               value="<?= old('waktu_kegiatan') ?>">
-
-                    </div>
-
-                </div>
+                <input type="hidden"
+                       name="tahun"
+                       value="<?= esc($tahun ?? '') ?>">
 
 
                 <div class="form-group">
@@ -291,16 +417,37 @@
                 </div>
 
 
-                <div class="form-group">
+                <div class="form-row">
 
-                    <label>
-                        Peserta
-                    </label>
+                    <div class="form-group">
 
-                    <input type="text"
-                           name="peserta"
-                           value="<?= old('peserta') ?>"
-                           placeholder="Jumlah atau uraian peserta">
+                        <label>
+                            Waktu Kegiatan
+                        </label>
+
+                        <input type="date"
+                               name="waktu_kegiatan"
+                               value="<?= old('waktu_kegiatan') ?>">
+
+                        <small class="form-help">
+                            Pilih tanggal pelaksanaan kegiatan.
+                        </small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Peserta
+                        </label>
+
+                        <input type="text"
+                               name="peserta"
+                               value="<?= old('peserta') ?>"
+                               placeholder="Jumlah atau uraian peserta">
+
+                    </div>
 
                 </div>
 
@@ -322,15 +469,19 @@
                     <div class="form-group">
 
                         <label>
-                            Anggaran
+                            Anggaran Pelaksanaan (Rp)
                         </label>
 
                         <input type="text"
                                name="anggaran"
                                id="anggaran"
                                value="<?= old('anggaran') ?>"
-                               placeholder="Contoh: 5.000.000"
+                               placeholder="Jumlah anggaran kegiatan"
                                inputmode="numeric">
+
+                        <small class="form-help">
+                            Masukkan jumlah anggaran
+                        </small>
 
                     </div>
 
@@ -348,17 +499,23 @@
                             </option>
 
                             <option value="APBD Kota"
-                                <?= old('sumber_pendanaan') == 'APBD Kota' ? 'selected' : '' ?>>
+                                <?= old('sumber_pendanaan') === 'APBD Kota'
+                                    ? 'selected'
+                                    : '' ?>>
                                 APBD Kota
                             </option>
 
                             <option value="DAK"
-                                <?= old('sumber_pendanaan') == 'DAK' ? 'selected' : '' ?>>
+                                <?= old('sumber_pendanaan') === 'DAK'
+                                    ? 'selected'
+                                    : '' ?>>
                                 DAK
                             </option>
 
                             <option value="Swadaya"
-                                <?= old('sumber_pendanaan') == 'Swadaya' ? 'selected' : '' ?>>
+                                <?= old('sumber_pendanaan') === 'Swadaya'
+                                    ? 'selected'
+                                    : '' ?>>
                                 Swadaya
                             </option>
 
@@ -372,7 +529,7 @@
                 <div class="form-group">
 
                     <label>
-                        Link Drive / Cloud
+                        Link Drive / Cloud Data Dukung
                     </label>
 
                     <input type="url"
@@ -380,17 +537,21 @@
                            value="<?= old('link_drive') ?>"
                            placeholder="https://drive.google.com/...">
 
+                    <small class="form-help">
+                        Masukkan tautan Google Drive atau penyimpanan cloud lainnya.
+                    </small>
+
                 </div>
 
 
                 <div class="form-group">
 
                     <label>
-                        Data Dukung
+                        Keterangan Data Dukung
                     </label>
 
                     <textarea name="data_dukung"
-                              placeholder="Tuliskan keterangan data dukung..."><?= old('data_dukung') ?></textarea>
+                              placeholder="Tuliskan keterangan data dukung atau dokumen pendukung..."><?= old('data_dukung') ?></textarea>
 
                 </div>
 
@@ -399,16 +560,14 @@
 
                     <button type="submit"
                             class="btn-simpan">
-
                         ✓ &nbsp;Simpan Data
-
                     </button>
 
-                    <a href="<?= base_url('forum-bandung-sehat/realisasi') ?>"
+                    <a href="<?= base_url(
+                        'forum-bandung-sehat/realisasi'
+                    ) ?>"
                        class="btn-batal">
-
                         Batal
-
                     </a>
 
                 </div>
@@ -425,7 +584,8 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    const anggaran = document.getElementById('anggaran');
+    const anggaran =
+        document.getElementById('anggaran');
 
     if (!anggaran) {
         return;
@@ -433,7 +593,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function formatAnggaran(value) {
 
-        let angka = value.replace(/\D/g, '');
+        let angka =
+            value.replace(/\D/g, '');
 
         if (angka === '') {
             return '';
@@ -445,13 +606,31 @@ document.addEventListener('DOMContentLoaded', function () {
         );
     }
 
-    anggaran.addEventListener('input', function () {
-        this.value = formatAnggaran(this.value);
-    });
+    anggaran.addEventListener(
+        'input',
+        function () {
+            this.value =
+                formatAnggaran(this.value);
+        }
+    );
 
-    anggaran.form.addEventListener('submit', function () {
-        anggaran.value = anggaran.value.replace(/\./g, '');
-    });
+    if (anggaran.value !== '') {
+        anggaran.value =
+            formatAnggaran(anggaran.value);
+    }
+
+    anggaran.form.addEventListener(
+        'submit',
+        function () {
+
+            anggaran.value =
+                anggaran.value.replace(
+                    /\./g,
+                    ''
+                );
+
+        }
+    );
 
 });
 </script>

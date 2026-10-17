@@ -15,6 +15,7 @@ class TimPembinaRealisasiModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'kecamatan_id',
         'tahun',
         'nama_kegiatan',
         'waktu_kegiatan',
@@ -24,10 +25,6 @@ class TimPembinaRealisasiModel extends Model
         'sumber_pendanaan',
         'link_drive',
         'data_dukung',
-        'data_rencana',
-        'tanggal',
-        'lokasi',
-        'keterangan',
         'created_at',
         'updated_at',
     ];

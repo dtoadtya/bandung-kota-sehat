@@ -2,209 +2,265 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\PokjaKelurahanSehatRencanaKerjaModel;
-use App\Models\KecamatanModel;
-use App\Models\KelurahanModel;
 
 class PokjaKelurahanSehatRencanaKerja extends BaseController
 {
-    protected $model;
-    protected $kecamatanModel;
-    protected $kelurahanModel;
+    protected $rencanaModel;
 
     public function __construct()
     {
-        $this->model = new PokjaKelurahanSehatRencanaKerjaModel();
-        $this->kecamatanModel = new KecamatanModel();
-        $this->kelurahanModel = new KelurahanModel();
+        $this->rencanaModel =
+            new PokjaKelurahanSehatRencanaKerjaModel();
+    }
+
+    private function allowedRoles(): bool
+    {
+        return in_array(
+            session()->get('role'),
+            ['user', 'admin'],
+            true
+        );
     }
 
     public function index()
     {
-        $tahun = $this->request->getGet('tahun');
-
-        $builder = $this->model
-            ->select(
-                'pokja_kelurahan_sehat_rencana_kerja.*,
-                 kelurahan.nama_kelurahan,
-                 kecamatan.nama_kecamatan'
-            )
-            ->join(
-                'kelurahan',
-                'kelurahan.id = pokja_kelurahan_sehat_rencana_kerja.kelurahan_id',
-                'left'
-            )
-            ->join(
-                'kecamatan',
-                'kecamatan.id = kelurahan.kecamatan_id',
-                'left'
-            )
-            ->orderBy('kecamatan.nama_kecamatan', 'ASC')
-            ->orderBy('kelurahan.nama_kelurahan', 'ASC')
-            ->orderBy(
-                'pokja_kelurahan_sehat_rencana_kerja.id',
-                'DESC'
-            );
-
-        if ($tahun !== null && $tahun !== '') {
-            $builder->where(
-                'pokja_kelurahan_sehat_rencana_kerja.tahun',
-                $tahun
-            );
+        if (!$this->allowedRoles()) {
+            return redirect()->to('/dashboard');
         }
 
-        return view('pokja_kelurahan_sehat_rencana_kerja/index', [
-            'title' => 'Rencana Kerja Pokja Kelurahan Sehat',
-            'data' => $builder->findAll(),
-            'tahun' => $tahun
-        ]);
+        return view(
+            'pokja_kelurahan_sehat_rencana_kerja/index',
+            [
+                'title' =>
+                    'Rencana Kerja Pokja Kelurahan Sehat',
+            ]
+        );
     }
 
-    public function create()
+    public function periode($periode)
     {
-        return view('pokja_kelurahan_sehat_rencana_kerja/create', [
-            'title' => 'Tambah Rencana Kerja',
-            'tahun' => $this->request->getGet('tahun'),
-            'kecamatanList' => $this->kecamatanModel
-                ->orderBy('nama_kecamatan', 'ASC')
-                ->findAll(),
-            'kelurahanList' => $this->kelurahanModel
-                ->orderBy('nama_kelurahan', 'ASC')
-                ->findAll()
-        ]);
+        if (!$this->allowedRoles()) {
+            return redirect()->to('/dashboard');
+        }
+
+        if (!in_array($periode, ['ganjil', 'genap'], true)) {
+            return redirect()
+                ->to('/pokja-kelurahan-sehat/rencana-kerja')
+                ->with('error', 'Periode tidak valid.');
+        }
+
+        $data = $this->rencanaModel
+            ->where('periode', $periode)
+            ->orderBy('tahun', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        return view(
+            'pokja_kelurahan_sehat_rencana_kerja/periode',
+            [
+                'title' =>
+                    'Rencana Kerja Pokja Kelurahan Sehat',
+                'periode' => $periode,
+                'data' => $data,
+            ]
+        );
+    }
+
+    public function create($periode)
+    {
+        if (!$this->allowedRoles()) {
+            return redirect()->to('/dashboard');
+        }
+
+        if (!in_array($periode, ['ganjil', 'genap'], true)) {
+            return redirect()
+                ->to('/pokja-kelurahan-sehat/rencana-kerja')
+                ->with('error', 'Periode tidak valid.');
+        }
+
+        return view(
+            'pokja_kelurahan_sehat_rencana_kerja/create',
+            [
+                'title' =>
+                    'Upload Rencana Kerja Pokja Kelurahan Sehat',
+                'periode' => $periode,
+            ]
+        );
     }
 
     public function store()
     {
-        if (!$this->validate([
-            'kelurahan_id' => 'required|integer',
-            'tahun' => 'required|max_length[50]',
-            'nama_kegiatan' => 'required|max_length[255]',
-            'waktu_kegiatan' => 'required|valid_date[Y-m-d]',
-            'peserta' => 'permit_empty|max_length[255]',
-            'hasil_pelaksanaan' => 'permit_empty',
-            'anggaran' => 'permit_empty|numeric',
-            'sumber_pendanaan' => 'permit_empty|max_length[100]',
-            'link_drive' => 'permit_empty|valid_url',
-            'data_dukung' => 'permit_empty'
-        ])) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', implode('<br>', $this->validator->getErrors()));
+        if (!$this->allowedRoles()) {
+            return redirect()->to('/dashboard');
         }
 
-        $anggaran = str_replace('.', '', $this->request->getPost('anggaran'));
+        $periode =
+            $this->request->getPost('periode');
 
-        $this->model->insert([
-            'kelurahan_id' => $this->request->getPost('kelurahan_id'),
-            'tahun' => $this->request->getPost('tahun'),
-            'nama_kegiatan' => $this->request->getPost('nama_kegiatan'),
-            'waktu_kegiatan' => $this->request->getPost('waktu_kegiatan'),
-            'peserta' => $this->request->getPost('peserta'),
-            'hasil_pelaksanaan' => $this->request->getPost('hasil_pelaksanaan'),
-            'anggaran' => $anggaran !== '' ? $anggaran : null,
-            'sumber_pendanaan' => $this->request->getPost('sumber_pendanaan'),
-            'link_drive' => $this->request->getPost('link_drive'),
-            'data_dukung' => $this->request->getPost('data_dukung'),
+        if (!in_array($periode, ['ganjil', 'genap'], true)) {
+            return redirect()->back()
+                ->with('error', 'Periode tidak valid.');
+        }
+
+        $rules = [
+            'tahun' => [
+                'label' => 'Tahun',
+                'rules' =>
+                    'required|integer|greater_than_equal_to[2000]|less_than_equal_to[2100]',
+            ],
+
+            'file' => [
+                'label' => 'File Rencana Kerja',
+                'rules' =>
+                    'uploaded[file]|max_size[file,10240]|ext_in[file,pdf,doc,docx,xls,xlsx]',
+            ],
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()
+                ->withInput()
+                ->with(
+                    'errors',
+                    $this->validator->getErrors()
+                );
+        }
+
+        $file =
+            $this->request->getFile('file');
+
+        if (!$file || !$file->isValid()) {
+            return redirect()->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'File belum dipilih atau tidak valid.'
+                );
+        }
+
+        $uploadPath =
+            FCPATH .
+            'uploads/pokja_kelurahan_sehat/rencana_kerja';
+
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+
+        $namaFile =
+            $file->getRandomName();
+
+        $namaAsli =
+            $file->getClientName();
+
+        $file->move(
+            $uploadPath,
+            $namaFile
+        );
+
+        $this->rencanaModel->insert([
+            'tahun' =>
+                $this->request->getPost('tahun'),
+
+            'periode' =>
+                $periode,
+
+            'nama_file' =>
+                $namaFile,
+
+            'nama_asli' =>
+                $namaAsli,
+
+            'file_path' =>
+                'uploads/pokja_kelurahan_sehat/rencana_kerja/'
+                . $namaFile,
+
+            'ukuran_file' =>
+                $file->getSize(),
         ]);
 
         return redirect()
-            ->to(base_url(
-                'pokja-kelurahan-sehat/rencana-kerja?tahun=' .
-                $this->request->getPost('tahun')
-            ))
-            ->with('success', 'Rencana kerja berhasil ditambahkan.');
+            ->to(
+                '/pokja-kelurahan-sehat/rencana-kerja/'
+                . $periode
+            )
+            ->with(
+                'success',
+                'File Rencana Kerja berhasil diupload.'
+            );
     }
 
-    public function edit($id)
+    public function view($id)
     {
-        $data = $this->model->find($id);
+        if (!$this->allowedRoles()) {
+            return redirect()->to('/dashboard');
+        }
+
+        $data =
+            $this->rencanaModel->find($id);
 
         if (!$data) {
             return redirect()->back()
-                ->with('error', 'Data tidak ditemukan.');
+                ->with(
+                    'error',
+                    'Data tidak ditemukan.'
+                );
         }
 
-        return view('pokja_kelurahan_sehat_rencana_kerja/edit', [
-            'title' => 'Edit Rencana Kerja',
-            'data' => $data,
-            'tahun' => $data['tahun'] ?? '',
-            'kecamatanList' => $this->kecamatanModel
-                ->orderBy('nama_kecamatan', 'ASC')
-                ->findAll(),
-            'kelurahanList' => $this->kelurahanModel
-                ->orderBy('nama_kelurahan', 'ASC')
-                ->findAll()
-        ]);
+        $path =
+            FCPATH .
+            $data['file_path'];
+
+        if (!is_file($path)) {
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'File tidak ditemukan.'
+                );
+        }
+
+        return $this->response
+            ->download($path, null)
+            ->setFileName(
+                $data['nama_asli']
+            );
     }
 
-    public function update($id)
+    public function download($id)
     {
-        $data = $this->model->find($id);
-
-        if (!$data) {
-            return redirect()->back()
-                ->with('error', 'Data tidak ditemukan.');
-        }
-
-        if (!$this->validate([
-            'kelurahan_id' => 'required|integer',
-            'tahun' => 'required|max_length[50]',
-            'nama_kegiatan' => 'required|max_length[255]',
-            'waktu_kegiatan' => 'required|valid_date[Y-m-d]',
-            'peserta' => 'permit_empty|max_length[255]',
-            'hasil_pelaksanaan' => 'permit_empty',
-            'anggaran' => 'permit_empty|numeric',
-            'sumber_pendanaan' => 'permit_empty|max_length[100]',
-            'link_drive' => 'permit_empty|valid_url',
-            'data_dukung' => 'permit_empty'
-        ])) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', implode('<br>', $this->validator->getErrors()));
-        }
-
-        $anggaran = str_replace('.', '', $this->request->getPost('anggaran'));
-
-        $this->model->update($id, [
-            'kelurahan_id' => $this->request->getPost('kelurahan_id'),
-            'tahun' => $this->request->getPost('tahun'),
-            'nama_kegiatan' => $this->request->getPost('nama_kegiatan'),
-            'waktu_kegiatan' => $this->request->getPost('waktu_kegiatan'),
-            'peserta' => $this->request->getPost('peserta'),
-            'hasil_pelaksanaan' => $this->request->getPost('hasil_pelaksanaan'),
-            'anggaran' => $anggaran !== '' ? $anggaran : null,
-            'sumber_pendanaan' => $this->request->getPost('sumber_pendanaan'),
-            'link_drive' => $this->request->getPost('link_drive'),
-            'data_dukung' => $this->request->getPost('data_dukung'),
-        ]);
-
-        return redirect()
-            ->to(base_url(
-                'pokja-kelurahan-sehat/rencana-kerja?tahun=' .
-                $this->request->getPost('tahun')
-            ))
-            ->with('success', 'Rencana kerja berhasil diperbarui.');
+        return $this->view($id);
     }
 
     public function delete($id)
     {
-        $data = $this->model->find($id);
+        if (!$this->allowedRoles()) {
+            return redirect()->to('/dashboard');
+        }
+
+        $data =
+            $this->rencanaModel->find($id);
 
         if (!$data) {
             return redirect()->back()
-                ->with('error', 'Data tidak ditemukan.');
+                ->with(
+                    'error',
+                    'Data tidak ditemukan.'
+                );
         }
 
-        $tahun = $data['tahun'] ?? '';
+        $path =
+            FCPATH .
+            $data['file_path'];
 
-        $this->model->delete($id);
+        if (is_file($path)) {
+            unlink($path);
+        }
 
-        return redirect()
-            ->to(base_url(
-                'pokja-kelurahan-sehat/rencana-kerja?tahun=' . $tahun
-            ))
-            ->with('success', 'Rencana kerja berhasil dihapus.');
+        $this->rencanaModel->delete($id);
+
+        return redirect()->back()
+            ->with(
+                'success',
+                'File Rencana Kerja berhasil dihapus.'
+            );
     }
 }

@@ -6,7 +6,7 @@
 
     <div class="kelembagaan-header mb-4">
         <div>
-            <h1>Upload Foto Kegiatan</h1>
+            <h1>Upload Foto Sekretariat</h1>
             <p>Forum Kecamatan Sehat</p>
         </div>
 
@@ -25,7 +25,7 @@
             </h4>
 
             <p class="text-muted mb-4">
-                Unggah satu foto dokumentasi kegiatan dengan ukuran maksimal 5 MB.
+                Unggah satu foto dokumentasi kegiatan dengan ukuran maksimal 2 MB.
             </p>
 
             <?php if (session()->getFlashdata('errors')): ?>
@@ -85,7 +85,7 @@
 
                 <div class="mb-4">
                     <label class="form-label">
-                        Foto Kegiatan
+                        Foto Sekretariat
                         <span class="text-danger">*</span>
                     </label>
 

@@ -1,0 +1,135 @@
+<?= $this->extend('layouts/main') ?>
+
+<?= $this->section('content') ?>
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold mb-1">
+                Rencana Kerja Pokja Kelurahan Sehat
+            </h3>
+
+            <p class="text-muted mb-0">
+                Kelola Rencana Kerja berdasarkan tahun.
+            </p>
+
+        </div>
+
+        <a
+            href="<?= base_url('pokja-kelurahan-sehat') ?>"
+            class="btn btn-outline-secondary"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Kembali
+        </a>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+
+            <a
+                href="<?= base_url('pokja-kelurahan-sehat/rencana-kerja/ganjil') ?>"
+                class="text-decoration-none"
+            >
+
+                <div class="card border-0 shadow-sm h-100"
+                    style="border-radius:16px;">
+
+                    <div class="card-body p-4">
+
+                        <div class="d-flex align-items-center">
+
+                            <div
+                                class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="
+                                    width:58px;
+                                    height:58px;
+                                    background:#eaf3ff;
+                                    color:#0b4f9c;
+                                "
+                            >
+                                <i class="bi bi-calendar-event fs-3"></i>
+                            </div>
+
+                            <div>
+
+                                <h5 class="fw-bold mb-1 text-dark">
+                                    Tahun Ganjil
+                                </h5>
+
+                                <div class="text-muted">
+                                    Rencana Kerja Tahun Ganjil
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+            <a
+                href="<?= base_url('pokja-kelurahan-sehat/rencana-kerja/genap') ?>"
+                class="text-decoration-none"
+            >
+
+                <div class="card border-0 shadow-sm h-100"
+                    style="border-radius:16px;">
+
+                    <div class="card-body p-4">
+
+                        <div class="d-flex align-items-center">
+
+                            <div
+                                class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="
+                                    width:58px;
+                                    height:58px;
+                                    background:#eaf3ff;
+                                    color:#0b4f9c;
+                                "
+                            >
+                                <i class="bi bi-calendar-check fs-3"></i>
+                            </div>
+
+                            <div>
+
+                                <h5 class="fw-bold mb-1 text-dark">
+                                    Tahun Genap
+                                </h5>
+
+                                <div class="text-muted">
+                                    Rencana Kerja Tahun Genap
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<?= $this->endSection() ?>

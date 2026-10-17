@@ -2,389 +2,133 @@
 
 <?= $this->section('content') ?>
 
-<style>
-    .kelembagaan-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 20px;
-        margin-bottom: 28px;
-    }
+<div class="container-fluid py-4">
 
-    .kelembagaan-header h1 {
-        margin: 0;
-        color: #063b78;
-        font-size: 36px;
-        font-weight: 800;
-    }
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    .kelembagaan-header p {
-        margin: 8px 0 0;
-        color: #7186a0;
-        font-size: 16px;
-    }
+        <div>
+            <h3 class="fw-bold mb-1">
+                Rencana Kerja Forum Bandung Sehat
+            </h3>
 
-    .btn-kembali {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 20px;
-        border: 1px solid #d5e2ef;
-        border-radius: 10px;
-        background: #ffffff;
-        color: #174d83;
-        text-decoration: none;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .btn-kembali:hover {
-        background: #f0f7ff;
-        color: #063b78;
-    }
-
-    .btn-tambah {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 11px 18px;
-        border-radius: 9px;
-        background: #087cf0;
-        color: #ffffff;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 700;
-    }
-
-    .btn-tambah:hover {
-        background: #0568cc;
-        color: #ffffff;
-    }
-
-    .kelembagaan-card {
-        background: #ffffff;
-        border: 1px solid #e0ebf5;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(22, 73, 121, 0.06);
-        overflow: hidden;
-    }
-
-    .kelembagaan-card-header {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 24px 28px;
-        border-bottom: 1px solid #edf2f7;
-    }
-
-    .kelembagaan-card-icon {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-        background: #e8f3ff;
-        color: #087cf0;
-        font-size: 24px;
-    }
-
-    .kelembagaan-card-header h2 {
-        margin: 0;
-        color: #063b78;
-        font-size: 23px;
-        font-weight: 800;
-    }
-
-    .kelembagaan-card-header p {
-        margin: 5px 0 0;
-        color: #7890aa;
-        font-size: 14px;
-    }
-
-    .empty-state {
-        padding: 55px 20px 60px;
-        text-align: center;
-    }
-
-    .empty-state-icon {
-        width: 90px;
-        height: 90px;
-        margin: 0 auto 22px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 22px;
-        background: #e8f3ff;
-        color: #087cf0;
-    }
-
-    .empty-state-icon i {
-        font-size: 48px;
-    }
-
-    .empty-state h5 {
-        margin: 0 0 10px;
-        color: #063b78;
-        font-size: 23px;
-        font-weight: 800;
-    }
-
-    .empty-state p {
-        margin: 0;
-        color: #7890aa;
-        font-size: 15px;
-    }
-
-    .table-wrapper {
-        padding: 25px 28px 28px;
-        overflow-x: auto;
-    }
-
-    .table {
-        margin-bottom: 0;
-        vertical-align: middle;
-    }
-
-    .table thead th {
-        padding: 15px;
-        background: #087cf0;
-        color: #ffffff;
-        border: none;
-        font-size: 14px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .table thead th:first-child {
-        border-radius: 10px 0 0 10px;
-    }
-
-    .table thead th:last-child {
-        border-radius: 0 10px 10px 0;
-    }
-
-    .table tbody td {
-        padding: 15px;
-        color: #506b88;
-        border-color: #edf2f7;
-        font-size: 14px;
-    }
-
-    .table tbody tr:hover {
-        background: #f7fbff;
-    }
-
-    .badge-tahun {
-        display: inline-block;
-        padding: 6px 11px;
-        border-radius: 7px;
-        background: #e8f3ff;
-        color: #087cf0;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .btn-aksi {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 7px 11px;
-        border-radius: 7px;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .btn-edit {
-        background: #e8f3ff;
-        color: #087cf0;
-    }
-
-    .btn-edit:hover {
-        background: #d7eaff;
-        color: #0568cc;
-    }
-
-    .btn-hapus {
-        border: 0;
-        background: #fff0f0;
-        color: #dc3545;
-    }
-
-    .btn-hapus:hover {
-        background: #ffe0e0;
-        color: #b02a37;
-    }
-
-    .alert {
-        border-radius: 10px;
-    }
-
-    @media (max-width: 768px) {
-        .kelembagaan-header {
-            flex-direction: column;
-        }
-
-        .kelembagaan-header h1 {
-            font-size: 28px;
-        }
-
-        .kelembagaan-card-header {
-            padding: 20px;
-        }
-
-        .table-wrapper {
-            padding: 18px;
-        }
-    }
-</style>
-
-<div class="kelembagaan-header">
-    <div>
-        <h1>Rencana Kerja</h1>
-        <p>Kelola data rencana kerja Forum Bandung Sehat berdasarkan tahun.</p>
-    </div>
-
-    <a
-        href="<?= site_url('forum-bandung-sehat/create') ?>"
-        class="btn-kembali"
-    >
-        <i class="bi bi-arrow-left"></i>
-        Kembali
-    </a>
-</div>
-
-<?php if (session()->getFlashdata('success')): ?>
-    <div class="alert alert-success mb-4">
-        <?= esc(session()->getFlashdata('success')) ?>
-    </div>
-<?php endif; ?>
-
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="alert alert-danger mb-4">
-        <?= esc(session()->getFlashdata('error')) ?>
-    </div>
-<?php endif; ?>
-
-<div class="kelembagaan-card">
-
-    <div class="kelembagaan-card-header">
-        <div class="kelembagaan-card-icon">
-            <i class="bi bi-journal-text"></i>
-        </div>
-
-        <div class="flex-grow-1">
-            <h2>Data Rencana Kerja</h2>
-            <p>
-                Daftar rencana kerja Forum Bandung Sehat setiap tahun.
+            <p class="text-muted mb-0">
+                Kelola Rencana Kerja berdasarkan tahun.
             </p>
         </div>
 
         <a
-            href="<?= site_url('forum-bandung-sehat/rencana-kerja/create') ?>"
-            class="btn-tambah"
+            href="<?= base_url('forum-bandung-sehat') ?>"
+            class="btn btn-outline-secondary"
         >
-            <i class="bi bi-plus-circle"></i>
-            Tambah Data
+            <i class="bi bi-arrow-left"></i>
+            Kembali
         </a>
+
     </div>
 
-    <?php if (empty($data)): ?>
 
-        <div class="empty-state">
+    <div class="row g-4">
 
-            <div class="empty-state-icon">
-                <i class="bi bi-journal-text"></i>
-            </div>
+        <!-- GANJIL -->
+        <div class="col-md-6">
 
-            <h5>Belum Ada Rencana Kerja</h5>
+            <a
+                href="<?= base_url('forum-bandung-sehat/rencana-kerja/ganjil') ?>"
+                class="text-decoration-none"
+            >
 
-            <p>
-                Silakan tambahkan rencana kerja berdasarkan tahun.
-            </p>
+                <div class="card border-0 shadow-sm h-100"
+                    style="border-radius:16px;">
+
+                    <div class="card-body p-4">
+
+                        <div class="d-flex align-items-center">
+
+                            <div
+                                class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="
+                                    width:58px;
+                                    height:58px;
+                                    background:#eaf3ff;
+                                    color:#0b4f9c;
+                                "
+                            >
+                                <i class="bi bi-calendar-event fs-3"></i>
+                            </div>
+
+                            <div>
+
+                                <h5 class="fw-bold mb-1 text-dark">
+                                    Tahun Ganjil
+                                </h5>
+
+                                <div class="text-muted">
+                                    Rencana Kerja Tahun Ganjil
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </a>
 
         </div>
 
-    <?php else: ?>
 
-        <div class="table-wrapper">
+        <!-- GENAP -->
+        <div class="col-md-6">
 
-            <table class="table table-hover">
+            <a
+                href="<?= base_url('forum-bandung-sehat/rencana-kerja/genap') ?>"
+                class="text-decoration-none"
+            >
 
-                <thead>
-                    <tr>
-                        <th width="70">No</th>
-                        <th width="150">Tahun</th>
-                        <th>Data Rencana Kerja</th>
-                        <th width="180">Aksi</th>
-                    </tr>
-                </thead>
+                <div class="card border-0 shadow-sm h-100"
+                    style="border-radius:16px;">
 
-                <tbody>
-                    <?php foreach ($data as $index => $row): ?>
+                    <div class="card-body p-4">
 
-                        <tr>
-                            <td>
-                                <?= $index + 1 ?>
-                            </td>
+                        <div class="d-flex align-items-center">
 
-                            <td>
-                                <span class="badge-tahun">
-                                    <?= esc($row['tahun']) ?>
-                                </span>
-                            </td>
+                            <div
+                                class="rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="
+                                    width:58px;
+                                    height:58px;
+                                    background:#eaf3ff;
+                                    color:#0b4f9c;
+                                "
+                            >
+                                <i class="bi bi-calendar-check fs-3"></i>
+                            </div>
 
-                            <td>
-                                <div style="
-                                    max-width: 650px;
-                                    white-space: pre-line;
-                                    color: #506b88;
-                                    line-height: 1.6;
-                                ">
-                                    <?= esc($row['data_rencana'] ?? '-') ?>
+                            <div>
+
+                                <h5 class="fw-bold mb-1 text-dark">
+                                    Tahun Genap
+                                </h5>
+
+                                <div class="text-muted">
+                                    Rencana Kerja Tahun Genap
                                 </div>
-                            </td>
 
-                            <td>
-                                <div class="d-flex gap-2">
+                            </div>
 
-                                    <a
-                                        href="<?= site_url('forum-bandung-sehat/rencana-kerja/edit/' . $row['id']) ?>"
-                                        class="btn-aksi btn-edit"
-                                    >
-                                        <i class="bi bi-pencil"></i>
-                                        Edit
-                                    </a>
+                        </div>
 
-                                    <form
-                                        action="<?= site_url('forum-bandung-sehat/rencana-kerja/delete/' . $row['id']) ?>"
-                                        method="post"
-                                        onsubmit="return confirm('Yakin ingin menghapus rencana kerja ini?')"
-                                    >
-                                        <?= csrf_field() ?>
+                    </div>
 
-                                        <button
-                                            type="submit"
-                                            class="btn-aksi btn-hapus"
-                                        >
-                                            <i class="bi bi-trash"></i>
-                                            Hapus
-                                        </button>
-                                    </form>
+                </div>
 
-                                </div>
-                            </td>
-                        </tr>
-
-                    <?php endforeach; ?>
-                </tbody>
-
-            </table>
+            </a>
 
         </div>
 
-    <?php endif; ?>
+    </div>
 
 </div>
 

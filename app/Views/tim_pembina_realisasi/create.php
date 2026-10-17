@@ -3,72 +3,142 @@
 <?= $this->section('content') ?>
 
 <style>
-    .page-container {
-        padding: 30px;
-        background: #f4f7fb;
-        min-height: calc(100vh - 80px);
+    .page-wrapper {
+        background: #f4f8fc;
+        min-height: calc(100vh - 70px);
+        padding: 28px;
     }
 
     .page-header {
-        background: #eef7ff;
-        border-left: 5px solid #1683d8;
+        background: linear-gradient(135deg, #eef7ff, #e5f2ff);
+        border-left: 6px solid #1687e8;
         border-radius: 14px;
-        padding: 30px 38px;
+        padding: 28px 30px;
         margin-bottom: 24px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::after {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        right: -40px;
+        top: -70px;
+        background: rgba(22, 135, 232, 0.08);
+        border-radius: 50%;
     }
 
     .page-header h1 {
-        margin: 0;
-        color: #063b78;
-        font-size: 32px;
+        margin: 0 0 8px;
+        color: #07366d;
+        font-size: 30px;
         font-weight: 800;
     }
 
     .page-header p {
-        margin: 8px 0 0;
-        color: #6682a4;
+        margin: 0;
+        color: #5d7898;
         font-size: 14px;
     }
 
-    .btn-back {
+    .btn-kembali {
+        position: absolute;
+        right: 28px;
+        top: 25px;
+        z-index: 2;
         text-decoration: none;
-        color: #07509c;
-        background: white;
+        background: #fff;
+        color: #0b4f9c;
         border: 1px solid #cbdff2;
-        border-radius: 10px;
-        padding: 13px 22px;
-        font-weight: 700;
-        white-space: nowrap;
+        border-radius: 8px;
+        padding: 11px 18px;
+        font-size: 13px;
+        font-weight: 600;
     }
 
+    .btn-kembali:hover {
+        background: #eef7ff;
+        color: #0b4f9c;
+    }
+
+    .tahun-card,
     .form-card {
-        background: white;
-        border: 1px solid #dce7f2;
+        background: #fff;
+        border: 1px solid #d8e7f5;
         border-radius: 14px;
+        margin-bottom: 24px;
         overflow: hidden;
-        box-shadow: 0 4px 12px rgba(17, 64, 112, 0.04);
+        box-shadow: 0 3px 12px rgba(22, 82, 130, 0.05);
     }
 
-    .form-card-header {
-        padding: 24px 28px;
-        border-bottom: 1px solid #e4ebf3;
+    .tahun-header,
+    .form-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 22px 26px;
+        border-bottom: 1px solid #e3edf6;
     }
 
-    .form-card-header h2 {
-        margin: 0;
-        color: #063b78;
+    .tahun-icon,
+    .form-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: #e7f3ff;
+        color: #087ff5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 21px;
+        flex-shrink: 0;
+    }
+
+    .tahun-header h2,
+    .form-header h2 {
+        margin: 0;
+        color: #07366d;
+        font-size: 20px;
         font-weight: 800;
     }
 
-    .form-card-header p {
-        margin: 7px 0 0;
-        color: #7890ad;
+    .tahun-header p,
+    .form-header p {
+        margin: 4px 0 0;
+        color: #6d87a4;
+        font-size: 12px;
+    }
+
+    .tahun-buttons {
+        display: flex;
+        gap: 10px;
+        padding: 20px 26px 22px;
+    }
+
+    .btn-tahun {
+        min-width: 110px;
+        padding: 11px 18px;
+        border-radius: 7px;
+        border: 1px solid #087ff5;
+        background: #087ff5;
+        color: #fff;
+        text-decoration: none;
+        text-align: center;
         font-size: 13px;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+    .btn-tahun:hover {
+        background: #066fd6;
+        color: #fff;
+    }
+
+    .btn-tahun.active {
+        background: #07366d;
+        border-color: #07366d;
     }
 
     .form-body {
@@ -76,24 +146,24 @@
     }
 
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 18px;
     }
 
     .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
+        gap: 16px;
     }
 
     label {
         display: block;
         margin-bottom: 8px;
-        color: #073d78;
-        font-size: 14px;
+        color: #174b7e;
+        font-size: 13px;
         font-weight: 700;
     }
 
-    .required {
+    label span {
         color: #e53935;
     }
 
@@ -102,310 +172,466 @@
     textarea {
         width: 100%;
         box-sizing: border-box;
-        border: 1px solid #c9dced;
+        border: 1px solid #c8dceb;
         border-radius: 8px;
-        padding: 13px 14px;
-        background: white;
-        color: #24486e;
+        padding: 12px 13px;
+        color: #34495e;
+        background: #fff;
         font-family: inherit;
-        font-size: 14px;
+        font-size: 13px;
         outline: none;
+        transition: .2s;
     }
 
     input:focus,
     select:focus,
     textarea:focus {
-        border-color: #1683d8;
-        box-shadow: 0 0 0 3px rgba(22, 131, 216, 0.10);
+        border-color: #1687e8;
+        box-shadow: 0 0 0 3px rgba(22, 135, 232, 0.10);
     }
 
     textarea {
-        min-height: 120px;
+        min-height: 105px;
         resize: vertical;
     }
 
     .form-help {
-        margin-top: 7px;
-        color: #7890ad;
-        font-size: 12px;
+        display: block;
+        margin-top: 6px;
+        color: #7992ad;
+        font-size: 11px;
     }
 
     .form-actions {
         display: flex;
         gap: 10px;
-        margin-top: 28px;
+        margin-top: 8px;
     }
 
-    .btn-save {
+    .btn-simpan {
         border: none;
-        border-radius: 8px;
-        padding: 13px 22px;
         background: #087ff5;
-        color: white;
+        color: #fff;
+        padding: 11px 20px;
+        border-radius: 7px;
+        font-size: 13px;
         font-weight: 700;
         cursor: pointer;
     }
 
-    .btn-cancel {
+    .btn-simpan:hover {
+        background: #066fd6;
+    }
+
+    .btn-batal {
         text-decoration: none;
-        border: 1px solid #c9dced;
-        border-radius: 8px;
-        padding: 12px 22px;
-        background: white;
-        color: #315b85;
-        font-weight: 700;
+        background: #fff;
+        color: #526b84;
+        border: 1px solid #cbd9e5;
+        padding: 10px 20px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .btn-batal:hover {
+        background: #f4f8fc;
     }
 
     .alert-error {
-        background: #fff1f1;
-        border: 1px solid #f1bcbc;
-        color: #b42323;
+        background: #fff0f0;
+        color: #b42318;
+        border: 1px solid #f1c0c0;
+        padding: 12px 15px;
         border-radius: 8px;
-        padding: 13px 16px;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
+        font-size: 13px;
     }
 
     @media (max-width: 768px) {
-        .page-container {
-            padding: 18px;
+
+        .page-wrapper {
+            padding: 15px;
         }
 
         .page-header {
-            padding: 24px;
-            flex-direction: column;
-            align-items: flex-start;
+            padding: 22px;
         }
 
         .page-header h1 {
-            font-size: 26px;
+            font-size: 23px;
+            padding-right: 90px;
+        }
+
+        .btn-kembali {
+            right: 18px;
+            top: 20px;
         }
 
         .form-row {
             grid-template-columns: 1fr;
-            gap: 0;
         }
 
-        .form-body {
-            padding: 20px;
+        .tahun-buttons {
+            flex-wrap: wrap;
         }
     }
 </style>
 
-<div class="page-container">
+<div class="page-wrapper">
+
+    <!-- HEADER -->
 
     <div class="page-header">
-        <div>
-            <h1>Tambah Realisasi Kegiatan</h1>
-            <p>Input laporan realisasi kegiatan dan pendanaan Tim Pembina.</p>
-        </div>
 
-        <a href="<?= base_url('tim-pembina/create') ?>" class="btn-back">
-            ← Kembali
+        <a href="<?= base_url('tim-pembina/realisasi?tahun=' . ($tahun ?? '')) ?>"
+           class="btn-kembali">
+            ← &nbsp;Kembali
         </a>
+
+        <h1>
+            Tambah Realisasi Kegiatan
+        </h1>
+
+        <p>
+            Input realisasi kegiatan dan pendanaan Tim Pembina.
+        </p>
+
     </div>
 
-    <?php if (session()->getFlashdata('error')) : ?>
-        <div class="alert-error">
-            <?= esc(session()->getFlashdata('error')) ?>
+
+    <!-- TAHUN -->
+
+    <div class="tahun-card">
+
+        <div class="tahun-header">
+
+            <div class="tahun-icon">
+                ▤
+            </div>
+
+            <div>
+
+                <h2>
+                    Realisasi Kegiatan
+                </h2>
+
+                <p>
+                    Pilih tahun realisasi kegiatan yang akan diinput.
+                </p>
+
+            </div>
+
         </div>
-    <?php endif; ?>
+
+        <div class="tahun-buttons">
+
+            <a href="<?= base_url('tim-pembina/realisasi/create?tahunGanjil') ?>"
+               class="btn-tahun <?= ($tahun ?? '') == '1' ? 'active' : '' ?>">
+                ▣ &nbsp; Tahun Ganjil
+            </a>
+
+            <a href="<?= base_url('tim-pembina/realisasi/create?tahunGenap') ?>"
+               class="btn-tahun <?= ($tahun ?? '') == '2' ? 'active' : '' ?>">
+                ▣ &nbsp; Tahun Genap
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- FORM -->
 
     <div class="form-card">
 
-        <div class="form-card-header">
-            <h2>▤ Form Laporan Realisasi Kegiatan</h2>
-            <p>Silakan isi laporan realisasi kegiatan sesuai pelaksanaan.</p>
+        <div class="form-header">
+
+            <div class="form-icon">
+                ▥
+            </div>
+
+            <div>
+
+                <h2>
+                    Form Realisasi Kegiatan
+                </h2>
+
+                <p>
+                    Silakan isi laporan realisasi kegiatan sesuai pelaksanaan.
+                </p>
+
+            </div>
+
         </div>
+
 
         <div class="form-body">
 
-            <form action="<?= base_url('tim-pembina/realisasi/store') ?>" method="post">
+            <?php if (session()->getFlashdata('error')): ?>
+
+                <div class="alert-error">
+                    <?= session()->getFlashdata('error') ?>
+                </div>
+
+            <?php endif; ?>
+
+
+            <form action="<?= base_url('tim-pembina/realisasi/store') ?>"
+                  method="post">
 
                 <?= csrf_field() ?>
 
+
+                <input type="hidden"
+                       name="tahun"
+                       value="<?= esc($tahun ?? '') ?>">
+
+
+                <!-- NAMA KEGIATAN -->
+
                 <div class="form-group">
-                    <label for="kecamatan_id">Kecamatan</label>
 
-                    <select name="kecamatan_id" id="kecamatan_id">
-                        <option value="">-- Pilih Kecamatan --</option>
+                    <label>
+                        Nama Kegiatan <span>*</span>
+                    </label>
 
-                        <?php foreach ($kecamatanList ?? [] as $kecamatan) : ?>
-                            <option
-                                value="<?= esc($kecamatan['id']) ?>"
-                                <?= old('kecamatan_id') == $kecamatan['id'] ? 'selected' : '' ?>
-                            >
-                                <?= esc($kecamatan['nama_kecamatan']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="form-row">
-
-                    <div class="form-group">
-                        <label for="tahun">
-                            Tahun <span class="required">*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            name="tahun"
-                            id="tahun"
-                            value="<?= old('tahun', date('Y')) ?>"
-                            placeholder="Contoh: 2026"
-                            required
-                        >
-
-                        <div class="form-help">
-                            Tahun dapat disesuaikan dengan periode kegiatan.
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="nama_kegiatan">
-                            Nama Kegiatan <span class="required">*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="nama_kegiatan"
-                            id="nama_kegiatan"
-                            value="<?= old('nama_kegiatan') ?>"
-                            placeholder="Masukkan nama kegiatan"
-                            required
-                        >
-                    </div>
+                    <input type="text"
+                           name="nama_kegiatan"
+                           value="<?= old('nama_kegiatan') ?>"
+                           placeholder="Masukkan nama kegiatan"
+                           required>
 
                 </div>
 
+
                 <div class="form-row">
 
+                    <!-- WAKTU -->
+
                     <div class="form-group">
-                        <label for="waktu_kegiatan">
-                            Waktu Kegiatan (D/M/Y) <span class="required">*</span>
+
+                        <label>
+                            Waktu Kegiatan <span>*</span>
                         </label>
 
-                        <input
-                            type="date"
-                            name="waktu_kegiatan"
-                            id="waktu_kegiatan"
-                            value="<?= old('waktu_kegiatan') ?>"
-                            required
-                        >
+                        <input type="date"
+                               name="waktu_kegiatan"
+                               value="<?= old('waktu_kegiatan') ?>"
+                               required>
 
-                        <div class="form-help">
+                        <small class="form-help">
                             Pilih tanggal pelaksanaan kegiatan.
-                        </div>
+                        </small>
+
                     </div>
 
+
+                    <!-- PESERTA -->
+
                     <div class="form-group">
-                        <label for="peserta">Peserta</label>
 
-                        <input
-                            type="text"
-                            name="peserta"
-                            id="peserta"
-                            value="<?= old('peserta') ?>"
-                            placeholder="Jumlah atau uraian peserta"
-                        >
+                        <label>
+                            Peserta
+                        </label>
 
-                        <div class="form-help">
-                            Contoh: 25 orang / Tim Pembina Bandung Sehat.
-                        </div>
+                        <input type="text"
+                               name="peserta"
+                               value="<?= old('peserta') ?>"
+                               placeholder="Jumlah atau uraian peserta">
+
+                        <small class="form-help">
+                            Contoh: 25 orang / Tim Pembina.
+                        </small>
+
                     </div>
 
                 </div>
 
+
+                <!-- HASIL -->
+
                 <div class="form-group">
-                    <label for="hasil">
+
+                    <label>
                         Hasil Pelaksanaan Kegiatan
                     </label>
 
-                    <textarea
-                        name="hasil"
-                        id="hasil"
-                        placeholder="Tuliskan hasil pelaksanaan kegiatan..."
-                    ><?= old('hasil') ?></textarea>
+                    <textarea name="hasil_pelaksanaan"
+                              placeholder="Tuliskan hasil pelaksanaan kegiatan..."><?= old('hasil_pelaksanaan') ?></textarea>
+
                 </div>
+
 
                 <div class="form-row">
 
-                    <div class="form-group">
-                        <label for="anggaran">Anggaran Pelaksanaan (Rp)</label>
+                    <!-- ANGGARAN -->
 
-                        <input
-                            type="number"
-                            name="anggaran"
-                            id="anggaran"
-                            value="<?= old('anggaran') ?>"
-                            placeholder="Contoh: 5000000"
-                            min="0"
-                        >
+                    <div class="form-group">
+
+                        <label>
+                            Anggaran Pelaksanaan (Rp)
+                        </label>
+
+                        <input type="text"
+                               name="anggaran"
+                               id="anggaran"
+                               value="<?= old('anggaran') ?>"
+                               placeholder="Jumlah anggaran kegiatan"
+                               inputmode="numeric">
+
+                        <small class="form-help">
+                            Masukan jumalah anggaran
+                        </small>
+
                     </div>
 
-                    <div class="form-group">
-                        <label for="sumber_pendanaan">Sumber Pendanaan</label>
 
-                        <input
-                            type="text"
-                            name="sumber_pendanaan"
-                            id="sumber_pendanaan"
-                            value="<?= old('sumber_pendanaan') ?>"
-                            placeholder="Contoh: APBD, APBN, Swadaya"
-                        >
+                    <!-- SUMBER PENDANAAN -->
+
+                    <div class="form-group">
+
+                        <label>
+                            Sumber Pendanaan
+                        </label>
+
+                        <select name="sumber_pendanaan">
+
+                            <option value="">
+                                -- Pilih Sumber Pendanaan --
+                            </option>
+
+                            <option value="APBD Kota"
+                                <?= old('sumber_pendanaan') == 'APBD Kota'
+                                    ? 'selected'
+                                    : '' ?>>
+                                APBD Kota
+                            </option>
+
+                            <option value="DAK"
+                                <?= old('sumber_pendanaan') == 'DAK'
+                                    ? 'selected'
+                                    : '' ?>>
+                                DAK
+                            </option>
+
+                            <option value="Swadaya"
+                                <?= old('sumber_pendanaan') == 'Swadaya'
+                                    ? 'selected'
+                                    : '' ?>>
+                                Swadaya
+                            </option>
+
+                        </select>
+
                     </div>
 
                 </div>
 
+
+                <!-- LINK DRIVE -->
+
                 <div class="form-group">
-                    <label for="link_data">
+
+                    <label>
                         Link Drive/Cloud Data Dukung
                     </label>
 
-                    <input
-                        type="url"
-                        name="link_data"
-                        id="link_data"
-                        value="<?= old('link_data') ?>"
-                        placeholder="https://drive.google.com/..."
-                    >
+                    <input type="url"
+                           name="link_drive"
+                           value="<?= old('link_drive') ?>"
+                           placeholder="https://drive.google.com/...">
 
-                    <div class="form-help">
+                    <small class="form-help">
                         Masukkan tautan Google Drive atau penyimpanan cloud lainnya.
-                    </div>
+                    </small>
+
                 </div>
+
+
+                <!-- DATA DUKUNG -->
 
                 <div class="form-group">
-                    <label for="data_dukung">Keterangan Data Dukung</label>
 
-                    <textarea
-                        name="data_dukung"
-                        id="data_dukung"
-                        placeholder="Tuliskan keterangan data dukung atau dokumen pendukung..."
-                    ><?= old('data_dukung') ?></textarea>
+                    <label>
+                        Keterangan Data Dukung
+                    </label>
+
+                    <textarea name="data_dukung"
+                              placeholder="Tuliskan keterangan data dukung atau dokumen pendukung..."><?= old('data_dukung') ?></textarea>
+
                 </div>
 
+
+                <!-- BUTTON -->
+
                 <div class="form-actions">
-                    <button
-                        type="submit"
-                        class="btn-save"
-                    >
-                        ✓ &nbsp; Simpan Data
+
+                    <button type="submit"
+                            class="btn-simpan">
+                        ✓ &nbsp;Simpan Data
                     </button>
 
-                    <a
-                        href="<?= base_url('tim-pembina/realisasi') ?>"
-                        class="btn-cancel"
-                    >
+                    <a href="<?= base_url('tim-pembina/realisasi?tahun=' . ($tahun ?? '')) ?>"
+                       class="btn-batal">
                         Batal
                     </a>
+
                 </div>
 
             </form>
 
         </div>
+
     </div>
 
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const anggaran = document.getElementById('anggaran');
+
+    if (!anggaran) {
+        return;
+    }
+
+    function formatAnggaran(value) {
+
+        let angka = value.replace(/\D/g, '');
+
+        if (angka === '') {
+            return '';
+        }
+
+        return angka.replace(
+            /\B(?=(\d{3})+(?!\d))/g,
+            '.'
+        );
+    }
+
+    anggaran.addEventListener('input', function () {
+
+        this.value = formatAnggaran(this.value);
+
+    });
+
+    if (anggaran.value !== '') {
+
+        anggaran.value = formatAnggaran(
+            anggaran.value
+        );
+
+    }
+
+    anggaran.form.addEventListener('submit', function () {
+
+        anggaran.value = anggaran.value.replace(/\./g, '');
+
+    });
+
+});
+</script>
 
 <?= $this->endSection() ?>

@@ -12,9 +12,17 @@ class ForumBandungSehatRencanaKerjaModel extends Model
 
     protected $returnType = 'array';
 
+    protected $useAutoIncrement = true;
+
     protected $allowedFields = [
         'tahun',
-        'data_rencana',
+        'periode',
+        'nama_file',
+        'nama_asli',
+        'file_path',
+        'ukuran_file',
+        'created_at',
+        'updated_at',
     ];
 
     protected $useTimestamps = true;

@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\ForumBandungSehatRencanaKerjaModel;
 
 class ForumBandungSehatRencanaKerja extends BaseController
@@ -15,87 +14,150 @@ class ForumBandungSehatRencanaKerja extends BaseController
             new ForumBandungSehatRencanaKerjaModel();
     }
 
-    private function isAdmin(): bool
+
+    private function allowedRoles(): bool
     {
         return in_array(
             session()->get('role'),
-            ['admin','user'],
+            ['user', 'admin'],
             true
         );
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | HALAMAN UTAMA
+    |--------------------------------------------------------------------------
+    */
+
     public function index()
     {
-        if (!$this->isAdmin()) {
+        if (!$this->allowedRoles()) {
             return redirect()
                 ->to('/dashboard')
-                ->with(
-                    'error',
-                    'Anda tidak memiliki akses.'
-                );
+                ->with('error', 'Anda tidak memiliki akses.');
         }
-
-        $data = $this->rencanaModel
-            ->orderBy('tahun', 'DESC')
-            ->orderBy('id', 'DESC')
-            ->findAll();
 
         return view(
             'forum_bandung_sehat_rencana_kerja/index',
             [
                 'title' => 'Rencana Kerja Forum Bandung Sehat',
-                'data'  => $data,
             ]
         );
     }
 
-    public function create()
+
+    /*
+    |--------------------------------------------------------------------------
+    | PERIODE GANJIL / GENAP
+    |--------------------------------------------------------------------------
+    */
+
+    public function periode($periode)
     {
-        if (!$this->isAdmin()) {
+        if (!$this->allowedRoles()) {
             return redirect()
                 ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
+        }
+
+        if (!in_array($periode, ['ganjil', 'genap'], true)) {
+            return redirect()
+                ->to('/forum-bandung-sehat/rencana-kerja')
                 ->with(
                     'error',
-                    'Anda tidak memiliki akses.'
+                    'Periode tidak valid.'
+                );
+        }
+
+        $data = $this->rencanaModel
+            ->where('periode', $periode)
+            ->orderBy('tahun', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        return view(
+            'forum_bandung_sehat_rencana_kerja/periode',
+            [
+                'title'   => 'Rencana Kerja Forum Bandung Sehat',
+                'periode' => $periode,
+                'data'    => $data,
+            ]
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FORM UPLOAD
+    |--------------------------------------------------------------------------
+    */
+
+    public function create($periode)
+    {
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
+        }
+
+        if (!in_array($periode, ['ganjil', 'genap'], true)) {
+            return redirect()
+                ->to('/forum-bandung-sehat/rencana-kerja')
+                ->with(
+                    'error',
+                    'Periode tidak valid.'
                 );
         }
 
         return view(
             'forum_bandung_sehat_rencana_kerja/create',
             [
-                'title' => 'Tambah Rencana Kerja',
+                'title'   => 'Upload Rencana Kerja Forum Bandung Sehat',
+                'periode' => $periode,
             ]
         );
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | STORE
+    |--------------------------------------------------------------------------
+    */
 
     public function store()
     {
-        if (!$this->isAdmin()) {
+        if (!$this->allowedRoles()) {
             return redirect()
                 ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
+        }
+
+        $periode =
+            $this->request->getPost('periode');
+
+        if (!in_array($periode, ['ganjil', 'genap'], true)) {
+            return redirect()
+                ->back()
                 ->with(
                     'error',
-                    'Anda tidak memiliki akses.'
+                    'Periode tidak valid.'
                 );
         }
 
         $rules = [
             'tahun' => [
-                'rules' => 'required|regex_match[/^\d{4}$/]',
-                'errors' => [
-                    'required' =>
-                        'Tahun wajib diisi.',
-                    'regex_match' =>
-                        'Tahun harus berupa 4 angka, contoh 2026.',
-                ],
+                'label' => 'Tahun',
+                'rules' =>
+                    'required|integer|greater_than_equal_to[2000]|less_than_equal_to[2100]',
             ],
 
-            'data_rencana' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' =>
-                        'Rencana kerja wajib diisi.',
-                ],
+            'file' => [
+                'label' => 'File Rencana Kerja',
+                'rules' =>
+                    'uploaded[file]|max_size[file,10240]|ext_in[file,pdf,doc,docx,xls,xlsx]',
             ],
         ];
 
@@ -109,89 +171,92 @@ class ForumBandungSehatRencanaKerja extends BaseController
                 );
         }
 
-        $tahun = trim(
-            (string) $this->request->getPost('tahun')
-        );
+        $file =
+            $this->request->getFile('file');
 
-        $dataRencana = trim(
-            (string) $this->request->getPost('data_rencana')
-        );
-
-        $existing = $this->rencanaModel
-            ->where('tahun', $tahun)
-            ->first();
-
-        $data = [
-            'tahun'       => $tahun,
-            'data_rencana' => $dataRencana,
-        ];
-
-        if ($existing) {
-            $this->rencanaModel->update(
-                $existing['id'],
-                $data
-            );
-
-            $message = 'Rencana kerja tahun tersebut berhasil diperbarui.';
-        } else {
-            $this->rencanaModel->insert($data);
-
-            $message = 'Rencana kerja berhasil ditambahkan.';
-        }
-
-        return redirect()
-            ->to('/forum-bandung-sehat/rencana-kerja')
-            ->with(
-                'success',
-                $message
-            );
-    }
-
-    public function edit($id)
-    {
-        if (!$this->isAdmin()) {
-            return redirect()
-                ->to('/dashboard')
-                ->with(
-                    'error',
-                    'Anda tidak memiliki akses.'
-                );
-        }
-
-        $data = $this->rencanaModel->find((int) $id);
-
-        if (!$data) {
+        if (!$file || !$file->isValid()) {
             return redirect()
                 ->back()
+                ->withInput()
                 ->with(
                     'error',
-                    'Data rencana kerja tidak ditemukan.'
+                    'File belum dipilih atau tidak valid.'
                 );
         }
 
-        return view(
-            'forum_bandung_sehat_rencana_kerja/edit',
-            [
-                'title' => 'Edit Rencana Kerja',
-                'data'  => $data,
-            ]
+        $uploadPath =
+            FCPATH .
+            'uploads/forum_bandung_sehat/rencana_kerja';
+
+        if (!is_dir($uploadPath)) {
+            mkdir(
+                $uploadPath,
+                0777,
+                true
+            );
+        }
+
+        $namaFile =
+            $file->getRandomName();
+
+        $namaAsli =
+            $file->getClientName();
+
+        $file->move(
+            $uploadPath,
+            $namaFile
         );
+
+        $this->rencanaModel->insert([
+            'tahun' =>
+                $this->request->getPost('tahun'),
+
+            'periode' =>
+                $periode,
+
+            'nama_file' =>
+                $namaFile,
+
+            'nama_asli' =>
+                $namaAsli,
+
+            'file_path' =>
+                'uploads/forum_bandung_sehat/rencana_kerja/'
+                . $namaFile,
+
+            'ukuran_file' =>
+                $file->getSize(),
+        ]);
+
+        return redirect()
+            ->to(
+                '/forum-bandung-sehat/rencana-kerja/'
+                . $periode
+            )
+            ->with(
+                'success',
+                'File Rencana Kerja berhasil diupload.'
+            );
     }
 
-    public function update($id)
+
+    /*
+    |--------------------------------------------------------------------------
+    | LIHAT FILE
+    |--------------------------------------------------------------------------
+    */
+
+    public function view($id)
     {
-        if (!$this->isAdmin()) {
+        if (!$this->allowedRoles()) {
             return redirect()
-                ->to('/dashboard')
-                ->with(
-                    'error',
-                    'Anda tidak memiliki akses.'
-                );
+                ->to('/dashboard');
         }
 
-        $dataLama = $this->rencanaModel->find((int) $id);
+        $data =
+            $this->rencanaModel->find($id);
 
-        if (!$dataLama) {
+        if (!$data) {
             return redirect()
                 ->back()
                 ->with(
@@ -200,87 +265,57 @@ class ForumBandungSehatRencanaKerja extends BaseController
                 );
         }
 
-        $rules = [
-            'tahun' => [
-                'rules' => 'required|regex_match[/^\d{4}$/]',
-                'errors' => [
-                    'required' =>
-                        'Tahun wajib diisi.',
-                    'regex_match' =>
-                        'Tahun harus berupa 4 angka.',
-                ],
-            ],
+        $path =
+            FCPATH .
+            $data['file_path'];
 
-            'data_rencana' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' =>
-                        'Rencana kerja wajib diisi.',
-                ],
-            ],
-        ];
-
-        if (!$this->validate($rules)) {
+        if (!is_file($path)) {
             return redirect()
                 ->back()
-                ->withInput()
-                ->with(
-                    'errors',
-                    $this->validator->getErrors()
-                );
-        }
-
-        $tahun = trim(
-            (string) $this->request->getPost('tahun')
-        );
-
-        $dataRencana = trim(
-            (string) $this->request->getPost('data_rencana')
-        );
-
-        $duplikat = $this->rencanaModel
-            ->where('tahun', $tahun)
-            ->where('id !=', (int) $id)
-            ->first();
-
-        if ($duplikat) {
-            return redirect()
-                ->back()
-                ->withInput()
                 ->with(
                     'error',
-                    'Rencana kerja untuk tahun tersebut sudah tersedia.'
+                    'File tidak ditemukan.'
                 );
         }
 
-        $this->rencanaModel->update(
-            (int) $id,
-            [
-                'tahun'       => $tahun,
-                'data_rencana' => $dataRencana,
-            ]
-        );
-
-        return redirect()
-            ->to('/forum-bandung-sehat/rencana-kerja')
-            ->with(
-                'success',
-                'Rencana kerja berhasil diperbarui.'
+        return $this->response
+            ->download(
+                $path,
+                null
+            )
+            ->setFileName(
+                $data['nama_asli']
             );
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOWNLOAD
+    |--------------------------------------------------------------------------
+    */
+
+    public function download($id)
+    {
+        return $this->view($id);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DELETE
+    |--------------------------------------------------------------------------
+    */
 
     public function delete($id)
     {
-        if (!$this->isAdmin()) {
+        if (!$this->allowedRoles()) {
             return redirect()
-                ->to('/dashboard')
-                ->with(
-                    'error',
-                    'Anda tidak memiliki akses.'
-                );
+                ->to('/dashboard');
         }
 
-        $data = $this->rencanaModel->find((int) $id);
+        $data =
+            $this->rencanaModel->find($id);
 
         if (!$data) {
             return redirect()
@@ -291,13 +326,21 @@ class ForumBandungSehatRencanaKerja extends BaseController
                 );
         }
 
-        $this->rencanaModel->delete((int) $id);
+        $path =
+            FCPATH .
+            $data['file_path'];
+
+        if (is_file($path)) {
+            unlink($path);
+        }
+
+        $this->rencanaModel->delete($id);
 
         return redirect()
-            ->to('/forum-bandung-sehat/rencana-kerja')
+            ->back()
             ->with(
                 'success',
-                'Rencana kerja berhasil dihapus.'
+                'File Rencana Kerja berhasil dihapus.'
             );
     }
 }

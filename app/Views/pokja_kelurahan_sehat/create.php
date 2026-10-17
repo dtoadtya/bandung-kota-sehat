@@ -3,907 +3,423 @@
 <?= $this->section('content') ?>
 
 <style>
-    /* =========================================================
-       HALAMAN MENU POKJA KELURAHAN SEHAT
-    ========================================================= */
-
-    .pokja-menu-page {
-        min-height: calc(100vh - 60px);
-        background: #f5f8fc;
-        padding: 8px 6px 40px;
-    }
-
-
-    /* =========================================================
-       HEADER
-    ========================================================= */
-
-    .pokja-menu-header {
-        position: relative;
-
-        background: linear-gradient(
-            135deg,
-            #eef7ff 0%,
-            #f8fbff 100%
-        );
-
-        border: 1px solid #d7e6f5;
-
-        border-left: 6px solid #2d91d9;
-
-        border-radius: 12px;
-
-        min-height: 110px;
-
-        padding: 24px 38px;
-
+    .kelembagaan-header {
         display: flex;
-
-        align-items: center;
-
         justify-content: space-between;
-
-        overflow: hidden;
-
-        margin-bottom: 22px;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 28px;
     }
 
-
-    .pokja-menu-header::after {
-        content: "";
-
-        position: absolute;
-
-        right: -35px;
-        top: -45px;
-
-        width: 135px;
-        height: 135px;
-
-        background: #e8f4ff;
-
-        border-radius: 50%;
-
-        opacity: .9;
-    }
-
-
-    .pokja-header-text {
-        position: relative;
-
-        z-index: 2;
-    }
-
-
-    .pokja-header-text h1 {
+    .kelembagaan-header h1 {
         margin: 0;
-
-        color: #07366d;
-
-        font-size: 29px;
-
+        color: #063b78;
+        font-size: 36px;
         font-weight: 800;
-
-        line-height: 1.2;
     }
 
-
-    .pokja-header-text p {
-        margin: 7px 0 0;
-
-        color: #6280a3;
-
-        font-size: 13px;
+    .kelembagaan-header p {
+        margin: 8px 0 0;
+        color: #7186a0;
+        font-size: 16px;
     }
 
-
-    /* =========================================================
-       TOMBOL KEMBALI
-    ========================================================= */
-
-    .btn-kembali-pokja {
-        position: relative;
-
-        z-index: 5;
-
+    .btn-kembali {
         display: inline-flex;
-
         align-items: center;
-
-        justify-content: center;
-
-        gap: 6px;
-
-        min-width: 96px;
-
-        height: 38px;
-
-        padding: 0 14px;
-
-        background: #ffffff;
-
-        border: 1px solid #cfe0f1;
-
-        border-radius: 8px;
-
-        color: #35618b;
-
-        text-decoration: none;
-
-        font-size: 12px;
-
-        font-weight: 700;
-
-        transition: .2s ease;
-    }
-
-
-    .btn-kembali-pokja:hover {
-        background: #eef7ff;
-
-        color: #07366d;
-
-        border-color: #a9c9e8;
-    }
-
-
-    /* =========================================================
-       CARD MENU
-    ========================================================= */
-
-    .pokja-menu-card {
-        background: #ffffff;
-
-        border: 1px solid #dce8f5;
-
-        border-radius: 12px;
-
-        overflow: hidden;
-
-        box-shadow:
-            0 3px 12px rgba(7, 54, 109, .035);
-    }
-
-
-    /* =========================================================
-       CARD HEADER
-    ========================================================= */
-
-    .pokja-menu-card-header {
-        min-height: 76px;
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 12px;
-
-        padding: 17px 22px;
-
-        border-bottom: 1px solid #e4ebf3;
-    }
-
-
-    .pokja-menu-title-icon {
-        width: 38px;
-
-        height: 38px;
-
-        flex-shrink: 0;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        background: #e7f2ff;
-
-        color: #087cf0;
-
+        gap: 8px;
+        padding: 12px 20px;
+        border: 1px solid #d5e2ef;
         border-radius: 10px;
+        background: #ffffff;
+        color: #174d83;
+        text-decoration: none;
+        font-weight: 700;
+        white-space: nowrap;
     }
 
-
-    .pokja-menu-title-icon svg {
-        width: 22px;
-
-        height: 22px;
+    .btn-kembali:hover {
+        background: #f0f7ff;
+        color: #063b78;
     }
 
+    .kelembagaan-card {
+        background: #ffffff;
+        border: 1px solid #e0ebf5;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(22, 73, 121, 0.06);
+        overflow: hidden;
+    }
 
-    .pokja-menu-card-header h2 {
+    .kelembagaan-card-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 24px 28px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .kelembagaan-card-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #e8f3ff;
+        color: #087cf0;
+        font-size: 24px;
+    }
+
+    .kelembagaan-card-header h2 {
         margin: 0;
-
-        color: #07366d;
-
-        font-size: 18px;
-
+        color: #063b78;
+        font-size: 23px;
         font-weight: 800;
     }
 
-
-    .pokja-menu-card-header p {
-        margin: 3px 0 0;
-
-        color: #6d88a7;
-
-        font-size: 11px;
+    .kelembagaan-card-header p {
+        margin: 5px 0 0;
+        color: #7890aa;
+        font-size: 14px;
     }
 
-
-    /* =========================================================
-       GRID MENU
-    ========================================================= */
-
-    .pokja-menu-grid {
+    .kelembagaan-menu {
         display: grid;
-
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-        gap: 14px;
-
-        padding: 21px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        padding: 28px;
     }
 
-
-    /* =========================================================
-       MENU ITEM
-    ========================================================= */
-
-    .pokja-menu-item {
-        min-height: 154px;
-
-        border: 1px solid #d5e4f2;
-
-        border-radius: 10px;
-
+    .menu-item {
+        min-height: 205px;
+        padding: 24px;
+        border: 1px solid #dce9f5;
+        border-radius: 14px;
         background: linear-gradient(
             135deg,
             #ffffff 0%,
-            #fafdff 100%
+            #f7fbff 100%
         );
-
-        padding: 18px;
-
+        transition: all .2s ease;
         display: flex;
-
         flex-direction: column;
-
         justify-content: space-between;
-
-        transition:
-            transform .2s ease,
-            box-shadow .2s ease,
-            border-color .2s ease;
     }
 
-
-    .pokja-menu-item:hover {
+    .menu-item:hover {
+        border-color: #1687ed;
+        box-shadow: 0 8px 22px rgba(20, 126, 226, .12);
         transform: translateY(-2px);
-
-        border-color: #b9d5ef;
-
-        box-shadow:
-            0 5px 15px rgba(7, 54, 109, .07);
     }
 
-
-    /* =========================================================
-       BAGIAN ATAS MENU
-    ========================================================= */
-
-    .pokja-item-top {
+    .menu-item-top {
         display: flex;
-
         align-items: flex-start;
-
-        gap: 11px;
+        gap: 15px;
     }
 
-
-    .pokja-item-icon {
-        width: 39px;
-
-        height: 39px;
-
+    .menu-item-icon {
+        width: 52px;
+        height: 52px;
         flex-shrink: 0;
-
-        background: #e7f2ff;
-
-        color: #087cf0;
-
-        border-radius: 10px;
-
         display: flex;
-
         align-items: center;
-
         justify-content: center;
+        border-radius: 13px;
+        background: #e8f3ff;
+        color: #087cf0;
+        font-size: 26px;
     }
 
-
-    .pokja-item-icon svg {
-        width: 21px;
-
-        height: 21px;
-    }
-
-
-    .pokja-item-content h3 {
-        margin: 3px 0 4px;
-
-        color: #07366d;
-
-        font-size: 15px;
-
+    .menu-item h3 {
+        margin: 2px 0 7px;
+        color: #073e7a;
+        font-size: 20px;
         font-weight: 800;
     }
 
-
-    .pokja-item-content p {
+    .menu-item p {
         margin: 0;
-
-        color: #6682a3;
-
-        font-size: 11px;
-
-        line-height: 1.55;
-
-        max-width: 430px;
+        color: #7890aa;
+        font-size: 14px;
+        line-height: 1.6;
     }
 
+    .menu-item-action {
+        margin-top: 23px;
+    }
 
-    /* =========================================================
-       BUTTON MENU
-    ========================================================= */
-
-    .pokja-menu-button {
+    .btn-menu {
         display: inline-flex;
-
         align-items: center;
-
         justify-content: center;
-
-        gap: 6px;
-
-        align-self: flex-start;
-
-        margin-top: 14px;
-
-        min-height: 32px;
-
-        padding: 0 13px;
-
-        border-radius: 6px;
-
+        gap: 8px;
+        min-height: 42px;
+        padding: 10px 18px;
+        border-radius: 9px;
         background: #087cf0;
-
         color: #ffffff;
-
         text-decoration: none;
-
-        border: none;
-
-        font-size: 11px;
-
+        font-size: 14px;
         font-weight: 700;
-
-        transition: .2s ease;
     }
 
-
-    .pokja-menu-button:hover {
-        background: #07366d;
-
+    .btn-menu:hover {
+        background: #0568cc;
         color: #ffffff;
     }
 
-
-    .pokja-menu-button svg {
-        width: 13px;
-
-        height: 13px;
+    .info-box {
+        margin: 0 28px 28px;
+        padding: 15px 18px;
+        border-radius: 10px;
+        background: #f0f7ff;
+        border: 1px solid #d7eaff;
+        color: #537293;
+        font-size: 14px;
+        line-height: 1.6;
     }
 
-
-    /* =========================================================
-       RESPONSIVE
-    ========================================================= */
-
-    @media (max-width: 850px) {
-
-        .pokja-menu-header {
-            padding: 22px 25px;
-        }
-
-        .pokja-menu-grid {
-            grid-template-columns: 1fr;
-        }
-
-    }
-
-
-    @media (max-width: 600px) {
-
-        .pokja-menu-page {
-            padding: 8px 10px 30px;
-        }
-
-        .pokja-menu-header {
+    @media (max-width: 768px) {
+        .kelembagaan-header {
             flex-direction: column;
+        }
 
-            align-items: flex-start;
+        .kelembagaan-header h1 {
+            font-size: 28px;
+        }
 
-            gap: 15px;
+        .kelembagaan-menu {
+            grid-template-columns: 1fr;
+            padding: 18px;
+        }
 
+        .kelembagaan-card-header {
             padding: 20px;
         }
 
-        .pokja-header-text h1 {
-            font-size: 24px;
+        .info-box {
+            margin: 0 18px 18px;
         }
-
-        .btn-kembali-pokja {
-            align-self: flex-end;
-        }
-
-        .pokja-menu-grid {
-            padding: 14px;
-        }
-
     }
 </style>
 
 
-<div class="pokja-menu-page">
+<div class="kelembagaan-header">
 
+    <div>
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+        <h1>Pokja Kelurahan Sehat</h1>
 
-    <div class="pokja-menu-header">
-
-        <div class="pokja-header-text">
-
-            <h1>
-                Pokja Kelurahan Sehat
-            </h1>
-
-            <p>
-                Kelola seluruh dokumen dan kegiatan Pokja Kelurahan Sehat.
-            </p>
-
-        </div>
-
-
-        <a
-            href="<?= base_url('pokja-kelurahan-sehat') ?>"
-            class="btn-kembali-pokja"
-        >
-
-            <span>
-                ←
-            </span>
-
-            Kembali
-
-        </a>
+        <p>
+            Kelola seluruh dokumen dan kegiatan Pokja Kelurahan Sehat.
+        </p>
 
     </div>
 
 
-    <!-- =====================================================
-         CARD MENU
-    ====================================================== -->
+    <a
+        href="<?= site_url('pokja-kelurahan-sehat') ?>"
+        class="btn-kembali"
+    >
+        <i class="bi bi-arrow-left"></i>
+        Kembali
+    </a>
 
-    <div class="pokja-menu-card">
-
-
-        <!-- HEADER CARD -->
-
-        <div class="pokja-menu-card-header">
-
-
-            <!-- ICON -->
-
-            <div class="pokja-menu-title-icon">
-
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-
-                    <path d="M3 10.5L12 3l9 7.5"></path>
-
-                    <path d="M5 9.5V21h14V9.5"></path>
-
-                    <path d="M9 21v-6h6v6"></path>
-
-                </svg>
-
-            </div>
+</div>
 
 
-            <!-- JUDUL -->
+<div class="kelembagaan-card">
 
-            <div>
+    <div class="kelembagaan-card-header">
 
-                <h2>
-                    Menu Pokja Kelurahan Sehat
-                </h2>
+        <div class="kelembagaan-card-icon">
+            <i class="bi bi-diagram-3-fill"></i>
+        </div>
 
-                <p>
-                    Pilih jenis data yang ingin ditambahkan atau dikelola.
-                </p>
+        <div>
 
-            </div>
+            <h2>Menu Pokja Kelurahan Sehat</h2>
+
+            <p>
+                Pilih jenis data yang ingin ditambahkan atau dikelola.
+            </p>
 
         </div>
 
-
-        <!-- =================================================
-             GRID 4 MENU
-        ================================================== -->
-
-        <div class="pokja-menu-grid">
+    </div>
 
 
-            <!-- =================================================
-                 1. SK
-            ================================================== -->
-
-            <div class="pokja-menu-item">
+    <div class="kelembagaan-menu">
 
 
-                <div class="pokja-item-top">
+        <!-- SK -->
 
+        <div class="menu-item">
 
-                    <div class="pokja-item-icon">
+            <div class="menu-item-top">
 
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
+                <div class="menu-item-icon">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                </div>
 
-                            <path d="M7 3h7l4 4v14H7z"></path>
+                <div>
 
-                            <path d="M14 3v5h5"></path>
+                    <h3>SK</h3>
 
-                            <path d="M10 13h5"></path>
-
-                            <path d="M10 17h5"></path>
-
-                        </svg>
-
-                    </div>
-
-
-                    <div class="pokja-item-content">
-
-                        <h3>
-                            SK
-                        </h3>
-
-                        <p>
-                            Upload Surat Keputusan Pokja Kelurahan Sehat.
-                            File harus berupa PDF dengan ukuran maksimal 5 MB.
-                        </p>
-
-                    </div>
+                    <p>
+                        Upload Surat Keputusan Pokja Kelurahan Sehat.
+                        File harus berupa PDF dengan ukuran maksimal 5 MB.
+                    </p>
 
                 </div>
 
+            </div>
+
+
+            <div class="menu-item-action">
 
                 <a
-                    href="<?= base_url('pokja-kelurahan-sehat/sk') ?>"
-                    class="pokja-menu-button"
+                    href="<?= site_url('pokja-kelurahan-sehat/sk') ?>"
+                    class="btn-menu"
                 >
-
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-
-                        <path d="M12 3v12"></path>
-
-                        <path d="M7 10l5 5 5-5"></path>
-
-                        <path d="M5 21h14"></path>
-
-                    </svg>
-
+                    <i class="bi bi-upload"></i>
                     Kelola SK
-
                 </a>
 
             </div>
-
-
-            <!-- =================================================
-                 2. RENCANA KERJA
-            ================================================== -->
-
-            <div class="pokja-menu-item">
-
-
-                <div class="pokja-item-top">
-
-
-                    <div class="pokja-item-icon">
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-
-                            <rect
-                                x="5"
-                                y="3"
-                                width="14"
-                                height="18"
-                                rx="2"
-                            ></rect>
-
-                            <path d="M8 8h8"></path>
-
-                            <path d="M8 12h8"></path>
-
-                            <path d="M8 16h5"></path>
-
-                        </svg>
-
-                    </div>
-
-
-                    <div class="pokja-item-content">
-
-                        <h3>
-                            Rencana Kerja
-                        </h3>
-
-                        <p>
-                            Kelola rencana kerja Pokja Kelurahan Sehat
-                            berdasarkan tahun yang dapat ditentukan sendiri.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <a
-                    href="<?= base_url('pokja-kelurahan-sehat/rencana-kerja') ?>"
-                    class="pokja-menu-button"
-                >
-
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-
-                        <path d="M8 6h13"></path>
-
-                        <path d="M8 12h13"></path>
-
-                        <path d="M8 18h13"></path>
-
-                        <path d="M3 6h.01"></path>
-
-                        <path d="M3 12h.01"></path>
-
-                        <path d="M3 18h.01"></path>
-
-                    </svg>
-
-                    Kelola Rencana Kerja
-
-                </a>
-
-            </div>
-
-
-            <!-- =================================================
-                 3. REALISASI KEGIATAN
-            ================================================== -->
-
-            <div class="pokja-menu-item">
-
-
-                <div class="pokja-item-top">
-
-
-                    <div class="pokja-item-icon">
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-
-                            <path d="M4 20V10"></path>
-
-                            <path d="M10 20V4"></path>
-
-                            <path d="M16 20v-7"></path>
-
-                            <path d="M22 20H2"></path>
-
-                        </svg>
-
-                    </div>
-
-
-                    <div class="pokja-item-content">
-
-                        <h3>
-                            Realisasi Kegiatan
-                        </h3>
-
-                        <p>
-                            Input laporan kegiatan, waktu, peserta,
-                            hasil pelaksanaan, anggaran, dan sumber pendanaan.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <a
-                    href="<?= base_url('pokja-kelurahan-sehat/realisasi-kegiatan') ?>"
-                    class="pokja-menu-button"
-                >
-
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-
-                        <path d="M8 4h8"></path>
-
-                        <path d="M9 2h6v4H9z"></path>
-
-                        <path d="M6 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1"></path>
-
-                        <path d="M8 12l2 2 5-5"></path>
-
-                    </svg>
-
-                    Kelola Realisasi
-
-                </a>
-
-            </div>
-
-
-            <!-- =================================================
-                 4. FOTO KEGIATAN
-            ================================================== -->
-
-            <div class="pokja-menu-item">
-
-
-                <div class="pokja-item-top">
-
-
-                    <div class="pokja-item-icon">
-
-                        <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.8"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        >
-
-                            <rect
-                                x="3"
-                                y="6"
-                                width="18"
-                                height="14"
-                                rx="2"
-                            ></rect>
-
-                            <path d="M8 6l1.5-3h5L16 6"></path>
-
-                            <circle
-                                cx="12"
-                                cy="13"
-                                r="3.5"
-                            ></circle>
-
-                        </svg>
-
-                    </div>
-
-
-                    <div class="pokja-item-content">
-
-                        <h3>
-                            Foto Kegiatan
-                        </h3>
-
-                        <p>
-                            Upload satu foto dokumentasi kegiatan
-                            dengan ukuran maksimal 5 MB.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <a
-                    href="<?= base_url('pokja-kelurahan-sehat/foto-kegiatan') ?>"
-                    class="pokja-menu-button"
-                >
-
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-
-                        <rect
-                            x="3"
-                            y="5"
-                            width="18"
-                            height="14"
-                            rx="2"
-                        ></rect>
-
-                        <circle
-                            cx="8.5"
-                            cy="10"
-                            r="1.5"
-                        ></circle>
-
-                        <path d="M21 15l-5-5L5 19"></path>
-
-                    </svg>
-
-                    Kelola Foto
-
-                </a>
-
-            </div>
-
 
         </div>
+
+
+        <!-- RENCANA KERJA -->
+
+        <div class="menu-item">
+
+            <div class="menu-item-top">
+
+                <div class="menu-item-icon">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+
+                <div>
+
+                    <h3>Rencana Kerja</h3>
+
+                    <p>
+                        Kelola rencana kerja Pokja Kelurahan Sehat
+                        berdasarkan tahun yang dapat ditentukan sendiri.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="menu-item-action">
+
+                <a
+                    href="<?= site_url('pokja-kelurahan-sehat/rencana-kerja') ?>"
+                    class="btn-menu"
+                >
+                    <i class="bi bi-journal-check"></i>
+                    Kelola Rencana Kerja
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- REALISASI KEGIATAN -->
+
+        <div class="menu-item">
+
+            <div class="menu-item-top">
+
+                <div class="menu-item-icon">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                </div>
+
+                <div>
+
+                    <h3>Realisasi Kegiatan</h3>
+
+                    <p>
+                        Input laporan kegiatan, waktu, peserta,
+                        hasil pelaksanaan, anggaran, dan sumber pendanaan.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="menu-item-action">
+
+                <a
+                    href="<?= site_url('pokja-kelurahan-sehat/realisasi') ?>"
+                    class="btn-menu"
+                >
+                    <i class="bi bi-clipboard-data"></i>
+                    Kelola Realisasi
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOTO KEGIATAN -->
+
+        <div class="menu-item">
+
+            <div class="menu-item-top">
+
+                <div class="menu-item-icon">
+                    <i class="bi bi-camera-fill"></i>
+                </div>
+
+                <div>
+
+                    <h3>Foto Kegiatan</h3>
+
+                    <p>
+                        Upload satu foto dokumentasi kegiatan
+                        dengan ukuran maksimal 5 MB.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="menu-item-action">
+
+                <a
+                    href="<?= site_url('pokja-kelurahan-sehat/foto-kegiatan') ?>"
+                    class="btn-menu"
+                >
+                    <i class="bi bi-image"></i>
+                    Kelola Foto
+                </a>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="info-box">
+
+        <i class="bi bi-info-circle me-2"></i>
+
+        Semua data Pokja Kelurahan Sehat dikelola melalui
+        empat menu di atas. Silakan pilih sesuai jenis
+        dokumen atau kegiatan yang ingin dikelola.
 
     </div>
 

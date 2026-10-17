@@ -3,387 +3,549 @@
 <?= $this->section('content') ?>
 
 <style>
-    .periode-card {
-        background: #ffffff;
-        border: 1px solid #dce8f5;
-        border-radius: 14px;
-        padding: 22px;
-        margin-bottom: 20px;
+    .page-wrapper {
+        background: #f4f8fc;
+        min-height: calc(100vh - 70px);
+        padding: 28px;
     }
 
-    .periode-title {
+    .page-header {
+        background: linear-gradient(135deg, #eef7ff, #e5f2ff);
+        border-left: 6px solid #1687e8;
+        border-radius: 14px;
+        padding: 28px 30px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::after {
+        content: "";
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        right: -40px;
+        top: -70px;
+        background: rgba(22, 135, 232, 0.08);
+        border-radius: 50%;
+    }
+
+    .page-header h1 {
+        margin: 0 0 8px;
+        color: #07366d;
+        font-size: 30px;
+        font-weight: 800;
+    }
+
+    .page-header p {
+        margin: 0;
+        color: #5d7898;
+        font-size: 14px;
+    }
+
+    .btn-kembali {
+        position: absolute;
+        right: 28px;
+        top: 25px;
+        z-index: 2;
+        text-decoration: none;
+        background: #fff;
+        color: #0b4f9c;
+        border: 1px solid #cbdff2;
+        border-radius: 8px;
+        padding: 11px 18px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .btn-kembali:hover {
+        background: #eef7ff;
+    }
+
+    .tahun-card {
+        background: #fff;
+        border: 1px solid #d8e7f5;
+        border-radius: 14px;
+        margin-bottom: 24px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(22, 82, 130, 0.05);
+    }
+
+    .tahun-header {
         display: flex;
         align-items: center;
-        gap: 12px;
-        color: #0b4f9c;
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 5px;
+        gap: 14px;
+        padding: 22px 26px;
+        border-bottom: 1px solid #e3edf6;
     }
 
-    .periode-icon {
+    .tahun-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: #e7f3ff;
+        color: #087ff5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+    }
+
+    .tahun-header h2 {
+        margin: 0;
+        color: #07366d;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .tahun-header p {
+        margin: 4px 0 0;
+        color: #6d87a4;
+        font-size: 12px;
+    }
+
+    .tahun-buttons {
+        display: flex;
+        gap: 10px;
+        padding: 0 26px 22px;
+    }
+
+    .btn-tahun {
+        min-width: 105px;
+        padding: 10px 18px;
+        border-radius: 7px;
+        border: 1px solid #087ff5;
+        background: #087ff5;
+        color: #fff;
+        text-decoration: none;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+    .btn-tahun:hover {
+        background: #066fd6;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .btn-tahun.active {
+        background: #07366d;
+        border-color: #07366d;
+    }
+
+    .form-card {
+        background: #fff;
+        border: 1px solid #d8e7f5;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(22, 82, 130, 0.05);
+    }
+
+    .form-header {
+        padding: 22px 28px;
+        border-bottom: 1px solid #e2ebf4;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .form-icon {
         width: 42px;
         height: 42px;
         border-radius: 10px;
-        background: #eaf3ff;
-        color: #0b4f9c;
+        background: #e7f3ff;
+        color: #087ff5;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 20px;
     }
 
-    .periode-description {
-        color: #718096;
-        margin-left: 54px;
+    .form-header h2 {
+        margin: 0;
+        color: #07366d;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .form-header p {
+        margin: 4px 0 0;
+        color: #6d87a4;
+        font-size: 12px;
+    }
+
+    .form-body {
+        padding: 28px;
+    }
+
+    .form-group {
         margin-bottom: 18px;
     }
 
-    .periode-buttons {
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #174b7e;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    label span {
+        color: #e53935;
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #c8dceb;
+        border-radius: 8px;
+        padding: 12px 13px;
+        color: #34495e;
+        background: #fff;
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+        transition: .2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #1687e8;
+        box-shadow: 0 0 0 3px rgba(22, 135, 232, 0.10);
+    }
+
+    textarea {
+        min-height: 105px;
+        resize: vertical;
+    }
+
+    .form-help {
+        display: block;
+        margin-top: 6px;
+        color: #7992ad;
+        font-size: 11px;
+    }
+
+    .form-actions {
         display: flex;
-        gap: 12px;
-        margin-left: 54px;
+        gap: 10px;
+        margin-top: 8px;
     }
 
-    .periode-btn {
-        min-width: 150px;
+    .btn-simpan {
+        border: none;
+        background: #087ff5;
+        color: #fff;
         padding: 11px 20px;
-        border-radius: 9px;
-        border: 1px solid #b8d4f2;
-        background: #ffffff;
-        color: #0b4f9c;
-        font-weight: 600;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .btn-simpan:hover {
+        background: #066fd6;
+    }
+
+    .btn-batal {
         text-decoration: none;
-        text-align: center;
-        transition: 0.2s;
+        background: #fff;
+        color: #526b84;
+        border: 1px solid #cbd9e5;
+        padding: 10px 20px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
     }
 
-    .periode-btn:hover {
-        background: #eaf3ff;
-        color: #07366d;
-        border-color: #0b4f9c;
+    .btn-batal:hover {
+        background: #f4f8fc;
     }
 
-    .periode-btn.active {
-        background: #0b4f9c;
-        color: #ffffff;
-        border-color: #0b4f9c;
+    .alert-danger {
+        background: #fff0f0;
+        color: #d9534f;
+        border: 1px solid #f1b4b1;
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 18px;
+        font-size: 13px;
+    }
+
+    @media (max-width: 768px) {
+        .page-wrapper {
+            padding: 15px;
+        }
+
+        .page-header {
+            padding: 22px;
+        }
+
+        .page-header h1 {
+            font-size: 23px;
+            padding-right: 90px;
+        }
+
+        .btn-kembali {
+            right: 18px;
+            top: 20px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .tahun-buttons {
+            flex-wrap: wrap;
+        }
     }
 </style>
 
+<div class="page-wrapper">
 
-<div class="container-fluid">
+    <div class="page-header">
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
-
-    <div class="kelembagaan-header mb-4">
-
-        <div>
-
-            <h1>Tambah Realisasi Kegiatan</h1>
-
-            <p>
-                Forum Kecamatan Sehat
-            </p>
-
-        </div>
-
-        <a href="<?= site_url('forum-kecamatan-sehat/realisasi') ?>"
-           class="btn">
-
-            <i class="bi bi-arrow-left"></i>
-            Kembali
-
+        <a href="<?= base_url('forum-kecamatan-sehat/realisasi') ?>"
+           class="btn-kembali">
+            ← &nbsp;Kembali
         </a>
 
+        <h1>Tambah Realisasi Kegiatan</h1>
+
+        <p>
+            Forum Kecamatan Sehat
+        </p>
+
     </div>
 
+    <?php if (session()->getFlashdata('error')): ?>
 
-    <!-- =====================================================
-         PILIH PERIODE
-         INI YANG AKAN MUNCUL DI ATAS FORM TAMBAH DATA
-    ====================================================== -->
+        <div class="alert-danger">
+            ⚠ &nbsp;<?= session()->getFlashdata('error') ?>
+        </div>
 
-    <?php
-        $periode = service('request')->getGet('tahun_periode');
-    ?>
+    <?php endif; ?>
 
-    <div class="periode-card">
+    <div class="tahun-card">
 
-        <div class="periode-title">
+        <div class="tahun-header">
 
-            <div class="periode-icon">
-
-                <i class="bi bi-calendar3"></i>
-
-            </div>
+            <div class="tahun-icon">▤</div>
 
             <div>
-                Periode Realisasi Kegiatan
+
+                <h2>Realisasi Kegiatan</h2>
+
+                <p>
+                    Kelola realisasi kegiatan Forum Kecamatan Sehat berdasarkan tahun kegiatan.
+                </p>
+
             </div>
 
         </div>
 
+        <div class="tahun-buttons">
 
-        <div class="periode-description">
-
-            Pilih Tahun 1 atau Tahun 2 untuk menambahkan
-            realisasi kegiatan.
-
-        </div>
-
-
-        <div class="periode-buttons">
-
-            <a href="<?= site_url('forum-kecamatan-sehat/realisasi/create?tahun_periode=1') ?>"
-               class="periode-btn <?= $periode == '1' ? 'active' : '' ?>">
-
-                <i class="bi bi-calendar-check"></i>
-
-                Tahun 1
-
+            <a href="<?= base_url(
+                'forum-kecamatan-sehat/realisasi/create?tahunGanjil'
+            ) ?>"
+               class="btn-tahun <?= ($tahun ?? '') == 'Ganjil' ? 'active' : '' ?>">
+                ▣ &nbsp; Tahun Ganjil
             </a>
 
-
-            <a href="<?= site_url('forum-kecamatan-sehat/realisasi/create?tahun_periode=2') ?>"
-               class="periode-btn <?= $periode == '2' ? 'active' : '' ?>">
-
-                <i class="bi bi-calendar-check"></i>
-
-                Tahun 2
-
+            <a href="<?= base_url(
+                'forum-kecamatan-sehat/realisasi/create?tahunGenap'
+            ) ?>"
+               class="btn-tahun <?= ($tahun ?? '') == 'Genap' ? 'active' : '' ?>">
+                ▣ &nbsp; Tahun Genap
             </a>
 
         </div>
 
     </div>
 
+    <div class="form-card">
 
-    <!-- =====================================================
-         FORM
-    ====================================================== -->
+        <div class="form-header">
 
-    <div class="card border-0 shadow-sm">
+            <div class="form-icon">▥</div>
 
-        <div class="card-body">
+            <div>
 
-            <h4 class="mb-1">
-                Form Realisasi Kegiatan & Pendanaan
-            </h4>
+                <h2>Form Realisasi Kegiatan</h2>
 
-            <p class="text-muted mb-4">
-                Masukkan realisasi kegiatan Forum Kecamatan Sehat.
-            </p>
+                <p>
+                    Silakan isi laporan realisasi kegiatan sesuai pelaksanaan.
+                </p>
 
+            </div>
 
-            <?php if (session()->getFlashdata('errors')): ?>
+        </div>
 
-                <div class="alert alert-danger">
+        <div class="form-body">
 
-                    <ul class="mb-0">
-
-                        <?php foreach (
-                            session()->getFlashdata('errors')
-                            as $error
-                        ): ?>
-
-                            <li>
-                                <?= esc($error) ?>
-                            </li>
-
-                        <?php endforeach; ?>
-
-                    </ul>
-
-                </div>
-
-            <?php endif; ?>
-
-
-            <?php if (session()->getFlashdata('error')): ?>
-
-                <div class="alert alert-danger">
-
-                    <?= esc(session()->getFlashdata('error')) ?>
-
-                </div>
-
-            <?php endif; ?>
-
-
-            <form action="<?= site_url('forum-kecamatan-sehat/realisasi/store') ?>"
+            <form action="<?= base_url(
+                'forum-kecamatan-sehat/realisasi/store'
+            ) ?>"
                   method="post">
 
                 <?= csrf_field() ?>
 
+                <?php if (
+                    session()->get('role') === 'admin'
+                    && !empty($kecamatanList)
+                ): ?>
 
-                <div class="row">
+                    <div class="form-group">
 
-
-                    <?php if ($isAdmin): ?>
-
-                        <div class="col-md-4 mb-3">
-
-                            <label class="form-label">
-
-                                Kecamatan
-                                <span class="text-danger">*</span>
-
-                            </label>
-
-
-                            <select name="kecamatan_id"
-                                    class="form-select"
-                                    required>
-
-                                <option value="">
-                                    -- Pilih Kecamatan --
-                                </option>
-
-
-                                <?php foreach ($kecamatanList as $kecamatan): ?>
-
-                                    <option value="<?= $kecamatan['id'] ?>"
-                                        <?= old('kecamatan_id') == $kecamatan['id']
-                                            ? 'selected'
-                                            : '' ?>>
-
-                                        <?= esc($kecamatan['nama_kecamatan']) ?>
-
-                                    </option>
-
-                                <?php endforeach; ?>
-
-                            </select>
-
-                        </div>
-
-                    <?php endif; ?>
-
-
-                    <div class="<?= $isAdmin ? 'col-md-4' : 'col-md-6' ?> mb-3">
-
-                        <label class="form-label">
-
-                            Tahun
-                            <span class="text-danger">*</span>
-
+                        <label>
+                            Kecamatan <span>*</span>
                         </label>
 
+                        <select name="kecamatan_id" required>
 
-                        <input type="number"
-                               name="tahun"
-                               class="form-control"
-                               min="2000"
-                               max="2100"
-                               value="<?= old('tahun') ?>"
-                               placeholder="Contoh: 2026"
-                               required>
+                            <option value="">
+                                -- Pilih Kecamatan --
+                            </option>
+
+                            <?php foreach ($kecamatanList as $kecamatan): ?>
+
+                                <option
+                                    value="<?= esc($kecamatan['id']) ?>"
+                                    <?= old('kecamatan_id') == $kecamatan['id']
+                                        ? 'selected'
+                                        : '' ?>
+                                >
+                                    <?= esc(
+                                        $kecamatan['nama_kecamatan']
+                                    ) ?>
+                                </option>
+
+                            <?php endforeach; ?>
+
+                        </select>
 
                     </div>
 
+                <?php endif; ?>
 
-                    <div class="<?= $isAdmin ? 'col-md-4' : 'col-md-6' ?> mb-3">
+                <div class="form-group">
 
-                        <label class="form-label">
+                    <label>
+                        Tahun <span>*</span>
+                    </label>
 
-                            Waktu Pelaksanaan
+                    <input type="text"
+                           name="tahun"
+                           id="tahun"
+                           value="<?= old(
+                               'tahun',
+                               $tahun ?? ''
+                           ) ?>"
+                           placeholder="Pilih Tahun Ganjil atau Tahun Genap"
+                           readonly
+                           required>
 
+                    <small class="form-help">
+                        Pilih Tahun Ganjil atau Tahun Genap pada bagian atas.
+                    </small>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Nama Kegiatan <span>*</span>
+                    </label>
+
+                    <input type="text"
+                           name="nama_kegiatan"
+                           value="<?= old('nama_kegiatan') ?>"
+                           placeholder="Masukkan nama kegiatan"
+                           required>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label>
+                            Waktu Kegiatan <span>*</span>
                         </label>
-
 
                         <input type="date"
                                name="waktu_kegiatan"
-                               class="form-control"
-                               value="<?= old('waktu_kegiatan') ?>">
-
-                    </div>
-
-
-                    <div class="col-md-12 mb-3">
-
-                        <label class="form-label">
-
-                            Nama Kegiatan
-                            <span class="text-danger">*</span>
-
-                        </label>
-
-
-                        <input type="text"
-                               name="nama_kegiatan"
-                               class="form-control"
-                               value="<?= old('nama_kegiatan') ?>"
-                               placeholder="Masukkan nama kegiatan"
+                               value="<?= old('waktu_kegiatan') ?>"
                                required>
 
-                    </div>
-
-
-                    <div class="col-md-12 mb-3">
-
-                        <label class="form-label">
-
-                            Peserta
-
-                        </label>
-
-
-                        <textarea name="peserta"
-                                  class="form-control"
-                                  rows="3"
-                                  placeholder="Masukkan peserta kegiatan"><?= old('peserta') ?></textarea>
+                        <small class="form-help">
+                            Pilih tanggal pelaksanaan kegiatan.
+                        </small>
 
                     </div>
 
+                    <div class="form-group">
 
-                    <div class="col-md-12 mb-3">
-
-                        <label class="form-label">
-
-                            Hasil Pelaksanaan Kegiatan
-
-                        </label>
-
-
-                        <textarea name="hasil_pelaksanaan"
-                                  class="form-control"
-                                  rows="4"
-                                  placeholder="Jelaskan hasil pelaksanaan kegiatan"><?= old('hasil_pelaksanaan') ?></textarea>
-
-                    </div>
-
-
-                    <div class="col-md-4 mb-3">
-
-                        <label class="form-label">
-                            Anggaran Kegiatan (Rp)
-                        </label>
+                        <label>Peserta</label>
 
                         <input type="text"
-                            name="anggaran"
-                            id="anggaran"
-                            class="form-control"
-                            value="<?= old('anggaran') ?>"
-                            placeholder="Jumlah Anggaran Kegiatan"
-                            inputmode="numeric">
+                               name="peserta"
+                               value="<?= old('peserta') ?>"
+                               placeholder="Jumlah atau uraian peserta">
+
+                        <small class="form-help">
+                            Contoh: 25 orang / Forum Kecamatan Sehat.
+                        </small>
 
                     </div>
 
+                </div>
 
-                    <div class="col-md-4 mb-3">
+                <div class="form-group">
 
-                        <label class="form-label">
+                    <label>Hasil Pelaksanaan Kegiatan</label>
 
-                            Sumber Pendanaan
+                    <textarea name="hasil_pelaksanaan"
+                              placeholder="Tuliskan hasil pelaksanaan kegiatan..."><?= old('hasil_pelaksanaan') ?></textarea>
 
-                        </label>
+                </div>
 
+                <div class="form-row">
 
-                        <select name="sumber_pendanaan"
-                                class="form-select">
+                    <div class="form-group">
+
+                        <label>Anggaran Pelaksanaan (Rp)</label>
+
+                        <input type="text"
+                               name="anggaran"
+                               id="anggaran"
+                               value="<?= old('anggaran') ?>"
+                               placeholder="Jumlah anggaran kegiatan"
+                               inputmode="numeric">
+
+                        <small class="form-help">
+                            Masukan jumlah anggaran
+                        </small>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Sumber Pendanaan</label>
+
+                        <select name="sumber_pendanaan">
 
                             <option value="">
                                 -- Pilih Sumber Pendanaan --
@@ -393,93 +555,66 @@
                                 <?= old('sumber_pendanaan') === 'APBD Kota'
                                     ? 'selected'
                                     : '' ?>>
-
                                 APBD Kota
-
                             </option>
 
                             <option value="DAK"
                                 <?= old('sumber_pendanaan') === 'DAK'
                                     ? 'selected'
                                     : '' ?>>
-
                                 DAK
-
                             </option>
 
                             <option value="Swadaya"
                                 <?= old('sumber_pendanaan') === 'Swadaya'
                                     ? 'selected'
                                     : '' ?>>
-
                                 Swadaya
-
                             </option>
 
                         </select>
 
                     </div>
 
+                </div>
 
-                    <div class="col-md-4 mb-3">
+                <div class="form-group">
 
-                        <label class="form-label">
+                    <label>Link Drive/Cloud Data Dukung</label>
 
-                            Link Drive/Cloud
+                    <input type="url"
+                           name="link_drive"
+                           value="<?= old('link_drive') ?>"
+                           placeholder="https://drive.google.com/...">
 
-                        </label>
-
-
-                        <input type="url"
-                               name="link_drive"
-                               class="form-control"
-                               value="<?= old('link_drive') ?>"
-                               placeholder="https://drive.google.com/...">
-
-                    </div>
-
-
-                    <div class="col-md-12 mb-4">
-
-                        <label class="form-label">
-
-                            Data Dukung
-
-                        </label>
-
-
-                        <textarea name="data_dukung"
-                                  class="form-control"
-                                  rows="3"
-                                  placeholder="Contoh: surat undangan, daftar hadir, foto dokumentasi"><?= old('data_dukung') ?></textarea>
-
-                    </div>
+                    <small class="form-help">
+                        Masukkan tautan Google Drive atau penyimpanan cloud lainnya.
+                    </small>
 
                 </div>
 
+                <div class="form-group">
 
-                <!-- =====================================================
-                     TOMBOL
-                ====================================================== -->
+                    <label>Keterangan Data Dukung</label>
 
-                <div class="d-flex justify-content-end gap-2">
+                    <textarea name="data_dukung"
+                              placeholder="Tuliskan keterangan data dukung atau dokumen pendukung..."><?= old('data_dukung') ?></textarea>
 
-                    <a href="<?= site_url('forum-kecamatan-sehat/realisasi') ?>"
-                       class="btn btn-secondary">
+                </div>
 
-                        Batal
-
-                    </a>
-
+                <div class="form-actions">
 
                     <button type="submit"
-                            class="btn btn-primary">
-
-                        <i class="bi bi-save"></i>
-
-                        Simpan Data
-
+                            class="btn-simpan">
+                        ✓ &nbsp;Simpan Data
                     </button>
+
+                    <a href="<?= base_url(
+                        'forum-kecamatan-sehat/realisasi'
+                    ) ?>"
+                       class="btn-batal">
+                        Batal
+                    </a>
 
                 </div>
 
@@ -491,5 +626,42 @@
 
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const anggaran = document.getElementById('anggaran');
+
+    if (!anggaran) {
+        return;
+    }
+
+    function formatAnggaran(value) {
+
+        let angka = value.replace(/\D/g, '');
+
+        if (angka === '') {
+            return '';
+        }
+
+        return angka.replace(
+            /\B(?=(\d{3})+(?!\d))/g,
+            '.'
+        );
+    }
+
+    anggaran.addEventListener('input', function () {
+        this.value = formatAnggaran(this.value);
+    });
+
+    if (anggaran.value !== '') {
+        anggaran.value = formatAnggaran(anggaran.value);
+    }
+
+    anggaran.form.addEventListener('submit', function () {
+        anggaran.value = anggaran.value.replace(/\./g, '');
+    });
+
+});
+</script>
 
 <?= $this->endSection() ?>

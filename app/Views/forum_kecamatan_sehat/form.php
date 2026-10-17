@@ -2,428 +2,264 @@
 
 <?= $this->section('content') ?>
 
-<?php
-$isAdmin = in_array(
-    session()->get('role'),
-    ['admin', 'super_admin'],
-    true
-);
-
-$userKecamatan = $kecamatan[0] ?? null;
-?>
-
 <style>
-    .forum-form-page {
-        width: 100%;
-    }
-
-    .forum-form-banner {
-        min-height: 135px;
-        position: relative;
-        overflow: hidden;
-        border-radius: 14px;
-        background: linear-gradient(
-            105deg,
-            #e9f5ff,
-            #f4faff
-        );
-        border: 1px solid #dcebf8;
-        margin-bottom: 24px;
-        padding: 26px 28px 24px 55px;
-    }
-
-    .forum-form-banner::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 70px;
-        height: 100%;
-        background:
-            linear-gradient(
-                130deg,
-                #ffd33d 0%,
-                #ffd33d 48%,
-                #087df5 49%,
-                #087df5 65%,
-                transparent 66%
-            );
-    }
-
-    .forum-form-banner h1,
-    .forum-form-banner p {
-        position: relative;
-        z-index: 2;
-    }
-
-    .forum-form-banner h1 {
-        margin: 0;
-        color: #063b78;
-        font-size: 32px;
-        font-weight: 800;
-    }
-
-    .forum-form-banner p {
-        margin: 7px 0 0;
-        color: #557594;
-        font-size: 16px;
-    }
-
-    .forum-form-card {
-        background: #fff;
-        border: 1px solid #e0ebf5;
-        border-radius: 15px;
-        box-shadow: 0 6px 22px rgba(6,59,120,.06);
-        overflow: hidden;
-    }
-
-    .forum-form-card-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid #e8eff6;
-        background: #fbfdff;
-    }
-
-    .forum-form-card-header h5 {
-        margin: 0;
-        color: #063b78;
-        font-weight: 800;
-    }
-
-    .forum-form-card-body {
+    .menu-page {
+        background: #f4f8fc;
+        min-height: calc(100vh - 70px);
         padding: 28px;
     }
 
-    .forum-form-label {
-        display: block;
-        margin-bottom: 8px;
-        color: #244b70;
-        font-size: 14px;
-        font-weight: 700;
+    .menu-header {
+        background: linear-gradient(135deg, #eef7ff, #e5f2ff);
+        border-left: 6px solid #1687e8;
+        border-radius: 14px;
+        padding: 28px 30px;
+        margin-bottom: 24px;
     }
 
-    .forum-form-control {
-        width: 100%;
-        min-height: 46px;
-        border: 1px solid #d6e4f1;
-        border-radius: 9px;
-        padding: 10px 13px;
-        color: #243f5c;
+    .menu-header h1 {
+        margin: 0 0 7px;
+        color: #07366d;
+        font-size: 30px;
+        font-weight: 800;
+    }
+
+    .menu-header p {
+        margin: 0;
+        color: #5d7898;
+        font-size: 14px;
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .menu-card {
         background: #fff;
-        outline: none;
+        border: 1px solid #d8e7f5;
+        border-radius: 14px;
+        min-height: 205px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         transition: .2s ease;
     }
 
-    .forum-form-control:focus {
-        border-color: #087df5;
-        box-shadow: 0 0 0 3px rgba(8,125,245,.10);
+    .menu-card:hover {
+        border-color: #087ff5;
+        box-shadow: 0 8px 24px rgba(7, 79, 156, .10);
+        transform: translateY(-1px);
     }
 
-    textarea.forum-form-control {
-        min-height: 120px;
-        resize: vertical;
-    }
-
-    .forum-form-readonly {
-        background: #f4f8fc;
-    }
-
-    .forum-form-help {
-        margin-top: 6px;
-        color: #7189a0;
-        font-size: 12px;
-    }
-
-    .forum-form-actions {
-        margin-top: 8px;
-        padding-top: 20px;
-        border-top: 1px solid #edf2f7;
+    .menu-top {
         display: flex;
-        justify-content: flex-end;
-        gap: 10px;
+        align-items: flex-start;
+        gap: 16px;
     }
 
-    .forum-btn-save {
-        min-height: 44px;
-        padding: 0 20px;
-        border: 0;
-        border-radius: 9px;
-        background: linear-gradient(135deg, #087df5, #0875df);
-        color: #fff;
-        font-weight: 700;
+    .menu-icon {
+        width: 52px;
+        height: 52px;
+        min-width: 52px;
+        border-radius: 12px;
+        background: #e8f3ff;
+        color: #087ff5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
     }
 
-    .forum-btn-back {
-        min-height: 44px;
-        padding: 0 18px;
-        border-radius: 9px;
-        background: #fff;
-        border: 1px solid #d9e4ee;
-        color: #36536d;
-        text-decoration: none;
+    .menu-content h3 {
+        margin: 2px 0 8px;
+        color: #07366d;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .menu-content p {
+        margin: 0;
+        color: #718096;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .menu-action {
+        margin-top: 22px;
+    }
+
+    .btn-kelola {
         display: inline-flex;
         align-items: center;
+        gap: 7px;
+        background: #087ff5;
+        color: #fff;
+        padding: 11px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+    .btn-kelola:hover {
+        background: #066fd6;
+        color: #fff;
     }
 
     @media (max-width: 768px) {
-        .forum-form-card-body {
-            padding: 20px;
+        .menu-page {
+            padding: 15px;
         }
 
-        .forum-form-actions {
-            flex-direction: column-reverse;
-        }
-
-        .forum-btn-save,
-        .forum-btn-back {
-            width: 100%;
-            justify-content: center;
+        .menu-grid {
+            grid-template-columns: 1fr;
         }
     }
 </style>
 
-<div class="forum-form-page">
 
-    <section class="forum-form-banner">
+<div class="menu-page">
 
-        <h1>
-            Tambah Forum Kecamatan Sehat
-        </h1>
-
+    <div class="menu-header">
+        <h1>Forum Kecamatan Sehat</h1>
         <p>
-            Tambahkan data Forum Kecamatan Sehat baru.
+            Kelola data dan dokumen Forum Kecamatan Sehat.
         </p>
-
-    </section>
-
-
-    <?php if (session()->getFlashdata('error')): ?>
-
-        <div class="alert alert-danger mb-3">
-            <i class="bi bi-exclamation-circle-fill me-2"></i>
-            <?= esc(session()->getFlashdata('error')) ?>
-        </div>
-
-    <?php endif; ?>
+    </div>
 
 
-    <section class="forum-form-card">
-
-        <div class="forum-form-card-header">
-
-            <h5>
-                <i
-                    class="bi bi-chat-square-text-fill me-2"
-                    style="color:#087df5;"
-                ></i>
-
-                Form Forum Kecamatan Sehat
-            </h5>
-
-        </div>
+    <div class="menu-grid">
 
 
-        <div class="forum-form-card-body">
+        <!-- SK -->
+        <div class="menu-card">
 
-            <form
-                method="post"
-                action="<?= base_url(
-                    'forum-kecamatan-sehat/store'
-                ) ?>"
-            >
+            <div class="menu-top">
 
-                <?= csrf_field() ?>
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-4">
-
-                        <label
-                            class="forum-form-label"
-                            for="kecamatan_id"
-                        >
-                            Kecamatan
-                            <span class="text-danger">*</span>
-                        </label>
-
-                        <?php if ($isAdmin): ?>
-
-                            <select
-                                name="kecamatan_id"
-                                id="kecamatan_id"
-                                class="forum-form-control"
-                                required
-                            >
-
-                                <option value="">
-                                    -- Pilih Kecamatan --
-                                </option>
-
-                                <?php foreach ($kecamatan as $item): ?>
-
-                                    <option
-                                        value="<?= esc($item['id']) ?>"
-                                        <?= old('kecamatan_id') == $item['id']
-                                            ? 'selected'
-                                            : '' ?>
-                                    >
-                                        <?= esc(
-                                            $item['nama_kecamatan']
-                                        ) ?>
-                                    </option>
-
-                                <?php endforeach; ?>
-
-                            </select>
-
-                        <?php else: ?>
-
-                            <input
-                                type="text"
-                                class="forum-form-control forum-form-readonly"
-                                value="<?= esc(
-                                    $userKecamatan['nama_kecamatan']
-                                    ?? '-'
-                                ) ?>"
-                                readonly
-                            >
-
-                            <input
-                                type="hidden"
-                                name="kecamatan_id"
-                                value="<?= esc(
-                                    $userKecamatan['id']
-                                    ?? ''
-                                ) ?>"
-                            >
-
-                            <div class="forum-form-help">
-                                <i class="bi bi-shield-check me-1"></i>
-                                Kecamatan ditentukan otomatis berdasarkan akun.
-                            </div>
-
-                        <?php endif; ?>
-
-                    </div>
-
-
-                    <div class="col-md-6 mb-4">
-
-                        <label
-                            class="forum-form-label"
-                            for="nama_forum"
-                        >
-                            Nama Forum
-                            <span class="text-danger">*</span>
-                        </label>
-
-                        <input
-                            type="text"
-                            name="nama_forum"
-                            id="nama_forum"
-                            class="forum-form-control"
-                            placeholder="Contoh: Forum Kecamatan Sehat Andir"
-                            value="<?= esc(old('nama_forum')) ?>"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="col-md-6 mb-4">
-
-                        <label
-                            class="forum-form-label"
-                            for="tahun"
-                        >
-                            Tahun
-                            <span class="text-danger">*</span>
-                        </label>
-
-                        <input
-                            type="number"
-                            name="tahun"
-                            id="tahun"
-                            class="forum-form-control"
-                            min="2000"
-                            max="2100"
-                            value="<?= esc(
-                                old('tahun', date('Y'))
-                            ) ?>"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="col-md-6 mb-4">
-
-                        <label
-                            class="forum-form-label"
-                            for="ketua"
-                        >
-                            Ketua
-                        </label>
-
-                        <input
-                            type="text"
-                            name="ketua"
-                            id="ketua"
-                            class="forum-form-control"
-                            placeholder="Nama Ketua"
-                            value="<?= esc(old('ketua')) ?>"
-                        >
-
-                    </div>
-
-
-                    <div class="col-12 mb-3">
-
-                        <label
-                            class="forum-form-label"
-                            for="keterangan"
-                        >
-                            Keterangan
-                        </label>
-
-                        <textarea
-                            name="keterangan"
-                            id="keterangan"
-                            class="forum-form-control"
-                            placeholder="Tambahkan keterangan jika diperlukan..."
-                        ><?= esc(old('keterangan')) ?></textarea>
-
-                    </div>
-
+                <div class="menu-icon">
+                    <i class="bi bi-file-earmark-pdf"></i>
                 </div>
 
+                <div class="menu-content">
+                    <h3>SK</h3>
 
-                <div class="forum-form-actions">
-
-                    <a
-                        href="<?= base_url(
-                            'forum-kecamatan-sehat'
-                        ) ?>"
-                        class="forum-btn-back"
-                    >
-                        <i class="bi bi-arrow-left me-1"></i>
-                        Kembali
-                    </a>
-
-                    <button
-                        type="submit"
-                        class="forum-btn-save"
-                    >
-                        <i class="bi bi-save me-1"></i>
-                        Simpan Data
-                    </button>
-
+                    <p>
+                        Upload Surat Keputusan Forum Kecamatan Sehat.
+                        File harus berupa PDF dengan ukuran maksimal 5 MB.
+                    </p>
                 </div>
 
-            </form>
+            </div>
+
+            <div class="menu-action">
+                <a href="<?= base_url('forum-kecamatan-sehat/sk') ?>"
+                   class="btn-kelola">
+                    <i class="bi bi-upload"></i>
+                    Kelola SK
+                </a>
+            </div>
 
         </div>
 
-    </section>
+
+        <!-- RENCANA KERJA -->
+        <div class="menu-card">
+
+            <div class="menu-top">
+
+                <div class="menu-icon">
+                    <i class="bi bi-journal-text"></i>
+                </div>
+
+                <div class="menu-content">
+                    <h3>Rencana Kerja</h3>
+
+                    <p>
+                        Kelola rencana kerja Forum Kecamatan Sehat
+                        berdasarkan tahun pelaksanaan.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="menu-action">
+                <a href="<?= base_url('forum-kecamatan-sehat/rencana-kerja') ?>"
+                   class="btn-kelola">
+                    <i class="bi bi-journal-check"></i>
+                    Kelola Rencana Kerja
+                </a>
+            </div>
+
+        </div>
+
+
+        <!-- REALISASI -->
+        <div class="menu-card">
+
+            <div class="menu-top">
+
+                <div class="menu-icon">
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+
+                <div class="menu-content">
+                    <h3>Realisasi Kegiatan</h3>
+
+                    <p>
+                        Input laporan kegiatan, waktu, peserta,
+                        hasil pelaksanaan, anggaran dan sumber pendanaan.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="menu-action">
+                <a href="<?= base_url('forum-kecamatan-sehat/realisasi') ?>"
+                   class="btn-kelola">
+                    <i class="bi bi-clipboard-data"></i>
+                    Kelola Realisasi
+                </a>
+            </div>
+
+        </div>
+
+
+        <!-- FOTO -->
+        <div class="menu-card">
+
+            <div class="menu-top">
+
+                <div class="menu-icon">
+                    <i class="bi bi-camera-fill"></i>
+                </div>
+
+                <div class="menu-content">
+                    <h3>Foto Kegiatan</h3>
+
+                    <p>
+                        Upload foto dokumentasi kegiatan
+                        Forum Kecamatan Sehat dengan ukuran maksimal 5 MB.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="menu-action">
+                <a href="<?= base_url('forum-kecamatan-sehat/foto-kegiatan') ?>"
+                   class="btn-kelola">
+                    <i class="bi bi-image"></i>
+                    Kelola Foto
+                </a>
+            </div>
+
+        </div>
+
+
+    </div>
 
 </div>
 

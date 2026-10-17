@@ -2,175 +2,432 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\TimPembinaRencanaKerjaModel;
 
 class TimPembinaRencanaKerja extends BaseController
 {
-    protected $model;
+    protected $rencanaModel;
 
     public function __construct()
     {
-        $this->model = new TimPembinaRencanaKerjaModel();
+        $this->rencanaModel =
+            new TimPembinaRencanaKerjaModel();
     }
 
+    /**
+     * Cek role.
+     */
+    private function allowedRoles(): bool
+    {
+        return in_array(
+            session()->get('role'),
+            ['user', 'admin'],
+            true
+        );
+    }
+
+    /**
+     * Halaman pilihan Tahun Ganjil / Tahun Genap.
+     */
     public function index()
     {
-        $tahun = $this->request->getGet('tahun');
-
-        $builder = $this->model
-            ->orderBy('id', 'DESC');
-
-        if ($tahun !== null && $tahun !== '') {
-            $builder->where('tahun', $tahun);
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
         }
 
-        $data = $builder->findAll();
-
-        return view('tim_pembina_rencana_kerja/index', [
-            'title' => 'Rencana Kerja Tim Pembina',
-            'data'  => $data,
-            'tahun' => $tahun
-        ]);
+        return view(
+            'tim_pembina_rencana_kerja/index',
+            [
+                'title' =>
+                    'Rencana Kerja Tim Pembina',
+            ]
+        );
     }
 
-    public function create()
+    /**
+     * Halaman Rencana Kerja berdasarkan periode.
+     */
+    public function periode($periode)
     {
-        $tahun = $this->request->getGet('tahun');
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
+        }
 
-        return view('tim_pembina_rencana_kerja/create', [
-            'title' => 'Tambah Rencana Kerja',
-            'tahun' => $tahun
-        ]);
+        if (
+            !in_array(
+                $periode,
+                ['ganjil', 'genap'],
+                true
+            )
+        ) {
+            return redirect()
+                ->to('/tim-pembina/rencana-kerja')
+                ->with(
+                    'error',
+                    'Periode tidak valid.'
+                );
+        }
+
+        $namaPeriode =
+            $periode === 'ganjil'
+                ? 'Tahun Ganjil'
+                : 'Tahun Genap';
+
+        $rencana = $this->rencanaModel
+            ->where(
+                'periode',
+                $periode
+            )
+            ->orderBy(
+                'tahun',
+                'DESC'
+            )
+            ->orderBy(
+                'id',
+                'DESC'
+            )
+            ->findAll();
+
+        return view(
+            'tim_pembina_rencana_kerja/periode',
+            [
+                'title' =>
+                    'Rencana Kerja Tim Pembina - '
+                    . $namaPeriode,
+
+                'periode' =>
+                    $periode,
+
+                'namaPeriode' =>
+                    $namaPeriode,
+
+                'rencana' =>
+                    $rencana,
+            ]
+        );
     }
 
+    /**
+     * Form tambah file.
+     */
+    public function create($periode)
+    {
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
+        }
+
+        if (
+            !in_array(
+                $periode,
+                ['ganjil', 'genap'],
+                true
+            )
+        ) {
+            return redirect()
+                ->to('/tim-pembina/rencana-kerja')
+                ->with(
+                    'error',
+                    'Periode tidak valid.'
+                );
+        }
+
+        $namaPeriode =
+            $periode === 'ganjil'
+                ? 'Tahun Ganjil'
+                : 'Tahun Genap';
+
+        return view(
+            'tim_pembina_rencana_kerja/create',
+            [
+                'title' =>
+                    'Tambah Rencana Kerja - '
+                    . $namaPeriode,
+
+                'periode' =>
+                    $periode,
+
+                'namaPeriode' =>
+                    $namaPeriode,
+            ]
+        );
+    }
+
+    /**
+     * Simpan file.
+     */
     public function store()
     {
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
+        }
+
+        $periode =
+            $this->request->getPost(
+                'periode'
+            );
+
+        if (
+            !in_array(
+                $periode,
+                ['ganjil', 'genap'],
+                true
+            )
+        ) {
+            return redirect()
+                ->to('/tim-pembina/rencana-kerja')
+                ->with(
+                    'error',
+                    'Periode tidak valid.'
+                );
+        }
+
         $rules = [
-            'tahun' => 'required|max_length[50]',
-            'nama_kegiatan' => 'required|max_length[255]',
-            'waktu_kegiatan' => 'required|valid_date[Y-m-d]',
-            'peserta' => 'permit_empty|max_length[255]',
-            'hasil_pelaksanaan' => 'permit_empty',
-            'anggaran' => 'permit_empty|numeric',
-            'sumber_pendanaan' => 'permit_empty|max_length[100]',
-            'link_drive' => 'permit_empty|valid_url',
-            'data_dukung' => 'permit_empty'
+            'tahun' => [
+                'label' =>
+                    'Tahun',
+
+                'rules' =>
+                    'required|max_length[20]',
+
+                'errors' => [
+                    'required' =>
+                        'Tahun wajib diisi.',
+
+                    'max_length' =>
+                        'Tahun maksimal 20 karakter.',
+                ],
+            ],
+
+            'file' => [
+                'label' =>
+                    'File Rencana Kerja',
+
+                'rules' =>
+                    'uploaded[file]'
+                    . '|max_size[file,10240]'
+                    . '|ext_in[file,pdf,doc,docx,xls,xlsx]',
+
+                'errors' => [
+                    'uploaded' =>
+                        'File Rencana Kerja wajib diupload.',
+
+                    'max_size' =>
+                        'Ukuran file maksimal 10 MB.',
+
+                    'ext_in' =>
+                        'File harus PDF, DOC, DOCX, XLS, atau XLSX.',
+                ],
+            ],
         ];
 
         if (!$this->validate($rules)) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', implode('<br>', $this->validator->getErrors()));
+                ->with(
+                    'errors',
+                    $this->validator->getErrors()
+                );
         }
 
-        $anggaran = $this->request->getPost('anggaran');
+        $file =
+            $this->request->getFile('file');
 
-        $anggaran = str_replace('.', '', $anggaran);
-
-        $this->model->insert([
-            'tahun' => $this->request->getPost('tahun'),
-            'nama_kegiatan' => $this->request->getPost('nama_kegiatan'),
-            'waktu_kegiatan' => $this->request->getPost('waktu_kegiatan'),
-            'peserta' => $this->request->getPost('peserta'),
-            'hasil_pelaksanaan' => $this->request->getPost('hasil_pelaksanaan'),
-            'anggaran' => $anggaran !== '' ? $anggaran : null,
-            'sumber_pendanaan' => $this->request->getPost('sumber_pendanaan'),
-            'link_drive' => $this->request->getPost('link_drive'),
-            'data_dukung' => $this->request->getPost('data_dukung'),
-        ]);
-
-        return redirect()
-            ->to(base_url('tim-pembina/rencana-kerja?tahun=' . $this->request->getPost('tahun')))
-            ->with('success', 'Rencana kerja berhasil ditambahkan.');
-    }
-
-    public function edit($id)
-    {
-        $data = $this->model->find($id);
-
-        if (!$data) {
-            return redirect()
-                ->to(base_url('tim-pembina/rencana-kerja'))
-                ->with('error', 'Data rencana kerja tidak ditemukan.');
-        }
-
-        return view('tim_pembina_rencana_kerja/edit', [
-            'title' => 'Edit Rencana Kerja',
-            'data' => $data,
-            'tahun' => $data['tahun'] ?? ''
-        ]);
-    }
-
-    public function update($id)
-    {
-        $data = $this->model->find($id);
-
-        if (!$data) {
-            return redirect()
-                ->to(base_url('tim-pembina/rencana-kerja'))
-                ->with('error', 'Data tidak ditemukan.');
-        }
-
-        $rules = [
-            'tahun' => 'required|max_length[50]',
-            'nama_kegiatan' => 'required|max_length[255]',
-            'waktu_kegiatan' => 'required|valid_date[Y-m-d]',
-            'peserta' => 'permit_empty|max_length[255]',
-            'hasil_pelaksanaan' => 'permit_empty',
-            'anggaran' => 'permit_empty|numeric',
-            'sumber_pendanaan' => 'permit_empty|max_length[100]',
-            'link_drive' => 'permit_empty|valid_url',
-            'data_dukung' => 'permit_empty'
-        ];
-
-        if (!$this->validate($rules)) {
+        if (
+            !$file
+            || !$file->isValid()
+        ) {
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', implode('<br>', $this->validator->getErrors()));
+                ->with(
+                    'error',
+                    'File tidak valid.'
+                );
         }
 
-        $anggaran = str_replace(
-            '.',
-            '',
-            $this->request->getPost('anggaran')
+        /*
+         * Folder upload.
+         */
+        $uploadPath =
+            FCPATH
+            . 'uploads/tim_pembina/rencana_kerja/';
+
+        if (!is_dir($uploadPath)) {
+            mkdir(
+                $uploadPath,
+                0777,
+                true
+            );
+        }
+
+        /*
+         * Nama file random.
+         */
+        $namaFile =
+            $file->getRandomName();
+
+        /*
+         * Pindahkan file.
+         */
+        $file->move(
+            $uploadPath,
+            $namaFile
         );
 
-        $this->model->update($id, [
-            'tahun' => $this->request->getPost('tahun'),
-            'nama_kegiatan' => $this->request->getPost('nama_kegiatan'),
-            'waktu_kegiatan' => $this->request->getPost('waktu_kegiatan'),
-            'peserta' => $this->request->getPost('peserta'),
-            'hasil_pelaksanaan' => $this->request->getPost('hasil_pelaksanaan'),
-            'anggaran' => $anggaran !== '' ? $anggaran : null,
-            'sumber_pendanaan' => $this->request->getPost('sumber_pendanaan'),
-            'link_drive' => $this->request->getPost('link_drive'),
-            'data_dukung' => $this->request->getPost('data_dukung'),
+        /*
+         * Simpan database.
+         */
+        $this->rencanaModel->insert([
+            'periode' =>
+                $periode,
+
+            'tahun' =>
+                $this->request->getPost(
+                    'tahun'
+                ),
+
+            'nama_file' =>
+                $namaFile,
+
+            'nama_asli' =>
+                $file->getClientName(),
+
+            'file_path' =>
+                'uploads/tim_pembina/rencana_kerja/'
+                . $namaFile,
+
+            'ukuran_file' =>
+                $file->getSize(),
         ]);
 
         return redirect()
-            ->to(base_url('tim-pembina/rencana-kerja?tahun=' . $this->request->getPost('tahun')))
-            ->with('success', 'Rencana kerja berhasil diperbarui.');
+            ->to(
+                '/tim-pembina/rencana-kerja/'
+                . $periode
+            )
+            ->with(
+                'success',
+                'Rencana Kerja berhasil diupload.'
+            );
     }
 
-    public function delete($id)
+    /**
+     * Lihat / download file.
+     */
+    public function view($id)
     {
-        $data = $this->model->find($id);
-
-        if (!$data) {
+        if (!$this->allowedRoles()) {
             return redirect()
-                ->back()
-                ->with('error', 'Data tidak ditemukan.');
+                ->to('/dashboard');
         }
 
-        $tahun = $data['tahun'] ?? '';
+        $rencana =
+            $this->rencanaModel->find($id);
 
-        $this->model->delete($id);
+        if (!$rencana) {
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Data Rencana Kerja tidak ditemukan.'
+                );
+        }
+
+        $path =
+            FCPATH
+            . $rencana['file_path'];
+
+        if (!is_file($path)) {
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'File tidak ditemukan.'
+                );
+        }
+
+        return $this->response
+            ->download(
+                $path,
+                null
+            )
+            ->setFileName(
+                $rencana['nama_asli']
+            );
+    }
+
+    /**
+     * Download file.
+     */
+    public function download($id)
+    {
+        return $this->view($id);
+    }
+
+    /**
+     * Hapus file.
+     */
+    public function delete($id)
+    {
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard');
+        }
+
+        $rencana =
+            $this->rencanaModel->find($id);
+
+        if (!$rencana) {
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Data tidak ditemukan.'
+                );
+        }
+
+        $path =
+            FCPATH
+            . $rencana['file_path'];
+
+        if (is_file($path)) {
+            unlink($path);
+        }
+
+        $this->rencanaModel->delete($id);
+
+        $periode =
+            $rencana['periode'] ?? 'ganjil';
 
         return redirect()
-            ->to(base_url('tim-pembina/rencana-kerja?tahun=' . $tahun))
-            ->with('success', 'Rencana kerja berhasil dihapus.');
+            ->to(
+                '/tim-pembina/rencana-kerja/'
+                . $periode
+            )
+            ->with(
+                'success',
+                'Rencana Kerja berhasil dihapus.'
+            );
     }
 }
