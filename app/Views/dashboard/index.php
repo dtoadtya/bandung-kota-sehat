@@ -11,6 +11,12 @@ $isAdmin = in_array(
     ['user', 'admin'],
     true
 );
+
+$isFbs = in_array(
+    $role,
+    ['admin', 'admin_fbs'],
+    true
+);
 ?>
 
 <style>
@@ -478,44 +484,6 @@ $isAdmin = in_array(
     <div class="dashboard-stats">
 
 
-        <!-- FORUM BANDUNG SEHAT -->
-
-        <div class="dashboard-stat-card green">
-
-            <div class="dashboard-stat-top">
-
-                <div class="dashboard-stat-label">
-                    Forum Bandung Sehat
-                </div>
-
-                <div class="dashboard-stat-icon">
-
-                    <i class="bi bi-building"></i>
-
-                </div>
-
-            </div>
-
-
-            <div class="dashboard-stat-value">
-
-                <?= esc(
-                    $jumlahForumBandung ?? 0
-                ) ?>
-
-            </div>
-
-
-            <div class="dashboard-stat-description">
-
-                Jumlah Forum Bandung Sehat tercatat
-
-            </div>
-
-        </div>
-
-
-
         <!-- TIM PEMBINA -->
 
         <div class="dashboard-stat-card gold">
@@ -554,14 +522,52 @@ $isAdmin = in_array(
 
 
 
-        <!-- FORUM KECAMATAN -->
+        <!-- FORUM BANDUNG SEHAT -->
+
+        <div class="dashboard-stat-card green">
+
+            <div class="dashboard-stat-top">
+
+                <div class="dashboard-stat-label">
+                    Forum Bandung Sehat
+                </div>
+
+                <div class="dashboard-stat-icon">
+
+                    <i class="bi bi-building"></i>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat-value">
+
+                <?= esc(
+                    $jumlahForumBandung ?? 0
+                ) ?>
+
+            </div>
+
+
+            <div class="dashboard-stat-description">
+
+                Jumlah Forum Bandung Sehat tercatat
+
+            </div>
+
+        </div>
+
+
+
+        <!-- FORUM KECAMATAN SEHAT -->
 
         <div class="dashboard-stat-card cyan">
 
             <div class="dashboard-stat-top">
 
                 <div class="dashboard-stat-label">
-                    Forum Kecamatan
+                    Forum Kecamatan Sehat
                 </div>
 
                 <div class="dashboard-stat-icon">
@@ -592,14 +598,14 @@ $isAdmin = in_array(
 
 
 
-        <!-- POKJA -->
+        <!-- POKJA KELURAHAN SEHAT -->
 
         <div class="dashboard-stat-card purple">
 
             <div class="dashboard-stat-top">
 
                 <div class="dashboard-stat-label">
-                    Pokja Kelurahan
+                    Pokja Kelurahan Sehat
                 </div>
 
                 <div class="dashboard-stat-icon">
@@ -740,6 +746,23 @@ $isAdmin = in_array(
                 <div class="dashboard-summary-item">
 
                     <div class="dashboard-summary-label">
+                        Forum Bandung Sehat
+                    </div>
+
+                    <div class="dashboard-summary-value">
+
+                        <?= esc(
+                            $jumlahForumBandung ?? 0
+                        ) ?>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-summary-item">
+
+                    <div class="dashboard-summary-label">
                         Forum Kecamatan
                     </div>
 
@@ -793,6 +816,8 @@ $isAdmin = in_array(
             <div class="dashboard-actions">
 
 
+                <?php if ($isAdmin): ?>
+
                 <a
                     href="<?= base_url(
                         'tim-pembina'
@@ -820,9 +845,11 @@ $isAdmin = in_array(
 
                 </a>
 
+                <?php endif; ?>
 
 
-                <?php if ($isAdmin): ?>
+
+                <?php if ($isFbs): ?>
 
                     <a
                         href="<?= base_url(
@@ -854,6 +881,8 @@ $isAdmin = in_array(
                 <?php endif; ?>
 
 
+
+                <?php if ($isAdmin): ?>
 
                 <a
                     href="<?= base_url(
@@ -911,6 +940,8 @@ $isAdmin = in_array(
 
                 </a>
 
+                <?php endif; ?>
+
 
             </div>
 
@@ -939,21 +970,17 @@ document.addEventListener(
 
         /* =====================================================
            DATA
+           Keempat komponen Kelembagaan
         ====================================================== */
-
-        const jumlahKecamatan =
-            <?= (int) (
-                $jumlahKecamatan ?? 0
-            ) ?>;
-
-        const jumlahKelurahan =
-            <?= (int) (
-                $jumlahKelurahan ?? 0
-            ) ?>;
 
         const jumlahTimPembina =
             <?= (int) (
                 $jumlahTimPembina ?? 0
+            ) ?>;
+
+        const jumlahForumBandung =
+            <?= (int) (
+                $jumlahForumBandung ?? 0
             ) ?>;
 
         const jumlahForumKecamatan =
@@ -989,10 +1016,9 @@ document.addEventListener(
                     data: {
 
                         labels: [
-                            'Kecamatan',
-                            'Kelurahan',
                             'Tim Pembina',
-                            'Forum Kec.',
+                            'Forum Bandung',
+                            'Forum Kecamatan',
                             'Pokja'
                         ],
 
@@ -1001,9 +1027,8 @@ document.addEventListener(
                             {
 
                                 data: [
-                                    jumlahKecamatan,
-                                    jumlahKelurahan,
                                     jumlahTimPembina,
+                                    jumlahForumBandung,
                                     jumlahForumKecamatan,
                                     jumlahPokja
                                 ],
@@ -1138,11 +1163,10 @@ document.addEventListener(
                     data: {
 
                         labels: [
-                            'Kecamatan',
-                            'Kelurahan',
                             'Tim Pembina',
-                            'Forum Kecamatan',
-                            'Pokja'
+                            'Forum Bandung Sehat',
+                            'Forum Kecamatan Sehat',
+                            'Pokja Kelurahan Sehat'
                         ],
 
                         datasets: [
@@ -1150,17 +1174,15 @@ document.addEventListener(
                             {
 
                                 data: [
-                                    jumlahKecamatan,
-                                    jumlahKelurahan,
                                     jumlahTimPembina,
+                                    jumlahForumBandung,
                                     jumlahForumKecamatan,
                                     jumlahPokja
                                 ],
 
                                 backgroundColor: [
-                                    '#087df5',
-                                    '#16a34a',
                                     '#f5b700',
+                                    '#087df5',
                                     '#0891b2',
                                     '#7c3aed'
                                 ],

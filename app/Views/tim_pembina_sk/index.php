@@ -151,15 +151,15 @@
                         </th>
 
                         <th>
-                            Nomor SK
+                            No SK
+                        </th>
+
+                        <th>
+                            Judul SK
                         </th>
 
                         <th width="120">
                             Periode
-                        </th>
-
-                        <th>
-                            Keterangan
                         </th>
 
                         <th>
@@ -228,7 +228,7 @@
 
 
                             <!-- =================================================
-                                 NOMOR SK
+                                 NO SK
                             ================================================== -->
 
                             <td>
@@ -246,13 +246,13 @@
 
 
                             <!-- =================================================
-                                 PERIODE
+                                 JUDUL SK
                             ================================================== -->
 
                             <td>
 
                                 <?= esc(
-                                    $row['periode']
+                                    $row['keterangan']
                                     ?? '-'
                                 ) ?>
 
@@ -260,13 +260,13 @@
 
 
                             <!-- =================================================
-                                 KETERANGAN
+                                 PERIODE
                             ================================================== -->
 
                             <td>
 
                                 <?= esc(
-                                    $row['keterangan']
+                                    $row['periode']
                                     ?? '-'
                                 ) ?>
 
@@ -324,7 +324,7 @@
 
                             <td>
 
-                                <div class="d-flex gap-2 flex-wrap">
+                                <div class="d-flex gap-2 flex-nowrap align-items-center">
 
 
                                     <!-- LIHAT BERKAS -->
@@ -344,69 +344,51 @@
                                     </a>
 
 
-                                    <?php
-                                    /*
-                                    |--------------------------------------------------------------------------
-                                    | EDIT DAN HAPUS
-                                    |--------------------------------------------------------------------------
-                                    |
-                                    | User tetap dapat melihat.
-                                    | Tombol pengelolaan hanya untuk Admin.
-                                    |
-                                    */
-                                    ?>
+                                    <!-- EDIT BERKAS -->
 
-                                    <?php if ($role === 'admin'): ?>
+                                    <a
+                                        href="<?= base_url(
+                                            'tim-pembina/sk/edit/' .
+                                            $row['id']
+                                        ) ?>"
+                                        class="btn btn-sm btn-outline-warning"
+                                    >
+
+                                        <i class="bi bi-pencil"></i>
+
+                                        Edit Berkas
+
+                                    </a>
 
 
-                                        <!-- EDIT -->
+                                    <!-- HAPUS -->
 
-                                        <a
-                                            href="<?= base_url(
-                                                'tim-pembina/sk/edit/' .
-                                                $row['id']
-                                            ) ?>"
-                                            class="btn btn-sm btn-outline-warning"
+                                    <form
+                                        action="<?= base_url(
+                                            'tim-pembina/sk/delete/' .
+                                            $row['id']
+                                        ) ?>"
+                                        method="post"
+                                        class="d-inline"
+                                        onsubmit="return confirm(
+                                            'Yakin ingin menghapus SK ini?'
+                                        );"
+                                    >
+
+                                        <?= csrf_field() ?>
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-outline-danger"
                                         >
 
-                                            <i class="bi bi-pencil"></i>
+                                            <i class="bi bi-trash"></i>
 
-                                            Edit Berkas
+                                            Hapus
 
-                                        </a>
+                                        </button>
 
-
-                                        <!-- HAPUS -->
-
-                                        <form
-                                            action="<?= base_url(
-                                                'tim-pembina/sk/delete/' .
-                                                $row['id']
-                                            ) ?>"
-                                            method="post"
-                                            class="d-inline"
-                                            onsubmit="return confirm(
-                                                'Yakin ingin menghapus SK ini?'
-                                            );"
-                                        >
-
-                                            <?= csrf_field() ?>
-
-                                            <button
-                                                type="submit"
-                                                class="btn btn-sm btn-outline-danger"
-                                            >
-
-                                                <i class="bi bi-trash"></i>
-
-                                                Hapus
-
-                                            </button>
-
-                                        </form>
-
-
-                                    <?php endif; ?>
+                                    </form>
 
 
                                 </div>
@@ -429,31 +411,18 @@
                                     ========================================== -->
 
 
-                                    <?php if ($status === 'diterima'): ?>
+                                    <?php if ($status === 'disetujui'): ?>
 
 
-                                        <!-- DITERIMA -->
+                                        <!-- DIVERIFIKASI -->
 
                                         <div class="status-wrapper">
-
-                                            <span
-                                                class="badge-status badge-diterima"
-                                            >
-
-                                                <i class="bi bi-check-circle-fill"></i>
-
-                                                Diterima
-
-                                            </span>
-
-
-                                            <!-- HASIL -->
 
                                             <span
                                                 class="badge-status badge-diverifikasi"
                                             >
 
-                                                <i class="bi bi-shield-check"></i>
+                                                <i class="bi bi-check-circle-fill"></i>
 
                                                 Diverifikasi
 
@@ -525,12 +494,12 @@
 
 
                                             <div
-                                                class="d-flex gap-2 flex-wrap mt-2"
+                                                class="d-flex gap-2 flex-nowrap align-items-center"
                                             >
 
 
-                                                <!-- =================================
-                                                     DITERIMA
+                                                    <!-- =================================
+                                                     SETUJUI
                                                 ================================== -->
 
                                                 <form
@@ -549,7 +518,7 @@
                                                         type="submit"
                                                         class="btn btn-sm btn-outline-success"
                                                         onclick="return confirm(
-                                                            'Apakah Anda yakin menerima SK ini?'
+                                                            'Apakah Anda yakin menyetujui SK ini?'
                                                         );"
                                                     >
 
@@ -557,7 +526,7 @@
                                                             class="bi bi-check-lg">
                                                         </i>
 
-                                                        Diterima
+                                                        Setujui
 
                                                     </button>
 
@@ -599,7 +568,7 @@
                                     ========================================== -->
 
 
-                                    <?php if ($status === 'diterima'): ?>
+                                    <?php if ($status === 'disetujui'): ?>
 
 
                                         <div class="status-wrapper">
@@ -612,20 +581,7 @@
                                                     class="bi bi-check-circle-fill">
                                                 </i>
 
-                                                Diterima
-
-                                            </span>
-
-
-                                            <span
-                                                class="badge-status badge-diverifikasi"
-                                            >
-
-                                                <i
-                                                    class="bi bi-shield-check">
-                                                </i>
-
-                                                Diverifikasi
+                                                Disetujui
 
                                             </span>
 
@@ -1296,6 +1252,9 @@
     white-space:
         nowrap;
 
+    text-align:
+        center;
+
     border-bottom:
         1px solid #d9e6f5;
 
@@ -1311,6 +1270,9 @@
 
     white-space:
         nowrap;
+
+    text-align:
+        center;
 
     padding:
         14px;
@@ -1487,10 +1449,16 @@
         flex;
 
     flex-direction:
-        column;
+        row;
+
+    flex-wrap:
+        nowrap;
 
     align-items:
-        flex-start;
+        center;
+
+    justify-content:
+        center;
 
     gap:
         7px;

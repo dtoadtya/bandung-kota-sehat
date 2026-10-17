@@ -489,4 +489,142 @@ class ForumKecamatanSehatSk extends BaseController
                 'SK Forum Kecamatan Sehat berhasil dihapus.'
             );
     }
+
+
+    /* =========================================================
+       VERIFIKASI (SETUJUI) - HANYA ADMIN
+    ========================================================= */
+
+    private function isAdmin(): bool
+    {
+        return session()->get('role') === 'admin';
+    }
+
+    public function verifikasi($id)
+    {
+        if (!$this->isAdmin()) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Hanya Admin yang dapat menyetujui SK.'
+                );
+        }
+
+        $data =
+            $this->skModel->find($id);
+
+        if (!$data) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Data SK tidak ditemukan.'
+                );
+        }
+
+        $this->skModel->update(
+            $id,
+            [
+                'status' =>
+                    'disetujui',
+
+                'keterangan_penolakan' =>
+                    null,
+
+                'verified_at' =>
+                    date('Y-m-d H:i:s'),
+
+                'verified_by' =>
+                    session()->get('user_id'),
+
+                'updated_at' =>
+                    date('Y-m-d H:i:s'),
+            ]
+        );
+
+        return redirect()
+            ->to('/forum-kecamatan-sehat/sk')
+            ->with(
+                'success',
+                'SK Forum Kecamatan Sehat berhasil diverifikasi (Disetujui).'
+            );
+    }
+
+
+    /* =========================================================
+       TOLAK - HANYA ADMIN
+    ========================================================= */
+
+    public function tolak($id)
+    {
+        if (!$this->isAdmin()) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Hanya Admin yang dapat menolak SK.'
+                );
+        }
+
+        $data =
+            $this->skModel->find($id);
+
+        if (!$data) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Data SK tidak ditemukan.'
+                );
+        }
+
+        $alasan =
+            trim(
+                (string) $this->request->getPost(
+                    'keterangan_penolakan'
+                )
+            );
+
+        if ($alasan === '') {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Keterangan alasan penolakan wajib diisi.'
+                );
+        }
+
+        $this->skModel->update(
+            $id,
+            [
+                'status' =>
+                    'ditolak',
+
+                'keterangan_penolakan' =>
+                    $alasan,
+
+                'verified_at' =>
+                    null,
+
+                'verified_by' =>
+                    null,
+
+                'updated_at' =>
+                    date('Y-m-d H:i:s'),
+            ]
+        );
+
+        return redirect()
+            ->to('/forum-kecamatan-sehat/sk')
+            ->with(
+                'success',
+                'SK Forum Kecamatan Sehat ditolak dan alasan penolakan telah disimpan.'
+            );
+    }
 }

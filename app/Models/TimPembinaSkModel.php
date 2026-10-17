@@ -11,10 +11,13 @@ class TimPembinaSkModel extends Model
     protected $primaryKey = 'id';
 
     protected $allowedFields = [
-        'nomor_sk',
+        'no_sk',
         'periode',
         'keterangan',
         'nama_file',
+        'nama_asli',
+        'file_path',
+        'ukuran_file',
         'status',
         'keterangan_penolakan',
         'verified_at',

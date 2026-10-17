@@ -1064,13 +1064,17 @@
 
 
                     <!-- FORUM BANDUNG -->
+                    <!-- Menu tampil untuk semua role,
+                         akses halaman hanya admin & admin_fbs
+                         (dicek RoleFilter) -->
 
                     <?php if (
                         in_array(
                             $currentRole,
                             [
                                 'user',
-                                'admin'
+                                'admin',
+                                'admin_fbs'
                             ],
                             true
                         )
@@ -1099,6 +1103,17 @@
 
                     <!-- FORUM KECAMATAN -->
 
+                    <?php if (
+                        in_array(
+                            $currentRole,
+                            [
+                                'user',
+                                'admin'
+                            ],
+                            true
+                        )
+                    ): ?>
+
                     <a
                         href="<?= base_url(
                             'forum-kecamatan-sehat'
@@ -1117,8 +1132,21 @@
 
                     </a>
 
+                    <?php endif; ?>
+
 
                     <!-- POKJA -->
+
+                    <?php if (
+                        in_array(
+                            $currentRole,
+                            [
+                                'user',
+                                'admin'
+                            ],
+                            true
+                        )
+                    ): ?>
 
                     <a
                         href="<?= base_url(
@@ -1138,6 +1166,8 @@
 
                     </a>
 
+                    <?php endif; ?>
+
 
                 </div>
 
@@ -1147,6 +1177,17 @@
             <!-- =================================================
                  INOVASI DROPDOWN
             ================================================== -->
+
+            <?php if (
+                in_array(
+                    $currentRole,
+                    [
+                        'user',
+                        'admin'
+                    ],
+                    true
+                )
+            ): ?>
 
             <div
                 class="
@@ -1265,6 +1306,8 @@
                 </div>
 
             </div>
+
+            <?php endif; ?>
 
 
             <!-- =================================================

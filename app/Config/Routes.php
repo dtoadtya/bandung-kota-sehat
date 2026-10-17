@@ -410,13 +410,13 @@ $routes->group(
 |--------------------------------------------------------------------------
 | FORUM BANDUNG SEHAT
 |--------------------------------------------------------------------------
-| User dan Admin
+| Hanya Admin dan Admin Forum Bandung Sehat
 |--------------------------------------------------------------------------
 */
 
 $routes->group(
     'forum-bandung-sehat',
-    ['filter' => 'role:user,admin'],
+    ['filter' => 'role:admin,admin_fbs'],
     static function ($routes) {
 
 
@@ -496,6 +496,18 @@ $routes->group(
         $routes->post(
             'sk/delete/(:num)',
             'ForumBandungSehatSk::delete/$1'
+        );
+
+        $routes->post(
+            'sk/disetujui/(:num)',
+            'ForumBandungSehatSk::verifikasi/$1',
+            ['filter' => 'role:admin,admin_fbs']
+        );
+
+        $routes->post(
+            'sk/tolak/(:num)',
+            'ForumBandungSehatSk::tolak/$1',
+            ['filter' => 'role:admin,admin_fbs']
         );
 
 
@@ -724,6 +736,18 @@ $routes->group(
             'ForumKecamatanSehatSk::delete/$1'
         );
 
+        $routes->post(
+            'sk/disetujui/(:num)',
+            'ForumKecamatanSehatSk::verifikasi/$1',
+            ['filter' => 'role:admin']
+        );
+
+        $routes->post(
+            'sk/tolak/(:num)',
+            'ForumKecamatanSehatSk::tolak/$1',
+            ['filter' => 'role:admin']
+        );
+
 
         /*
         |--------------------------------------------------------------------------
@@ -943,6 +967,18 @@ $routes->group(
         $routes->post(
             'sk/delete/(:num)',
             'PokjaKelurahanSehatSk::delete/$1'
+        );
+
+        $routes->post(
+            'sk/disetujui/(:num)',
+            'PokjaKelurahanSehatSk::verifikasi/$1',
+            ['filter' => 'role:admin']
+        );
+
+        $routes->post(
+            'sk/tolak/(:num)',
+            'PokjaKelurahanSehatSk::tolak/$1',
+            ['filter' => 'role:admin']
         );
     }
 );

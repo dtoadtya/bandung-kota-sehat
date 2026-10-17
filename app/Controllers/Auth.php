@@ -158,11 +158,12 @@ class Auth extends BaseController
          *
          * user
          * admin
+         * admin_fbs
          *
          * Jika ada data lama dengan role lain,
          * akun tersebut tidak boleh masuk.
          */
-        if (!in_array($role, ['user', 'admin'], true)) {
+        if (!in_array($role, ['user', 'admin', 'admin_fbs'], true)) {
 
             return redirect()
                 ->back()

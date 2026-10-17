@@ -22,6 +22,10 @@ class ForumBandungSehatSkModel extends Model
         'nama_asli',
         'file_path',
         'ukuran_file',
+        'status',
+        'keterangan_penolakan',
+        'verified_at',
+        'verified_by',
         'created_at',
         'updated_at',
     ];

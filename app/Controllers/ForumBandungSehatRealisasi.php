@@ -18,7 +18,7 @@ class ForumBandungSehatRealisasi extends BaseController
     {
         return in_array(
             session()->get('role'),
-            ['admin', 'user'],
+            ['admin', 'admin_fbs'],
             true
         );
     }

@@ -289,6 +289,213 @@ class PokjaKelurahanSehatSk extends BaseController
     }
 
     /**
+     * Form edit SK
+     */
+    public function edit($id)
+    {
+        $data =
+            $this->skModel->find($id);
+
+        if (!$data) {
+            return redirect()
+                ->to(
+                    '/pokja-kelurahan-sehat/sk'
+                )
+                ->with(
+                    'error',
+                    'Data SK tidak ditemukan.'
+                );
+        }
+
+        $kelurahanList =
+            $this->kelurahanModel
+                ->select(
+                    'kelurahan.*,
+                     kecamatan.nama_kecamatan'
+                )
+                ->join(
+                    'kecamatan',
+                    'kecamatan.id = kelurahan.kecamatan_id',
+                    'left'
+                )
+                ->orderBy(
+                    'kecamatan.nama_kecamatan',
+                    'ASC'
+                )
+                ->orderBy(
+                    'kelurahan.nama_kelurahan',
+                    'ASC'
+                )
+                ->findAll();
+
+        return view(
+            'pokja_kelurahan_sehat/sk/edit',
+            [
+                'title'         => 'Edit SK Pokja Kelurahan Sehat',
+                'data'          => $data,
+                'kelurahanList' => $kelurahanList,
+                'isAdmin'       => $this->isAdmin(),
+            ]
+        );
+    }
+
+    /**
+     * Update SK
+     */
+    public function update($id)
+    {
+        $data =
+            $this->skModel->find($id);
+
+        if (!$data) {
+            return redirect()
+                ->to(
+                    '/pokja-kelurahan-sehat/sk'
+                )
+                ->with(
+                    'error',
+                    'Data SK tidak ditemukan.'
+                );
+        }
+
+        $kelurahanId = $this->request
+            ->getPost('kelurahan_id');
+
+        if (!$kelurahanId) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Kelurahan wajib dipilih.'
+                );
+        }
+
+        $updateData = [
+            'kelurahan_id' => $kelurahanId,
+
+            'no_sk' => trim(
+                (string)
+                $this->request
+                    ->getPost('no_sk')
+            ),
+
+            'periode' => trim(
+                (string)
+                $this->request
+                    ->getPost('periode')
+            ),
+
+            'keterangan' => trim(
+                (string)
+                $this->request
+                    ->getPost('keterangan')
+            ),
+        ];
+
+        /*
+         * File baru (opsional)
+         */
+        $file = $this->request
+            ->getFile('file_sk');
+
+        if (
+            $file &&
+            $file->isValid() &&
+            !$file->hasMoved()
+        ) {
+
+            if (
+                $file->getClientMimeType()
+                !== 'application/pdf'
+            ) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'File SK harus berformat PDF.'
+                    );
+            }
+
+            if (
+                $file->getSize()
+                > 5 * 1024 * 1024
+            ) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Ukuran file maksimal 5 MB.'
+                    );
+            }
+
+            $uploadPath =
+                FCPATH .
+                'uploads/pokja_kelurahan_sehat_sk/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir(
+                    $uploadPath,
+                    0777,
+                    true
+                );
+            }
+
+            /*
+             * Hapus file lama
+             */
+            if (
+                !empty($data['nama_file'])
+            ) {
+                $oldPath =
+                    $uploadPath .
+                    $data['nama_file'];
+
+                if (is_file($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+
+            $namaFile =
+                $file->getRandomName();
+
+            $file->move(
+                $uploadPath,
+                $namaFile
+            );
+
+            $updateData['nama_file'] =
+                $namaFile;
+
+            $updateData['nama_asli'] =
+                $file->getClientName();
+
+            $updateData['file_path'] =
+                'uploads/pokja_kelurahan_sehat_sk/'
+                . $namaFile;
+
+            $updateData['ukuran_file'] =
+                $file->getSize();
+        }
+
+        $this->skModel->update(
+            $id,
+            $updateData
+        );
+
+        return redirect()
+            ->to(
+                '/pokja-kelurahan-sehat/sk'
+            )
+            ->with(
+                'success',
+                'SK Pokja Kelurahan Sehat berhasil diperbarui.'
+            );
+    }
+
+    /**
      * Membuka / melihat PDF
      */
     public function view($id)
@@ -377,6 +584,139 @@ class PokjaKelurahanSehatSk extends BaseController
             ->with(
                 'success',
                 'SK Pokja Kelurahan Sehat berhasil dihapus.'
+            );
+    }
+
+    /**
+     * VERIFIKASI (SETUJUI) - HANYA ADMIN
+     */
+    public function verifikasi($id)
+    {
+        if (!$this->isAdmin()) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Hanya Admin yang dapat menyetujui SK.'
+                );
+        }
+
+        $data =
+            $this->skModel->find($id);
+
+        if (!$data) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Data SK tidak ditemukan.'
+                );
+        }
+
+        $this->skModel->update(
+            $id,
+            [
+                'status' =>
+                    'disetujui',
+
+                'keterangan_penolakan' =>
+                    null,
+
+                'verified_at' =>
+                    date('Y-m-d H:i:s'),
+
+                'verified_by' =>
+                    session()->get('user_id'),
+
+                'updated_at' =>
+                    date('Y-m-d H:i:s'),
+            ]
+        );
+
+        return redirect()
+            ->to(
+                '/pokja-kelurahan-sehat/sk'
+            )
+            ->with(
+                'success',
+                'SK Pokja Kelurahan Sehat berhasil diverifikasi (Disetujui).'
+            );
+    }
+
+    /**
+     * TOLAK - HANYA ADMIN
+     */
+    public function tolak($id)
+    {
+        if (!$this->isAdmin()) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Hanya Admin yang dapat menolak SK.'
+                );
+        }
+
+        $data =
+            $this->skModel->find($id);
+
+        if (!$data) {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Data SK tidak ditemukan.'
+                );
+        }
+
+        $alasan =
+            trim(
+                (string) $this->request->getPost(
+                    'keterangan_penolakan'
+                )
+            );
+
+        if ($alasan === '') {
+
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Keterangan alasan penolakan wajib diisi.'
+                );
+        }
+
+        $this->skModel->update(
+            $id,
+            [
+                'status' =>
+                    'ditolak',
+
+                'keterangan_penolakan' =>
+                    $alasan,
+
+                'verified_at' =>
+                    null,
+
+                'verified_by' =>
+                    null,
+
+                'updated_at' =>
+                    date('Y-m-d H:i:s'),
+            ]
+        );
+
+        return redirect()
+            ->to(
+                '/pokja-kelurahan-sehat/sk'
+            )
+            ->with(
+                'success',
+                'SK Pokja Kelurahan Sehat ditolak dan alasan penolakan telah disimpan.'
             );
     }
 }

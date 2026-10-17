@@ -181,7 +181,8 @@
     ================================= */
 
     input,
-    textarea {
+    textarea,
+    select {
         width: 100%;
 
         box-sizing: border-box;
@@ -206,11 +207,16 @@
     }
 
     input:focus,
-    textarea:focus {
+    textarea:focus,
+    select:focus {
         border-color: #1687e8;
 
         box-shadow:
             0 0 0 3px rgba(22, 135, 232, 0.10);
+    }
+
+    select {
+        cursor: pointer;
     }
 
     textarea {
@@ -564,6 +570,58 @@
             >
 
                 <?= csrf_field() ?>
+
+
+                <!-- =========================================
+                     FORUM KECAMATAN
+                ========================================== -->
+
+                <div class="form-group">
+
+                    <label>
+                        Forum Kecamatan <span>*</span>
+                    </label>
+
+                    <select
+                        name="kecamatan_id"
+                        required
+                    >
+
+                        <option value="">
+                            -- Pilih Forum Kecamatan --
+                        </option>
+
+                        <?php if (!empty($kecamatanList)): ?>
+
+                            <?php foreach ($kecamatanList as $kecamatan): ?>
+
+                                <option
+                                    value="<?= esc($kecamatan['id']) ?>"
+                                    <?= old(
+                                        'kecamatan_id',
+                                        $data['kecamatan_id'] ?? ''
+                                    ) == $kecamatan['id']
+                                        ? 'selected'
+                                        : ''
+                                    ?>
+                                >
+                                    <?= esc(
+                                        $kecamatan['nama_kecamatan']
+                                    ) ?>
+                                </option>
+
+                            <?php endforeach; ?>
+
+                        <?php endif; ?>
+
+                    </select>
+
+                    <small class="form-help">
+                        Pilih kecamatan pemilik Surat Keputusan
+                        Forum Kecamatan Sehat.
+                    </small>
+
+                </div>
 
 
                 <!-- =========================================

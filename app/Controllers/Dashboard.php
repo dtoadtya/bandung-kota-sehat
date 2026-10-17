@@ -21,7 +21,7 @@ class Dashboard extends BaseController
 
         return in_array(
             $role,
-            ['admin', 'super_admin'],
+            ['admin', 'super_admin', 'admin_fbs'],
             true
         );
     }
@@ -197,34 +197,6 @@ class Dashboard extends BaseController
              */
             $jumlahKelurahan =
                 $kelurahanModel->countAll();
-
-
-            /*
-             * Seluruh Tim Pembina.
-             */
-            $jumlahTimPembina =
-                $timPembinaModel->countAll();
-
-
-            /*
-             * Seluruh Forum Bandung Sehat.
-             */
-            $jumlahForumBandung =
-                $forumBandungModel->countAll();
-
-
-            /*
-             * Seluruh Forum Kecamatan Sehat.
-             */
-            $jumlahForumKecamatan =
-                $forumKecamatanModel->countAll();
-
-
-            /*
-             * Seluruh Pokja Kelurahan Sehat.
-             */
-            $jumlahPokja =
-                $pokjaModel->countAll();
         }
 
 
@@ -280,87 +252,42 @@ class Dashboard extends BaseController
                             $kecamatanId
                         )
                         ->countAllResults();
-
-
-                // =================================================
-                // TIM PEMBINA
-                // =================================================
-                //
-                // Tim Pembina sekarang memiliki kecamatan_id.
-                //
-
-                $jumlahTimPembina =
-                    $timPembinaModel
-                        ->where(
-                            'kecamatan_id',
-                            $kecamatanId
-                        )
-                        ->countAllResults();
-
-
-                // =================================================
-                // FORUM BANDUNG SEHAT
-                // =================================================
-                //
-                // Modul Forum Bandung hanya untuk admin.
-                //
-                // User biasa tidak melihat statistiknya.
-                //
-
-                $jumlahForumBandung = 0;
-
-
-                // =================================================
-                // FORUM KECAMATAN SEHAT
-                // =================================================
-                //
-                // Hanya data milik kecamatan user.
-                //
-
-                $jumlahForumKecamatan =
-                    $forumKecamatanModel
-                        ->where(
-                            'kecamatan_id',
-                            $kecamatanId
-                        )
-                        ->countAllResults();
-
-
-                // =================================================
-                // POKJA KELURAHAN SEHAT
-                // =================================================
-                //
-                // Pokja tidak memiliki kecamatan_id langsung.
-                //
-                // Relasi:
-                //
-                // pokja
-                // -> kelurahan
-                // -> kecamatan
-                //
-
-                $jumlahPokja =
-                    $pokjaModel
-                        ->select(
-                            'pokja_kelurahan_sehat.id'
-                        )
-                        ->join(
-                            'kelurahan',
-                            'kelurahan.id = pokja_kelurahan_sehat.kelurahan_id'
-                        )
-                        ->where(
-                            'kelurahan.kecamatan_id',
-                            $kecamatanId
-                        )
-                        ->countAllResults();
             }
 
             /*
              * Jika username tidak cocok dengan
-             * kecamatan mana pun, semua data wilayah
+             * kecamatan mana pun, data wilayah
              * tetap 0.
              */
         }
+
+
+        // =====================================================
+        // KEEMPAT KOMPONEN KELEMBAGAAN
+        // =====================================================
+        //
+        // Dihitung total untuk semua role agar
+        // grafik "Statistik Program" dan
+        // "Distribusi Data" selalu mengikuti
+        // data yang diisi pada keempat komponen:
+        //
+        // - Tim Pembina
+        // - Forum Bandung Sehat
+        // - Forum Kecamatan Sehat
+        // - Pokja Kelurahan Sehat
+        //
+
+        $jumlahTimPembina =
+            $timPembinaModel->countAll();
+
+        $jumlahForumBandung =
+            $forumBandungModel->countAll();
+
+        $jumlahForumKecamatan =
+            $forumKecamatanModel->countAll();
+
+        $jumlahPokja =
+            $pokjaModel->countAll();
 
 
         // =====================================================

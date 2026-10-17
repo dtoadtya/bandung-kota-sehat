@@ -683,7 +683,7 @@ class TimPembinaSk extends BaseController
             [
 
                 'status' =>
-                    'diterima',
+                    'disetujui',
 
                 'keterangan_penolakan' =>
                     null,
@@ -703,7 +703,7 @@ class TimPembinaSk extends BaseController
             ->to(base_url('tim-pembina/sk'))
             ->with(
                 'success',
-                'SK Tim Pembina berhasil diterima dan diverifikasi.'
+                'SK Tim Pembina berhasil diverifikasi (Disetujui).'
             );
     }
 

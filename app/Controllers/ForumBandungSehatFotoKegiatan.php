@@ -17,7 +17,7 @@ class ForumBandungSehatFotoKegiatan extends BaseController
     {
         return in_array(
             session()->get('role'),
-            ['user', 'admin'],
+            ['admin', 'admin_fbs'],
             true
         );
     }

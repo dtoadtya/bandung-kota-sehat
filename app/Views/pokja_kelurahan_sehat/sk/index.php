@@ -180,7 +180,7 @@
         background: #f4f7fb;
         color: #07366d;
         font-weight: 800;
-        text-align: left;
+        text-align: center;
         padding: 13px 14px;
         border-bottom: 1px solid #dce7f1;
         white-space: nowrap;
@@ -204,6 +204,7 @@
     .nomor {
         color: #35618b;
         width: 45px;
+        text-align: center;
     }
 
     .kelurahan-badge {
@@ -229,26 +230,36 @@
 
     .action-wrapper {
         display: flex;
-        gap: 6px;
-        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 7px;
+        flex-wrap: nowrap;
     }
 
     .btn-action {
+        width: 115px;
+        height: 36px;
+        box-sizing: border-box;
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 5px;
         border: none;
         text-decoration: none;
-        padding: 7px 10px;
+        padding: 0 8px;
+        margin: 0;
         border-radius: 6px;
         font-size: 11px;
         font-weight: 700;
         cursor: pointer;
+        white-space: nowrap;
+        transition: .2s;
     }
 
     .btn-action svg {
         width: 13px;
         height: 13px;
+        flex-shrink: 0;
     }
 
     .btn-view {
@@ -261,6 +272,16 @@
         color: #07366d;
     }
 
+    .btn-edit {
+        background: #fff7e6;
+        color: #c27a00;
+    }
+
+    .btn-edit:hover {
+        background: #fff0cc;
+        color: #8a5500;
+    }
+
     .btn-delete {
         background: #fff0f0;
         color: #d9534f;
@@ -269,6 +290,89 @@
     .btn-delete:hover {
         background: #ffe0e0;
         color: #b52b27;
+    }
+
+    /* STATUS */
+    .status-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+    }
+
+    .badge-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .badge-pending {
+        background: #fff8e1;
+        color: #b77900;
+        border: 1px solid #f2c94c;
+    }
+
+    .badge-disetujui {
+        background: #eafaf1;
+        color: #159957;
+        border: 1px solid #9eddbb;
+    }
+
+    .badge-diverifikasi {
+        background: #eaf3ff;
+        color: #0b4f9c;
+        border: 1px solid #9bc7f5;
+    }
+
+    .badge-ditolak {
+        background: #fff0f0;
+        color: #d9534f;
+        border: 1px solid #f0aaaa;
+    }
+
+    .btn-status-approve,
+    .btn-status-reject,
+    .btn-status-info {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 6px 10px;
+        cursor: pointer;
+        border: 1px solid transparent;
+    }
+
+    .btn-status-approve {
+        background: #eafaf1;
+        color: #159957;
+        border-color: #9eddbb;
+    }
+
+    .btn-status-reject {
+        background: #fff0f0;
+        color: #d9534f;
+        border-color: #f0aaaa;
+    }
+
+    .btn-status-info {
+        background: #eef7ff;
+        color: #0b4f9c;
+        border-color: #9bc7f5;
+    }
+
+    .status-actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: nowrap;
     }
 
     /* EMPTY */
@@ -509,6 +613,10 @@
                                 Aksi
                             </th>
 
+                            <th style="width: 220px;">
+                                Status
+                            </th>
+
                         </tr>
 
                     </thead>
@@ -519,6 +627,23 @@
                         <?php $no = 1; ?>
 
                         <?php foreach ($data as $row) : ?>
+
+
+                            <?php
+
+                                $status =
+                                    strtolower(
+                                        trim(
+                                            $row['status']
+                                            ?? 'pending'
+                                        )
+                                    );
+
+                                $role =
+                                    session()->get('role');
+
+                            ?>
+
 
                             <tr>
 
@@ -623,7 +748,7 @@
                                     <div class="action-wrapper">
 
 
-                                        <!-- LIHAT -->
+                                        <!-- LIHAT BERKAS -->
 
                                         <a
                                             href="<?= base_url(
@@ -655,7 +780,37 @@
 
                                             </svg>
 
-                                            Lihat
+                                            Lihat Berkas
+
+                                        </a>
+
+
+                                        <!-- EDIT BERKAS -->
+
+                                        <a
+                                            href="<?= base_url(
+                                                'pokja-kelurahan-sehat/sk/edit/'
+                                                . $row['id']
+                                            ) ?>"
+                                            class="btn-action btn-edit"
+                                        >
+
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            >
+
+                                                <path
+                                                    d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"
+                                                ></path>
+
+                                            </svg>
+
+                                            Edit Berkas
 
                                         </a>
 
@@ -721,7 +876,450 @@
 
                                 </td>
 
+
+                                <!-- STATUS -->
+
+                                <td>
+
+                                    <?php if ($role === 'admin'): ?>
+
+
+                                        <?php if ($status === 'disetujui'): ?>
+
+
+                                            <div class="status-wrapper">
+
+                                                <span
+                                                    class="badge-status badge-diverifikasi"
+                                                >
+
+                                                    <i class="bi bi-check-circle-fill"></i>
+
+                                                    Diverifikasi
+
+                                                </span>
+
+                                            </div>
+
+
+                                        <?php elseif ($status === 'ditolak'): ?>
+
+
+                                            <div class="status-wrapper">
+
+                                                <span
+                                                    class="badge-status badge-ditolak"
+                                                >
+
+                                                    <i class="bi bi-x-circle-fill"></i>
+
+                                                    Ditolak
+
+                                                </span>
+
+
+                                                <?php if (
+                                                    !empty(
+                                                        $row['keterangan_penolakan']
+                                                    )
+                                                ): ?>
+
+                                                    <button
+                                                        type="button"
+                                                        class="btn-status-info"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#alasanModal<?= $row['id'] ?>"
+                                                    >
+                                                        <i class="bi bi-info-circle"></i>
+                                                        Lihat Keterangan
+                                                    </button>
+
+                                                <?php endif; ?>
+
+                                            </div>
+
+
+                                        <?php else: ?>
+
+
+                                            <div class="status-wrapper">
+
+                                                <span
+                                                    class="badge-status badge-pending"
+                                                >
+
+                                                    <i class="bi bi-clock-fill"></i>
+
+                                                    Pending
+
+                                                </span>
+
+
+                                                <div class="status-actions">
+
+
+                                                    <form
+                                                        action="<?= base_url(
+                                                            'pokja-kelurahan-sehat/sk/disetujui/' .
+                                                            $row['id']
+                                                        ) ?>"
+                                                        method="post"
+                                                        class="d-inline"
+                                                    >
+
+                                                        <?= csrf_field() ?>
+
+
+                                                        <button
+                                                            type="submit"
+                                                            class="btn-status-approve"
+                                                            onclick="return confirm(
+                                                                'Apakah Anda yakin menyetujui SK ini?'
+                                                            );"
+                                                        >
+
+                                                            <i class="bi bi-check-lg"></i>
+
+                                                            Setujui
+
+                                                        </button>
+
+                                                    </form>
+
+
+                                                    <button
+                                                        type="button"
+                                                        class="btn-status-reject"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#tolakModal<?= $row['id'] ?>"
+                                                    >
+
+                                                        <i class="bi bi-x-lg"></i>
+
+                                                        Tolak
+
+                                                    </button>
+
+
+                                                </div>
+
+                                            </div>
+
+
+                                        <?php endif; ?>
+
+
+                                    <?php else: ?>
+
+
+                                        <!-- USER: HANYA MELIHAT STATUS -->
+
+                                        <?php if ($status === 'disetujui'): ?>
+
+                                            <span
+                                                class="badge-status badge-disetujui"
+                                            >
+
+                                                <i class="bi bi-check-circle-fill"></i>
+
+                                                Disetujui
+
+                                            </span>
+
+                                        <?php elseif ($status === 'ditolak'): ?>
+
+                                            <div class="status-wrapper">
+
+                                                <span
+                                                    class="badge-status badge-ditolak"
+                                                >
+
+                                                    <i class="bi bi-x-circle-fill"></i>
+
+                                                    Ditolak
+
+                                                </span>
+
+
+                                                <?php if (
+                                                    !empty(
+                                                        $row['keterangan_penolakan']
+                                                    )
+                                                ): ?>
+
+                                                    <button
+                                                        type="button"
+                                                        class="btn-status-info"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#alasanModal<?= $row['id'] ?>"
+                                                    >
+                                                        <i class="bi bi-info-circle"></i>
+                                                        Lihat Keterangan
+                                                    </button>
+
+                                                <?php endif; ?>
+
+                                            </div>
+
+                                        <?php else: ?>
+
+                                            <span
+                                                class="badge-status badge-pending"
+                                            >
+
+                                                <i class="bi bi-clock-fill"></i>
+
+                                                Pending
+
+                                            </span>
+
+                                        <?php endif; ?>
+
+
+                                    <?php endif; ?>
+
+                                </td>
+
                             </tr>
+
+
+                            <!-- MODAL TOLAK (ADMIN) -->
+
+                            <?php if ($role === 'admin'): ?>
+
+
+                                <div
+                                    class="modal fade"
+                                    id="tolakModal<?= $row['id'] ?>"
+                                    tabindex="-1"
+                                    aria-hidden="true"
+                                >
+
+                                    <div
+                                        class="modal-dialog modal-dialog-centered"
+                                    >
+
+                                        <div class="modal-content">
+
+
+                                            <div class="modal-header">
+
+                                                <h5
+                                                    class="modal-title fw-bold text-danger"
+                                                >
+
+                                                    <i class="bi bi-x-circle me-2"></i>
+
+                                                    Tolak Berkas SK
+
+                                                </h5>
+
+
+                                                <button
+                                                    type="button"
+                                                    class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                ></button>
+
+                                            </div>
+
+
+                                            <form
+                                                action="<?= base_url(
+                                                    'pokja-kelurahan-sehat/sk/tolak/' .
+                                                    $row['id']
+                                                ) ?>"
+                                                method="post"
+                                            >
+
+                                                <?= csrf_field() ?>
+
+
+                                                <div class="modal-body">
+
+
+                                                    <div class="mb-3">
+
+                                                        <label class="form-label fw-semibold">
+                                                            Nomor SK
+                                                        </label>
+
+
+                                                        <input
+                                                            type="text"
+                                                            class="form-control"
+                                                            value="<?= esc(
+                                                                $row['no_sk']
+                                                                ?? '-'
+                                                            ) ?>"
+                                                            readonly
+                                                        >
+
+                                                    </div>
+
+
+                                                    <div class="mb-3">
+
+                                                        <label class="form-label fw-semibold">
+
+                                                            Alasan Penolakan
+
+                                                            <span class="text-danger">
+                                                                *
+                                                            </span>
+
+                                                        </label>
+
+
+                                                        <textarea
+                                                            name="keterangan_penolakan"
+                                                            class="form-control"
+                                                            rows="5"
+                                                            placeholder="Masukkan alasan mengapa berkas SK ditolak..."
+                                                            required
+                                                        ></textarea>
+
+
+                                                        <small class="text-muted">
+
+                                                            Keterangan penolakan
+                                                            wajib diisi.
+
+                                                        </small>
+
+                                                    </div>
+
+
+                                                </div>
+
+
+                                                <div class="modal-footer">
+
+
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal"
+                                                    >
+                                                        Batal
+                                                    </button>
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-danger"
+                                                    >
+                                                        <i class="bi bi-x-circle me-1"></i>
+                                                        Tolak Berkas
+                                                    </button>
+
+
+                                                </div>
+
+
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                            <?php endif; ?>
+
+
+                            <!-- MODAL ALASAN PENOLAKAN -->
+
+                            <?php if (
+                                !empty(
+                                    $row['keterangan_penolakan']
+                                )
+                            ): ?>
+
+
+                                <div
+                                    class="modal fade"
+                                    id="alasanModal<?= $row['id'] ?>"
+                                    tabindex="-1"
+                                    aria-hidden="true"
+                                >
+
+                                    <div
+                                        class="modal-dialog modal-dialog-centered"
+                                    >
+
+                                        <div class="modal-content">
+
+
+                                            <div class="modal-header">
+
+                                                <h5
+                                                    class="modal-title fw-bold text-danger"
+                                                >
+
+                                                    <i class="bi bi-exclamation-circle me-2"></i>
+
+                                                    Alasan Penolakan
+
+                                                </h5>
+
+
+                                                <button
+                                                    type="button"
+                                                    class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                ></button>
+
+                                            </div>
+
+
+                                            <div class="modal-body">
+
+
+                                                <div class="alert alert-danger mb-0">
+
+                                                    <div class="fw-bold mb-2">
+
+                                                        Keterangan Penolakan:
+
+                                                    </div>
+
+
+                                                    <?= nl2br(
+                                                        esc(
+                                                            $row['keterangan_penolakan']
+                                                        )
+                                                    ) ?>
+
+                                                </div>
+
+
+                                            </div>
+
+
+                                            <div class="modal-footer">
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-secondary"
+                                                    data-bs-dismiss="modal"
+                                                >
+                                                    Tutup
+                                                </button>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                            <?php endif; ?>
+
 
                         <?php endforeach; ?>
 
