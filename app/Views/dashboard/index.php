@@ -478,57 +478,19 @@ $isAdmin = in_array(
     <div class="dashboard-stats">
 
 
-        <!-- KECAMATAN -->
-
-        <div class="dashboard-stat-card blue">
-
-            <div class="dashboard-stat-top">
-
-                <div class="dashboard-stat-label">
-                    Kecamatan
-                </div>
-
-                <div class="dashboard-stat-icon">
-
-                    <i class="bi bi-map"></i>
-
-                </div>
-
-            </div>
-
-
-            <div class="dashboard-stat-value">
-
-                <?= esc(
-                    $jumlahKecamatan ?? 0
-                ) ?>
-
-            </div>
-
-
-            <div class="dashboard-stat-description">
-
-                Jumlah kecamatan tercatat
-
-            </div>
-
-        </div>
-
-
-
-        <!-- KELURAHAN -->
+        <!-- FORUM BANDUNG SEHAT -->
 
         <div class="dashboard-stat-card green">
 
             <div class="dashboard-stat-top">
 
                 <div class="dashboard-stat-label">
-                    Kelurahan
+                    Forum Bandung Sehat
                 </div>
 
                 <div class="dashboard-stat-icon">
 
-                    <i class="bi bi-buildings"></i>
+                    <i class="bi bi-building"></i>
 
                 </div>
 
@@ -538,7 +500,7 @@ $isAdmin = in_array(
             <div class="dashboard-stat-value">
 
                 <?= esc(
-                    $jumlahKelurahan ?? 0
+                    $jumlahForumBandung ?? 0
                 ) ?>
 
             </div>
@@ -546,7 +508,7 @@ $isAdmin = in_array(
 
             <div class="dashboard-stat-description">
 
-                Jumlah kelurahan tercatat
+                Jumlah Forum Bandung Sehat tercatat
 
             </div>
 
@@ -756,40 +718,6 @@ $isAdmin = in_array(
 
 
             <div class="dashboard-summary">
-
-
-                <div class="dashboard-summary-item">
-
-                    <div class="dashboard-summary-label">
-                        Kecamatan
-                    </div>
-
-                    <div class="dashboard-summary-value">
-
-                        <?= esc(
-                            $jumlahKecamatan ?? 0
-                        ) ?>
-
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-summary-item">
-
-                    <div class="dashboard-summary-label">
-                        Kelurahan
-                    </div>
-
-                    <div class="dashboard-summary-value">
-
-                        <?= esc(
-                            $jumlahKelurahan ?? 0
-                        ) ?>
-
-                    </div>
-
-                </div>
 
 
                 <div class="dashboard-summary-item">
