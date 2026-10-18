@@ -639,6 +639,42 @@
         }
 
 
+        .app-sidebar-footer-copyright {
+
+            display:
+                block;
+
+            margin-top:
+                16px;
+
+            font-size:
+                10.5px;
+
+            color:
+                rgba(255,255,255,.65);
+        }
+
+
+        .app-sidebar-footer-copyright a {
+
+            color:
+                #8fd0ff;
+
+            font-weight:
+                600;
+
+            text-decoration:
+                none;
+        }
+
+
+        .app-sidebar-footer-copyright a:hover {
+
+            text-decoration:
+                underline;
+        }
+
+
         /* =====================================================
            MAIN
         ===================================================== */
@@ -812,6 +848,45 @@
 
             color:
                 #087df5;
+        }
+
+
+        .app-footer-copyright {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                6px;
+
+            color:
+                #68809a;
+
+            font-size:
+                11px;
+        }
+
+
+        .app-footer-copyright a {
+
+            color:
+                #087df5;
+
+            font-weight:
+                700;
+
+            text-decoration:
+                none;
+        }
+
+
+        .app-footer-copyright a:hover {
+
+            text-decoration:
+                underline;
         }
 
 
@@ -1347,6 +1422,18 @@
 
                 Bapperida
 
+                <span class="app-sidebar-footer-copyright">
+                    &copy; 2026 DnA &mdash; by:
+                    <a
+                        href="https://github.com/dtoadtya"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="DnA - GitHub"
+                    >
+                        github.com/dtoadtya
+                    </a>
+                </span>
+
             </div>
 
         </div>
@@ -1467,8 +1554,17 @@
                 Bandung Kota Sehat
             </strong>
 
-            <span>
-                Sistem Informasi Bandung Kota Sehat
+            <span class="app-footer-copyright">
+                &copy; 2026 DnA
+                &mdash; by:
+                <a
+                    href="https://github.com/dtoadtya"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="DnA - GitHub"
+                >
+                    https://github.com/dtoadtya
+                </a>
             </span>
 
         </footer>
