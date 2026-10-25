@@ -17,11 +17,6 @@
         </a>
     </div>
 
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-danger">
-            <?= session()->getFlashdata('error') ?>
-        </div>
-    <?php endif; ?>
 
     <div class="card shadow-sm border-0">
         <div class="card-body">
@@ -66,5 +61,7 @@
     </div>
 
 </div>
+
+<?= $this->include('partials/notifikasi') ?>
 
 <?= $this->endSection() ?>

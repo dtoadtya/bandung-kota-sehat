@@ -158,7 +158,7 @@
                                             <a
                                                 href="<?= base_url('tim-pembina/rencana-kerja/delete/' . $row['id']) ?>"
                                                 class="btn btn-sm btn-outline-danger"
-                                                onclick="return confirm('Apakah Anda yakin ingin menghapus file ini?')"
+                                                data-konfirmasi="Apakah Anda yakin ingin menghapus file ini?"
                                             >
                                                 <i class="bi bi-trash"></i>
                                                 Hapus

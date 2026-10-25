@@ -370,9 +370,7 @@
                                         ) ?>"
                                         method="post"
                                         class="d-inline"
-                                        onsubmit="return confirm(
-                                            'Yakin ingin menghapus SK ini?'
-                                        );"
+                                        data-konfirmasi="Yakin ingin menghapus SK ini?"
                                     >
 
                                         <?= csrf_field() ?>
@@ -517,9 +515,7 @@
                                                     <button
                                                         type="submit"
                                                         class="btn btn-sm btn-outline-success"
-                                                        onclick="return confirm(
-                                                            'Apakah Anda yakin menyetujui SK ini?'
-                                                        );"
+                                                        data-konfirmasi="Apakah Anda yakin menyetujui SK ini?"
                                                     >
 
                                                         <i

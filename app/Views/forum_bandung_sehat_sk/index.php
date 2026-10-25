@@ -829,7 +829,7 @@
                                                     $row['id']
                                                 ) ?>"
                                                 method="post"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus SK ini?');"
+                                                data-konfirmasi="Apakah Anda yakin ingin menghapus SK ini?"
                                             >
 
                                                 <?= csrf_field() ?>
@@ -960,9 +960,7 @@
                                                         <button
                                                             type="submit"
                                                             class="btn-status-approve"
-                                                            onclick="return confirm(
-                                                                'Apakah Anda yakin menyetujui SK ini?'
-                                                            );"
+                                                            data-konfirmasi="Apakah Anda yakin menyetujui SK ini?"
                                                         >
 
                                                             <i class="bi bi-check-lg"></i>

@@ -1391,11 +1391,7 @@
 
             <a
                 href="<?= base_url('logout') ?>"
-                onclick="
-                    return confirm(
-                        'Apakah Anda yakin ingin keluar?'
-                    )
-                "
+                data-konfirmasi="Apakah Anda yakin ingin keluar?"
             >
 
                 <i class="bi bi-box-arrow-right"></i>
@@ -1627,6 +1623,9 @@ function toggleInovasi()
         'assets/js/bandung-sehat.js'
     ) ?>"
 ></script>
+
+
+<?= $this->include('partials/konfirmasi') ?>
 
 
 </body>

@@ -256,9 +256,7 @@
                                             ) ?>"
                                                class="btn btn-sm btn-outline-danger"
                                                title="Hapus"
-                                               onclick="return confirm(
-                                                   'Apakah Anda yakin ingin menghapus data inovasi ini?'
-                                               );">
+                                               data-konfirmasi="Apakah Anda yakin ingin menghapus data inovasi ini?">
 
                                                 <i class="bi bi-trash"></i>
 

@@ -619,7 +619,7 @@
                                         ) ?>"
                                         method="post"
                                         style="display:inline;"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');"
+                                        data-konfirmasi="Apakah Anda yakin ingin menghapus data ini?"
                                     >
 
                                         <?= csrf_field() ?>

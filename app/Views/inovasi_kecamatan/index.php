@@ -309,7 +309,7 @@
                                             <form action="<?= base_url('inovasi/kecamatan/delete/' . $row['id']) ?>"
                                                   method="post"
                                                   class="d-inline"
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus data inovasi ini?');">
+                                                  data-konfirmasi="Apakah Anda yakin ingin menghapus data inovasi ini?">
 
                                                 <?= csrf_field() ?>
 

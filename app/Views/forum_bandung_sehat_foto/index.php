@@ -105,22 +105,6 @@
         background: #07366d;
     }
 
-    .alert {
-        border-radius: 8px;
-        padding: 12px 15px;
-        margin-bottom: 18px;
-        font-size: 13px;
-    }
-
-    .alert-success {
-        background: #eaf7ef;
-        color: #159957;
-    }
-
-    .alert-danger {
-        background: #fff1f1;
-        color: #d9534f;
-    }
 
     .preview-wrapper {
         max-width: 750px;
@@ -180,43 +164,6 @@
         </p>
 
     </div>
-
-
-    <?php if (session()->getFlashdata('success')) : ?>
-
-        <div class="alert alert-success">
-            <?= esc(session()->getFlashdata('success')) ?>
-        </div>
-
-    <?php endif; ?>
-
-
-    <?php if (session()->getFlashdata('error')) : ?>
-
-        <div class="alert alert-danger">
-            <?= esc(session()->getFlashdata('error')) ?>
-        </div>
-
-    <?php endif; ?>
-
-
-    <?php if (session()->getFlashdata('errors')) : ?>
-
-        <div class="alert alert-danger">
-
-            <?php foreach (
-                session()->getFlashdata('errors')
-                as $error
-            ) : ?>
-
-                <div><?= esc($error) ?></div>
-
-            <?php endforeach; ?>
-
-        </div>
-
-    <?php endif; ?>
-
 
     <!-- UPLOAD -->
 
@@ -343,7 +290,7 @@ function cekKoordinat(file, input) {
         const lon = EXIF.getTag(this, 'GPSLongitude');
 
         if (!lat || !lon) {
-            alert('Foto wajib memiliki titik koordinat (GPS) pada EXIF. Gunakan foto yang diambil dengan lokasi aktif.');
+            tampilkanNotifikasi('Foto wajib memiliki titik koordinat (GPS) pada EXIF. Gunakan foto yang diambil dengan lokasi aktif.', 'error');
             input.value = '';
         }
     });
@@ -361,7 +308,7 @@ document.getElementById('foto')?.addEventListener(
 
         if (file.size > 2 * 1024 * 1024) {
 
-            alert('Ukuran foto maksimal 2 MB.');
+            tampilkanNotifikasi('Ukuran foto maksimal 2 MB.', 'error');
 
             this.value = '';
 
@@ -370,7 +317,7 @@ document.getElementById('foto')?.addEventListener(
 
         if (file.type !== 'image/jpeg') {
 
-            alert('Format foto harus JPG atau JPEG.');
+            tampilkanNotifikasi('Format foto harus JPG atau JPEG.', 'error');
 
             this.value = '';
 
@@ -384,5 +331,7 @@ document.getElementById('foto')?.addEventListener(
 );
 </script>
 
+
+<?= $this->include('partials/notifikasi') ?>
 
 <?= $this->endSection() ?>

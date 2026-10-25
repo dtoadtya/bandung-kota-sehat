@@ -28,25 +28,8 @@
                 Unggah satu foto dokumentasi kegiatan dengan ukuran maksimal 2 MB.
             </p>
 
-            <?php if (session()->getFlashdata('errors')): ?>
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
-                        <?php foreach (
-                            session()->getFlashdata('errors')
-                            as $error
-                        ): ?>
-                            <li><?= esc($error) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
-
-            <?php if (session()->getFlashdata('error')): ?>
-                <div class="alert alert-danger">
-                    <?= esc(session()->getFlashdata('error')) ?>
-                </div>
-            <?php endif; ?>
-
+        
+        
             <form action="<?= site_url('forum-kecamatan-sehat/foto-kegiatan/store') ?>"
                   method="post"
                   enctype="multipart/form-data">
@@ -121,5 +104,7 @@
     </div>
 
 </div>
+
+<?= $this->include('partials/notifikasi') ?>
 
 <?= $this->endSection() ?>
