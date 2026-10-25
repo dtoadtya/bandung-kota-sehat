@@ -758,6 +758,25 @@
             box-shadow:
                 0 2px 8px
                 rgba(6,59,120,.04);
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition:
+                border-color .18s ease,
+                box-shadow .18s ease;
+        }
+
+
+        .topbar-user:hover {
+
+            border-color:
+                #9ec5ef;
+
+            box-shadow:
+                0 6px 16px
+                rgba(6,59,120,.12);
         }
 
 
@@ -1419,15 +1438,7 @@
                 Bapperida
 
                 <span class="app-sidebar-footer-copyright">
-                    &copy; 2026 DnA &mdash; by:
-                    <a
-                        href="https://github.com/dtoadtya"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="DnA - GitHub"
-                    >
-                        github.com/dtoadtya
-                    </a>
+                    version 1 by:DnA
                 </span>
 
             </div>
@@ -1457,7 +1468,12 @@
             </div>
 
 
-            <div class="topbar-user">
+            <a
+                href="<?= base_url('logout') ?>"
+                class="topbar-user"
+                title="Klik untuk ganti akun"
+                data-konfirmasi="Ganti akun? Anda akan keluar dari sesi ini, lalu masuk kembali dengan akun lain."
+            >
 
                 <div class="topbar-user-avatar">
 
@@ -1484,7 +1500,7 @@
 
                 </div>
 
-            </div>
+            </a>
 
         </header>
 
@@ -1551,16 +1567,7 @@
             </strong>
 
             <span class="app-footer-copyright">
-                &copy; 2026 DnA
-                &mdash; by:
-                <a
-                    href="https://github.com/dtoadtya"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="DnA - GitHub"
-                >
-                    https://github.com/dtoadtya
-                </a>
+                version 1 by:DnA
             </span>
 
         </footer>

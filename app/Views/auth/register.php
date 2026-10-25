@@ -663,16 +663,7 @@
             Sistem Informasi Kelembagaan
 
             <span class="footer-copyright">
-                &copy; 2026 DnA
-                &mdash; by:
-                <a
-                    href="https://github.com/dtoadtya"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title="DnA - GitHub"
-                >
-                    https://github.com/dtoadtya
-                </a>
+                version 1 by:DnA
             </span>
 
         </div>
