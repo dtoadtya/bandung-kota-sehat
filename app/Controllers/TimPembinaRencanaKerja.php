@@ -111,7 +111,7 @@ class TimPembinaRencanaKerja extends BaseController
                 'namaPeriode' =>
                     $namaPeriode,
 
-                'rencana' =>
+                'data' =>
                     $rencana,
             ]
         );
@@ -224,7 +224,7 @@ class TimPembinaRencanaKerja extends BaseController
 
                 'rules' =>
                     'uploaded[file]'
-                    . '|max_size[file,10240]'
+                    . '|max_size[file,2048]'
                     . '|ext_in[file,pdf,doc,docx,xls,xlsx]',
 
                 'errors' => [
@@ -232,7 +232,7 @@ class TimPembinaRencanaKerja extends BaseController
                         'File Rencana Kerja wajib diupload.',
 
                     'max_size' =>
-                        'Ukuran file maksimal 10 MB.',
+                        'Ukuran file maksimal 2 MB.',
 
                     'ext_in' =>
                         'File harus PDF, DOC, DOCX, XLS, atau XLSX.',

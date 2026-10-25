@@ -492,7 +492,7 @@
                     File Surat Keputusan harus berformat
                     <strong>PDF</strong>
                     dengan ukuran maksimal
-                    <strong>5 MB</strong>.
+                    <strong>2 MB</strong>.
                     Biarkan kosong jika tidak ingin mengganti file.
 
                 </div>
@@ -742,7 +742,7 @@
                             Format yang diperbolehkan:
                             <strong>PDF</strong>.
                             Ukuran maksimal:
-                            <strong>5 MB</strong>.
+                            <strong>2 MB</strong>.
 
                         </div>
 

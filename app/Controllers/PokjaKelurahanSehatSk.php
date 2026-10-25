@@ -149,18 +149,18 @@ class PokjaKelurahanSehatSk extends BaseController
         }
 
         /**
-         * Maksimal 5 MB
+         * Maksimal 2 MB
          */
         if (
             $file->getSize()
-            > 5 * 1024 * 1024
+            > 2 * 1024 * 1024
         ) {
             return redirect()
                 ->back()
                 ->withInput()
                 ->with(
                     'error',
-                    'Ukuran file maksimal 5 MB.'
+                    'Ukuran file maksimal 2 MB.'
                 );
         }
 
@@ -420,14 +420,14 @@ class PokjaKelurahanSehatSk extends BaseController
 
             if (
                 $file->getSize()
-                > 5 * 1024 * 1024
+                > 2 * 1024 * 1024
             ) {
                 return redirect()
                     ->back()
                     ->withInput()
                     ->with(
                         'error',
-                        'Ukuran file maksimal 5 MB.'
+                        'Ukuran file maksimal 2 MB.'
                     );
             }
 

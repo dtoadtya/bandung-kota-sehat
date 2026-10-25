@@ -66,7 +66,7 @@ class PokjaKelurahanSehatFoto extends BaseController
                 'rules' =>
                     'uploaded[foto]' .
                     '|is_image[foto]' .
-                    '|mime_in[foto,image/jpg,image/jpeg,image/png,image/webp]' .
+                    '|mime_in[foto,image/jpg,image/jpeg]' .
                     '|max_size[foto,2048]',
             ],
         ];
@@ -89,6 +89,30 @@ class PokjaKelurahanSehatFoto extends BaseController
                 ->with(
                     'error',
                     'Silakan pilih file foto yang valid.'
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK TITIK KOORDINAT (GPS)
+        |--------------------------------------------------------------------------
+        |
+        | Foto wajib memiliki titik koordinat yang
+        | tersimpan pada EXIF. Dilewati jika ekstensi
+        | EXIF PHP tidak tersedia.
+        |
+        */
+
+        if (
+            foto_exif_tersedia()
+            && foto_koordinat($file->getTempName()) === null
+        ) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Foto wajib memiliki titik koordinat (GPS) pada EXIF. Gunakan foto yang diambil dengan lokasi aktif.'
                 );
         }
 

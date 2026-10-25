@@ -157,7 +157,7 @@ class ForumBandungSehatRencanaKerja extends BaseController
             'file' => [
                 'label' => 'File Rencana Kerja',
                 'rules' =>
-                    'uploaded[file]|max_size[file,10240]|ext_in[file,pdf,doc,docx,xls,xlsx]',
+                    'uploaded[file]|max_size[file,2048]|ext_in[file,pdf,doc,docx,xls,xlsx]',
             ],
         ];
 

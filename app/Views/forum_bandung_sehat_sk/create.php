@@ -255,7 +255,7 @@
             >
 
             <div class="file-info">
-                Format wajib PDF dan ukuran maksimal 5 MB.
+                Format wajib PDF dan ukuran maksimal 2 MB.
                 Jika sudah ada file sebelumnya, file baru akan menggantikannya.
             </div>
         </div>

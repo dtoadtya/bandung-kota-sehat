@@ -270,7 +270,7 @@
 
                     <p>
                         Upload Surat Keputusan Pokja Kelurahan Sehat.
-                        File harus berupa PDF dengan ukuran maksimal 5 MB.
+                        File harus berupa PDF dengan ukuran maksimal 2 MB.
                     </p>
 
                 </div>
@@ -387,7 +387,7 @@
 
                     <p>
                         Upload satu foto dokumentasi kegiatan
-                        dengan ukuran maksimal 5 MB.
+                        dengan ukuran maksimal 2 MB.
                     </p>
 
                 </div>

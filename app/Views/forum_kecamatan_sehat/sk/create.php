@@ -683,7 +683,7 @@
 
                         <small class="file-help">
                             Format yang diperbolehkan: PDF.
-                            Maksimal ukuran file 10 MB.
+                            Maksimal ukuran file 2 MB.
                         </small>
 
 

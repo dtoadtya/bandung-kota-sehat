@@ -390,6 +390,45 @@ class Dashboard extends BaseController
 
 
         // =====================================================
+        // STATUS KELENGKAPAN TIAP KELEMBAGAAN
+        // =====================================================
+        //
+        // 1/1 jika keempat sub menu (SK, rencana
+        // kerja, realisasi, foto) sudah terisi
+        // minimal 1 data, selain itu 1/0.
+        //
+        // jumlah_terisi: berapa sub menu yang
+        // sudah terisi (0 - 4), dipakai grafik
+        // dan ringkasan sistem.
+        //
+
+        foreach ($progresKelembagaan as &$modul) {
+
+            $items =
+                array_map(
+                    'intval',
+                    $modul['items'] ?? []
+                );
+
+            $terisiSemua =
+                count($items) === 4
+                && ! in_array(0, $items, true);
+
+            $modul['status_kelengkapan'] =
+                $terisiSemua ? '1/1' : '1/0';
+
+            $modul['jumlah_terisi'] =
+                count(
+                    array_filter(
+                        $items,
+                        static fn ($nilai) => $nilai > 0
+                    )
+                );
+        }
+        unset($modul);
+
+
+        // =====================================================
         // NILAI SELF-ASSESSMENT (SEMENTARA)
         // Nilai per modul milik user yang sedang
         // login, dipakai form di panel progres.

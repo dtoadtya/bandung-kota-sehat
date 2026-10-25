@@ -149,7 +149,7 @@
 
                     <p>
                         Upload Surat Keputusan Forum Kecamatan Sehat.
-                        File harus berupa PDF dengan ukuran maksimal 5 MB.
+                        File harus berupa PDF dengan ukuran maksimal 2 MB.
                     </p>
                 </div>
 
@@ -242,7 +242,7 @@
 
                     <p>
                         Upload foto dokumentasi kegiatan
-                        Forum Kecamatan Sehat dengan ukuran maksimal 5 MB.
+                        Forum Kecamatan Sehat dengan ukuran maksimal 2 MB.
                     </p>
                 </div>
 

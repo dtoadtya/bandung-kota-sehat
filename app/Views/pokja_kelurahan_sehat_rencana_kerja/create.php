@@ -121,7 +121,7 @@
 
                     <small class="text-muted">
                         Format PDF, DOC, DOCX, XLS, XLSX.
-                        Maksimal 10 MB.
+                        Maksimal 2 MB.
                     </small>
 
                 </div>

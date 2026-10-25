@@ -81,7 +81,7 @@ class TimPembinaSk extends BaseController
                 'label' => 'Berkas Surat Keputusan',
                 'rules' =>
                     'uploaded[file]'
-                    . '|max_size[file,10240]'
+                    . '|max_size[file,2048]'
                     . '|ext_in[file,pdf]'
                     . '|mime_in[file,application/pdf]'
             ]
@@ -278,7 +278,7 @@ class TimPembinaSk extends BaseController
                 'label' => 'Berkas Surat Keputusan',
                 'rules' =>
                     'permit_empty'
-                    . '|max_size[file,10240]'
+                    . '|max_size[file,2048]'
                     . '|ext_in[file,pdf]'
                     . '|mime_in[file,application/pdf]'
             ]

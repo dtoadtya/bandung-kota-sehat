@@ -351,7 +351,7 @@
 
                     <small class="form-help">
                         Kosongkan jika tidak ingin mengganti berkas PDF.
-                        Maksimal 10 MB.
+                        Maksimal 2 MB.
                     </small>
 
                 </div>

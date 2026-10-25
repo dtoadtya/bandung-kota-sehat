@@ -116,7 +116,7 @@
                                     <td>
                                         <?= !empty($row['created_at'])
                                             ? date(
-                                                'd-m-Y H:i',
+                                                'd-m-Y',
                                                 strtotime($row['created_at'])
                                             )
                                             : '-'

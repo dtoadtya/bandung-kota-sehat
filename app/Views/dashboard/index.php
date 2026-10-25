@@ -808,7 +808,8 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
             <div class="dashboard-stat-value">
 
                 <?= esc(
-                    $jumlahTimPembina ?? 0
+                    $progresKelembagaan['tim_pembina']['status_kelengkapan']
+                        ?? '1/0'
                 ) ?>
 
             </div>
@@ -863,7 +864,8 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
             <div class="dashboard-stat-value">
 
                 <?= esc(
-                    $jumlahForumBandung ?? 0
+                    $progresKelembagaan['forum_bandung_sehat']['status_kelengkapan']
+                        ?? '1/0'
                 ) ?>
 
             </div>
@@ -918,7 +920,8 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
             <div class="dashboard-stat-value">
 
                 <?= esc(
-                    $jumlahForumKecamatan ?? 0
+                    $progresKelembagaan['forum_kecamatan_sehat']['status_kelengkapan']
+                        ?? '1/0'
                 ) ?>
 
             </div>
@@ -973,7 +976,8 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
             <div class="dashboard-stat-value">
 
                 <?= esc(
-                    $jumlahPokja ?? 0
+                    $progresKelembagaan['pokja_kelurahan_sehat']['status_kelengkapan']
+                        ?? '1/0'
                 ) ?>
 
             </div>
@@ -1342,7 +1346,7 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                 </h3>
 
                 <div class="dashboard-panel-subtitle">
-                    Ringkasan jumlah data pada sistem
+                    Ringkasan progres pengisian 4 sub menu tiap kelembagaan
                 </div>
 
             </div>
@@ -1369,7 +1373,7 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                 </h3>
 
                 <div class="dashboard-panel-subtitle">
-                    Perbandingan data program
+                    Perbandingan kelengkapan pengisian data
                 </div>
 
             </div>
@@ -1419,9 +1423,10 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     <div class="dashboard-summary-value">
 
-                        <?= esc(
-                            $jumlahTimPembina ?? 0
-                        ) ?>
+                        <?= (int) (
+                            $progresKelembagaan['tim_pembina']['jumlah_terisi']
+                                ?? 0
+                        ) ?>/4
 
                     </div>
 
@@ -1436,9 +1441,10 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     <div class="dashboard-summary-value">
 
-                        <?= esc(
-                            $jumlahForumBandung ?? 0
-                        ) ?>
+                        <?= (int) (
+                            $progresKelembagaan['forum_bandung_sehat']['jumlah_terisi']
+                                ?? 0
+                        ) ?>/4
 
                     </div>
 
@@ -1453,9 +1459,10 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     <div class="dashboard-summary-value">
 
-                        <?= esc(
-                            $jumlahForumKecamatan ?? 0
-                        ) ?>
+                        <?= (int) (
+                            $progresKelembagaan['forum_kecamatan_sehat']['jumlah_terisi']
+                                ?? 0
+                        ) ?>/4
 
                     </div>
 
@@ -1470,9 +1477,10 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     <div class="dashboard-summary-value">
 
-                        <?= esc(
-                            $jumlahPokja ?? 0
-                        ) ?>
+                        <?= (int) (
+                            $progresKelembagaan['pokja_kelurahan_sehat']['jumlah_terisi']
+                                ?? 0
+                        ) ?>/4
 
                     </div>
 
@@ -1634,33 +1642,9 @@ document.addEventListener(
 
 
         /* =====================================================
-           DATA
-           Keempat komponen Kelembagaan
-        ====================================================== */
-
-        const jumlahTimPembina =
-            <?= (int) (
-                $jumlahTimPembina ?? 0
-            ) ?>;
-
-        const jumlahForumBandung =
-            <?= (int) (
-                $jumlahForumBandung ?? 0
-            ) ?>;
-
-        const jumlahForumKecamatan =
-            <?= (int) (
-                $jumlahForumKecamatan ?? 0
-            ) ?>;
-
-        const jumlahPokja =
-            <?= (int) (
-                $jumlahPokja ?? 0
-            ) ?>;
-
-
-        /* =====================================================
            PROGRES TIAP KELEMBAGAAN
+           Grafik "Kelembagaan (semua)" memakai jumlah
+           sub menu yang sudah terisi (0 - 4)
         ====================================================== */
 
         const progres =
@@ -1675,12 +1659,20 @@ document.addEventListener(
             'Pokja Kelurahan Sehat'
         ];
 
-        const dataKelembagaan = [
-            jumlahTimPembina,
-            jumlahForumBandung,
-            jumlahForumKecamatan,
-            jumlahPokja
+        const keyKelembagaan = [
+            'tim_pembina',
+            'forum_bandung_sehat',
+            'forum_kecamatan_sehat',
+            'pokja_kelurahan_sehat'
         ];
+
+        function jumlahSubTerisi(key) {
+            const modul = progres[key] || {};
+            return Number(modul.jumlah_terisi || 0);
+        }
+
+        const dataKelembagaan =
+            keyKelembagaan.map(jumlahSubTerisi);
 
         const labelSubProgres = [
             'SK',

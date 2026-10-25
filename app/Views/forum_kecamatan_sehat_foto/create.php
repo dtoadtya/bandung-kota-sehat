@@ -92,11 +92,11 @@
                     <input type="file"
                            name="foto"
                            class="form-control"
-                           accept="image/jpeg,image/png,image/jpg,image/webp"
+                           accept="image/jpeg,image/jpg"
                            required>
 
                     <div class="form-text">
-                        Format JPG, JPEG, PNG, atau WEBP. Maksimal 5 MB.
+                        Format JPG atau JPEG. Maksimal 2 MB. Wajib memiliki titik koordinat (GPS) pada foto.
                     </div>
                 </div>
 

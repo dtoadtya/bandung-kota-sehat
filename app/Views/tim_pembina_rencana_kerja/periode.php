@@ -52,28 +52,6 @@
     </div>
 
 
-    <!-- ALERT SUCCESS -->
-    <?php if (session()->getFlashdata('success')): ?>
-
-        <div class="alert alert-success">
-            <i class="bi bi-check-circle"></i>
-            <?= session()->getFlashdata('success') ?>
-        </div>
-
-    <?php endif; ?>
-
-
-    <!-- ALERT ERROR -->
-    <?php if (session()->getFlashdata('error')): ?>
-
-        <div class="alert alert-danger">
-            <i class="bi bi-exclamation-circle"></i>
-            <?= session()->getFlashdata('error') ?>
-        </div>
-
-    <?php endif; ?>
-
-
     <!-- DATA -->
     <div class="card border-0 shadow-sm">
 
@@ -148,7 +126,7 @@
                                         <?php
                                         if (!empty($row['created_at'])) {
                                             echo date(
-                                                'd-m-Y H:i',
+                                                'd-m-Y',
                                                 strtotime($row['created_at'])
                                             );
                                         }

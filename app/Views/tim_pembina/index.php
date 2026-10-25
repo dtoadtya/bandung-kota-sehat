@@ -292,7 +292,7 @@
                 <p>
                     Upload Surat Keputusan Tim Pembina.
                     File harus berupa PDF dengan ukuran
-                    maksimal 5 MB.
+                    maksimal 2 MB.
                 </p>
 
                 <a

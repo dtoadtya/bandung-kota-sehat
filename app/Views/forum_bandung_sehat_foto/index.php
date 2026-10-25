@@ -234,7 +234,8 @@
             <strong>Ketentuan:</strong><br>
 
             • Maksimal <strong>2 MB</strong><br>
-            • JPG, JPEG, PNG, atau WEBP<br>
+            • JPG atau JPEG<br>
+            • Wajib memiliki titik koordinat (GPS) pada foto<br>
             • Hanya satu foto yang digunakan
 
         </div>
@@ -262,7 +263,7 @@
                 name="foto"
                 id="foto"
                 class="form-control"
-                accept=".jpg,.jpeg,.png,.webp"
+                accept=".jpg,.jpeg"
                 required
             >
 
@@ -322,7 +323,32 @@
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.js"></script>
+
 <script>
+
+/*
+| Cek titik koordinat (GPS) pada EXIF foto.
+| Pemeriksaan penuh tetap dilakukan oleh server.
+*/
+function cekKoordinat(file, input) {
+
+    if (typeof EXIF === 'undefined') {
+        return;
+    }
+
+    EXIF.getData(file, function () {
+
+        const lat = EXIF.getTag(this, 'GPSLatitude');
+        const lon = EXIF.getTag(this, 'GPSLongitude');
+
+        if (!lat || !lon) {
+            alert('Foto wajib memiliki titik koordinat (GPS) pada EXIF. Gunakan foto yang diambil dengan lokasi aktif.');
+            input.value = '';
+        }
+    });
+}
+
 document.getElementById('foto')?.addEventListener(
     'change',
     function () {
@@ -342,20 +368,17 @@ document.getElementById('foto')?.addEventListener(
             return;
         }
 
-        const allowed = [
-            'image/jpeg',
-            'image/png',
-            'image/webp'
-        ];
+        if (file.type !== 'image/jpeg') {
 
-        if (!allowed.includes(file.type)) {
-
-            alert(
-                'Format foto harus JPG, JPEG, PNG, atau WEBP.'
-            );
+            alert('Format foto harus JPG atau JPEG.');
 
             this.value = '';
+
+            return;
+
         }
+
+        cekKoordinat(file, this);
 
     }
 );

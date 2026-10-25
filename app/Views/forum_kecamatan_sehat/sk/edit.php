@@ -798,7 +798,7 @@
 
                         <small class="file-help">
                             Kosongkan jika tidak ingin mengganti berkas.
-                            Format PDF, maksimal 10 MB.
+                            Format PDF, maksimal 2 MB.
                         </small>
 
                     </div>
