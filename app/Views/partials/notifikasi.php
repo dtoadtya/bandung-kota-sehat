@@ -267,6 +267,27 @@ if (is_array($daftarError) && $daftarError !== []) {
         overlay.classList.remove('aktif');
     }
 
+
+    /*
+    | Layout utama juga menampilkan flash berupa
+    | kotak .alert tepat di atas konten.
+    |
+    | Agar pesan tidak muncul dua kali (kotak alert
+    | dan modal), kotak alert itu dihapus saat modal
+    | menampilkan flash yang sama.
+    */
+
+    window.hapusAlertLayout =
+        function () {
+            document
+                .querySelectorAll(
+                    '.app-content > .alert'
+                )
+                .forEach(function (elemen) {
+                    elemen.remove();
+                });
+        };
+
     tombolTutup.addEventListener(
         'click',
         tutupNotifikasi
@@ -304,6 +325,10 @@ if (is_array($daftarError) && $daftarError !== []) {
             <?= json_encode($pesanSukses) ?>,
             'success'
         );
+
+        if (typeof hapusAlertLayout === 'function') {
+            hapusAlertLayout();
+        }
     </script>
 
 <?php elseif ($pesanError): ?>
@@ -313,6 +338,10 @@ if (is_array($daftarError) && $daftarError !== []) {
             <?= json_encode($pesanError) ?>,
             'error'
         );
+
+        if (typeof hapusAlertLayout === 'function') {
+            hapusAlertLayout();
+        }
     </script>
 
 <?php elseif ($pesanValidasi): ?>
@@ -322,6 +351,10 @@ if (is_array($daftarError) && $daftarError !== []) {
             <?= json_encode($pesanValidasi) ?>,
             'error'
         );
+
+        if (typeof hapusAlertLayout === 'function') {
+            hapusAlertLayout();
+        }
     </script>
 
 <?php endif; ?>

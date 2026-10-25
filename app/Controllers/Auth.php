@@ -255,9 +255,23 @@ class Auth extends BaseController
     public function logout()
     {
         /*
-         * Hapus seluruh session
-         */
+        | Hapus seluruh session
+        */
         session()->destroy();
+
+
+        /*
+        | Setelah destroy(), session PHP sudah nonaktif
+        | sehingga flashdata tidak tersimpan, dan browser
+        | menerima cookie sesi yang dihapus.
+        |
+        | Buka sesi baru, lalu kirim ulang cookie sesi
+        | supaya pesan keluar tetap tampil di halaman
+        | login.
+        */
+        session()->start();
+
+        $konfigurasiSesi = config(\Config\Session::class);
 
 
         /*
@@ -280,13 +294,30 @@ class Auth extends BaseController
         );
 
 
-        return redirect()
+        $redirect = redirect()
             ->to('/login')
             ->with(
                 'success',
                 'Anda berhasil keluar dari sistem.'
             );
+
+        $redirect->setCookie(
+            (new \CodeIgniter\Cookie\Cookie(
+                $konfigurasiSesi->cookieName,
+                session_id(),
+                [
+                    'expires'  => time()
+                        + $konfigurasiSesi->expiration,
+                    'path'     => '/',
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                ]
+            ))->withPrefix('')
+        );
+
+        return $redirect;
     }
+
 
 
     /**

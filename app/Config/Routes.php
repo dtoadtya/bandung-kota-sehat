@@ -383,11 +383,6 @@ $routes->group(
             'TimPembinaFotoKegiatan::index'
         );
 
-        $routes->get(
-            'foto-kegiatan/create',
-            'TimPembinaFotoKegiatan::create'
-        );
-
         $routes->post(
             'foto-kegiatan/store',
             'TimPembinaFotoKegiatan::store'
