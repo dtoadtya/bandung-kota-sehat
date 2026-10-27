@@ -36,6 +36,15 @@ class ForumKecamatanSehat extends BaseController
 
         $username = strtolower(trim($username));
 
+        /*
+         * Kecamatan dengan username khusus
+         * (contoh: kec_batununggal)
+         * tetap dipetakan ke kecamatannya.
+         */
+        if (str_starts_with($username, 'kec_')) {
+            $username = substr($username, 4);
+        }
+
         $kecamatan = $this->kecamatanModel
             ->where(
                 'LOWER(REPLACE(nama_kecamatan, " ", "_"))',

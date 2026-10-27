@@ -54,6 +54,15 @@ class Dashboard extends BaseController
             trim((string) $username)
         );
 
+        /*
+         * Kecamatan dengan username khusus
+         * (contoh: kec_batununggal)
+         * tetap dipetakan ke kecamatannya.
+         */
+        if (str_starts_with($username, 'kec_')) {
+            $username = substr($username, 4);
+        }
+
         $kecamatanList = $kecamatanModel
             ->orderBy(
                 'nama_kecamatan',
@@ -113,6 +122,60 @@ class Dashboard extends BaseController
             $hasil[$key] = (int) $db
                 ->table($tabel)
                 ->countAllResults();
+        }
+
+        return $hasil;
+    }
+
+    /**
+     * Hitung progres per kecamatan/kelurahan.
+     *
+     * Mengembalikan array:
+     * [
+     *   'sk'            => [kecamatan_id => jumlah, ...],
+     *   'rencana_kerja' => [kecamatan_id => jumlah, ...],
+     *   'realisasi'     => [kecamatan_id => jumlah, ...],
+     *   'foto'          => [kecamatan_id => jumlah, ...],
+     * ]
+     */
+    private function hitungProgresPerWilayah(
+        array $tabels,
+        string $kolomWilayah
+    ): array {
+        $db = db_connect();
+
+        $hasil = [];
+
+        foreach ($tabels as $key => $tabel) {
+
+            $hasil[$key] = [];
+
+            if (!$db->tableExists($tabel)) {
+                continue;
+            }
+
+            if (!$db->fieldExists($kolomWilayah, $tabel)) {
+                continue;
+            }
+
+            $baris = $db
+                ->table($tabel)
+                ->select(
+                    $kolomWilayah
+                    . ', COUNT(*) AS jumlah'
+                )
+                ->groupBy($kolomWilayah)
+                ->get()
+                ->getResultArray();
+
+            foreach ($baris as $row) {
+                $wilayahId = (int) (
+                    $row[$kolomWilayah] ?? 0
+                );
+
+                $hasil[$key][$wilayahId] =
+                    (int) $row['jumlah'];
+            }
         }
 
         return $hasil;
@@ -402,7 +465,7 @@ class Dashboard extends BaseController
         // dan ringkasan sistem.
         //
 
-        foreach ($progresKelembagaan as &$modul) {
+        foreach ($progresKelembagaan as $key => &$modul) {
 
             $items =
                 array_map(
@@ -414,8 +477,18 @@ class Dashboard extends BaseController
                 count($items) === 4
                 && ! in_array(0, $items, true);
 
-            $modul['status_kelengkapan'] =
-                $terisiSemua ? '1/1' : '1/0';
+            $status = $terisiSemua ? 1 : 0;
+
+            if ($key === 'forum_kecamatan_sehat') {
+                $modul['status_kelengkapan'] =
+                    $jumlahKecamatan . '/' . $status;
+            } elseif ($key === 'pokja_kelurahan_sehat') {
+                $modul['status_kelengkapan'] =
+                    $jumlahKelurahan . '/' . $status;
+            } else {
+                $modul['status_kelengkapan'] =
+                    $terisiSemua ? '1/1' : '1/0';
+            }
 
             $modul['jumlah_terisi'] =
                 count(
@@ -463,6 +536,52 @@ class Dashboard extends BaseController
 
 
         // =====================================================
+        // DAFTAR KECAMATAN & KELURAHAN
+        // untuk dropdown filter di panel progres
+        // =====================================================
+
+        $daftarKecamatan =
+            $kecamatanModel
+                ->orderBy('nama_kecamatan', 'ASC')
+                ->findAll();
+
+        $daftarKelurahan =
+            $kelurahanModel
+                ->orderBy('nama_kelurahan', 'ASC')
+                ->findAll();
+
+
+        // =====================================================
+        // PROGRES PER WILAYAH
+        // Untuk dropdown filter di panel progres.
+        // Dipakai saat admin memilih kecamatan
+        // (forum kecamatan) atau kelurahan (pokja).
+        // =====================================================
+
+        $progresPerKecamatan =
+            $this->hitungProgresPerWilayah(
+                [
+                    'sk'            => 'forum_kecamatan_sk',
+                    'rencana_kerja' => 'forum_kecamatan_sehat_rencana_kerja',
+                    'realisasi'     => 'forum_kecamatan_sehat_realisasi',
+                    'foto'          => 'forum_kecamatan_sehat_foto',
+                ],
+                'kecamatan_id'
+            );
+
+        $progresPerKelurahan =
+            $this->hitungProgresPerWilayah(
+                [
+                    'sk'            => 'pokja_kelurahan_sehat_sk',
+                    'rencana_kerja' => 'pokja_kelurahan_sehat_rencana_kerja',
+                    'realisasi'     => 'pokja_kelurahan_sehat_realisasi',
+                    'foto'          => 'pokja_kelurahan_sehat_foto',
+                ],
+                'kelurahan_id'
+            );
+
+
+        // =====================================================
         // DATA DASHBOARD
         // =====================================================
 
@@ -503,6 +622,18 @@ class Dashboard extends BaseController
 
             'nilaiSelfAssessment' =>
                 $nilaiSelfAssessment,
+
+            'daftarKecamatan' =>
+                $daftarKecamatan,
+
+            'daftarKelurahan' =>
+                $daftarKelurahan,
+
+            'progresPerKecamatan' =>
+                $progresPerKecamatan,
+
+            'progresPerKelurahan' =>
+                $progresPerKelurahan,
         ];
 
 

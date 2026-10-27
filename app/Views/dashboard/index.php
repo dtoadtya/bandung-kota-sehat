@@ -678,6 +678,37 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
     color: #69839e;
 }
 
+.dashboard-progres-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dashboard-progres-filter label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2c5282;
+    white-space: nowrap;
+}
+
+.dashboard-progres-filter select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #c8d9ea;
+    background: #ffffff;
+    font-size: 12px;
+    color: #2c5282;
+    font-weight: 600;
+    cursor: pointer;
+    max-width: 220px;
+}
+
+.dashboard-progres-filter select:focus {
+    outline: none;
+    border-color: #2c5282;
+    box-shadow: 0 0 0 2px rgba(44, 82, 130, 0.15);
+}
+
 
 /* =========================================================
    TOOLBAR DROPDOWN GRAFIK
@@ -921,7 +952,7 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                 <?= esc(
                     $progresKelembagaan['forum_kecamatan_sehat']['status_kelengkapan']
-                        ?? '1/0'
+                        ?? '30/0'
                 ) ?>
 
             </div>
@@ -977,7 +1008,7 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                 <?= esc(
                     $progresKelembagaan['pokja_kelurahan_sehat']['status_kelengkapan']
-                        ?? '1/0'
+                        ?? '151/0'
                 ) ?>
 
             </div>
@@ -1046,6 +1077,22 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
 
             <div class="dashboard-progres-export">
+
+                <div
+                    class="dashboard-progres-filter"
+                    id="progresFilterWrap"
+                    style="display:none"
+                >
+
+                    <label for="progresFilter">
+                        Pilih wilayah
+                    </label>
+
+                    <select id="progresFilter">
+                        <option value="">Semua</option>
+                    </select>
+
+                </div>
 
                 <a
                     href="<?= site_url('self-assessment/excel') ?>"
@@ -1118,7 +1165,10 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                         ?>
 
-                        <div class="dashboard-progres-item">
+                        <div
+                            class="dashboard-progres-item"
+                            data-item="<?= esc($itemKey) ?>"
+                        >
 
                             <div class="progres-label">
                                 <?= esc($itemLabel) ?>
@@ -1690,6 +1740,264 @@ document.addEventListener(
 
 
         /*
+         * Daftar kecamatan & kelurahan
+         * untuk dropdown filter di panel progres
+         */
+        const daftarKecamatan =
+            <?= json_encode(
+                $daftarKecamatan ?? []
+            ) ?>;
+
+        const daftarKelurahan =
+            <?= json_encode(
+                $daftarKelurahan ?? []
+            ) ?>;
+
+        const progresPerKecamatan =
+            <?= json_encode(
+                $progresPerKecamatan ?? []
+            ) ?>;
+
+        const progresPerKelurahan =
+            <?= json_encode(
+                $progresPerKelurahan ?? []
+            ) ?>;
+
+        const progresFilterWrap =
+            document.getElementById(
+                'progresFilterWrap'
+            );
+
+        const progresFilter =
+            document.getElementById(
+                'progresFilter'
+            );
+
+        let progresFilterModul = '';
+
+        function resetProgresItems() {
+
+            const sections =
+                document.querySelectorAll(
+                    '.dashboard-progres-section'
+                );
+
+            sections.forEach(function (section) {
+                const modulKey =
+                    section.id.replace(
+                        'progres-',
+                        ''
+                    );
+
+                const items =
+                    section.querySelectorAll(
+                        '.dashboard-progres-item'
+                    );
+
+                items.forEach(function (item) {
+                    const itemKey =
+                        item.dataset.item;
+
+                    const modul =
+                        progres[modulKey] || {};
+
+                    const jumlah =
+                        Number(
+                            (modul.items || {})[itemKey]
+                            || 0
+                        );
+
+                    const terisi = jumlah > 0;
+
+                    const valueEl =
+                        item.querySelector(
+                            '.progres-value'
+                        );
+
+                    if (valueEl) {
+                        valueEl.textContent =
+                            jumlah;
+                    }
+
+                    const badgeEl =
+                        item.querySelector(
+                            '.progres-badge'
+                        );
+
+                    if (badgeEl) {
+                        badgeEl.textContent =
+                            terisi
+                                ? 'Terisi'
+                                : 'Belum';
+
+                        badgeEl.classList.toggle(
+                            'terisi',
+                            terisi
+                        );
+
+                        badgeEl.classList.toggle(
+                            'kosong',
+                            !terisi
+                        );
+                    }
+                });
+            });
+        }
+
+        function updateProgresFilter(key) {
+
+            if (
+                !progresFilterWrap
+                || !progresFilter
+            ) {
+                return;
+            }
+
+            progresFilterModul = key;
+
+            let opsi = [];
+
+            if (
+                key === 'forum_kecamatan_sehat'
+            ) {
+                opsi = daftarKecamatan;
+            } else if (
+                key === 'pokja_kelurahan_sehat'
+            ) {
+                opsi = daftarKelurahan;
+            }
+
+            if (opsi.length === 0) {
+                progresFilterWrap.style.display =
+                    'none';
+
+                resetProgresItems();
+
+                return;
+            }
+
+            let html =
+                '<option value="">Semua</option>';
+
+            opsi.forEach(function (row) {
+                let nama =
+                    row.nama_kecamatan
+                    || row.nama_kelurahan
+                    || '';
+                let id = row.id || '';
+
+                html +=
+                    '<option value="' + id + '">' +
+                    nama +
+                    '</option>';
+            });
+
+            progresFilter.innerHTML = html;
+            progresFilterWrap.style.display =
+                'inline-flex';
+        }
+
+        function updateProgresItems(modulKey, wilayahId) {
+
+            let dataPerWilayah;
+
+            if (
+                modulKey === 'forum_kecamatan_sehat'
+            ) {
+                dataPerWilayah = progresPerKecamatan;
+            } else if (
+                modulKey === 'pokja_kelurahan_sehat'
+            ) {
+                dataPerWilayah = progresPerKelurahan;
+            } else {
+                return;
+            }
+
+            const section =
+                document.getElementById(
+                    'progres-' + modulKey
+                );
+
+            if (!section) {
+                return;
+            }
+
+            const items =
+                section.querySelectorAll(
+                    '.dashboard-progres-item'
+                );
+
+            items.forEach(function (item) {
+                const itemKey =
+                    item.dataset.item;
+
+                let jumlah = 0;
+
+                if (wilayahId) {
+                    jumlah = Number(
+                        (dataPerWilayah[itemKey] || {})[
+                            wilayahId
+                        ] || 0
+                    );
+                } else {
+                    const modul =
+                        progres[modulKey] || {};
+
+                    jumlah = Number(
+                        (modul.items || {})[itemKey]
+                        || 0
+                    );
+                }
+
+                const terisi = jumlah > 0;
+
+                const valueEl =
+                    item.querySelector(
+                        '.progres-value'
+                    );
+
+                if (valueEl) {
+                    valueEl.textContent = jumlah;
+                }
+
+                const badgeEl =
+                    item.querySelector(
+                        '.progres-badge'
+                    );
+
+                if (badgeEl) {
+                    badgeEl.textContent =
+                        terisi
+                            ? 'Terisi'
+                            : 'Belum';
+
+                    badgeEl.classList.toggle(
+                        'terisi',
+                        terisi
+                    );
+
+                    badgeEl.classList.toggle(
+                        'kosong',
+                        !terisi
+                    );
+                }
+            });
+        }
+
+        if (progresFilter) {
+            progresFilter.addEventListener(
+                'change',
+                function () {
+                    updateProgresItems(
+                        progresFilterModul,
+                        this.value
+                    );
+                }
+            );
+        }
+
+
+        /*
          * Label + data sesuai pilihan dropdown
          */
         function ambilScope(scope) {
@@ -1760,6 +2068,8 @@ document.addEventListener(
                     card.classList.remove('active');
                 });
 
+                updateProgresFilter('');
+
                 return;
             }
 
@@ -1782,6 +2092,8 @@ document.addEventListener(
 
             panel.dataset.open = key;
             panel.style.display = 'block';
+
+            updateProgresFilter(key);
 
             panel.scrollIntoView({
                 behavior: 'smooth',
