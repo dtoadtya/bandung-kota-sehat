@@ -271,12 +271,25 @@
          MENU
     ====================================================== -->
 
+    <?php
+
+        $isTatanan =
+            (bool) preg_match(
+                '/^TATANAN_[1-9]$/i',
+                (string) session()->get('username')
+            );
+
+    ?>
+
+
     <div class="kelembagaan-menu">
 
 
         <!-- =================================================
              SK
         ================================================== -->
+
+        <?php if (empty($isTatanan)): ?>
 
         <div class="menu-item">
 
@@ -316,6 +329,8 @@
             </div>
 
         </div>
+
+        <?php endif; ?>
 
 
         <!-- =================================================
@@ -408,6 +423,8 @@
              FOTO KEGIATAN
         ================================================== -->
 
+        <?php if (empty($isTatanan)): ?>
+
         <div class="menu-item">
 
             <div class="menu-item-top">
@@ -445,6 +462,8 @@
             </div>
 
         </div>
+
+        <?php endif; ?>
 
 
     </div>

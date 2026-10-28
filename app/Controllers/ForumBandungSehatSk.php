@@ -41,7 +41,7 @@ class ForumBandungSehatSk extends BaseController
                 ->with('error', 'Anda tidak memiliki akses.');
         }
 
-        $data = $this->skModel
+        $data = $this->filterByUser($this->skModel)
             ->orderBy('id', 'DESC')
             ->findAll();
 
@@ -160,6 +160,9 @@ class ForumBandungSehatSk extends BaseController
         );
 
         $this->skModel->insert([
+            'user_id' =>
+                $this->currentUserId(),
+
             'no_sk' =>
                 $this->request->getPost('no_sk'),
 

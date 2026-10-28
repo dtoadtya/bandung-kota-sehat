@@ -29,7 +29,7 @@ class ForumBandungSehatFotoKegiatan extends BaseController
                 ->with('error', 'Anda tidak memiliki akses.');
         }
 
-        $foto = $this->fotoModel
+        $foto = $this->filterByUser($this->fotoModel)
             ->orderBy('id', 'DESC')
             ->first();
 
@@ -154,6 +154,7 @@ class ForumBandungSehatFotoKegiatan extends BaseController
         );
 
         $this->fotoModel->insert([
+            'user_id'     => $this->currentUserId(),
             'nama_file'   => $namaFile,
             'nama_asli'   => $file->getClientName(),
             'file_path'   =>

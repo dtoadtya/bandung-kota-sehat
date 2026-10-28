@@ -15,6 +15,7 @@ class ForumKecamatanSehatRencanaKerjaModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'user_id',
         'tahun',
         'periode',
         'nama_file',

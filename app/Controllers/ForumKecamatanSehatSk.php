@@ -24,7 +24,7 @@ class ForumKecamatanSehatSk extends BaseController
 
     public function index()
     {
-        $data = $this->skModel
+        $data = $this->filterByUser($this->skModel)
             ->select(
                 'forum_kecamatan_sk.*,
                  kecamatan.nama_kecamatan'
@@ -165,6 +165,9 @@ class ForumKecamatanSehatSk extends BaseController
         );
 
         $this->skModel->insert([
+            'user_id' =>
+                $this->currentUserId(),
+
             'kecamatan_id' =>
                 $this->request->getPost('kecamatan_id'),
 

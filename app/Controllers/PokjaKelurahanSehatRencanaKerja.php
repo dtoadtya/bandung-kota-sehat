@@ -50,7 +50,7 @@ class PokjaKelurahanSehatRencanaKerja extends BaseController
                 ->with('error', 'Periode tidak valid.');
         }
 
-        $data = $this->rencanaModel
+        $data = $this->filterByUser($this->rencanaModel)
             ->where('periode', $periode)
             ->orderBy('tahun', 'DESC')
             ->orderBy('id', 'DESC')
@@ -158,6 +158,9 @@ class PokjaKelurahanSehatRencanaKerja extends BaseController
         );
 
         $this->rencanaModel->insert([
+            'user_id' =>
+                $this->currentUserId(),
+
             'tahun' =>
                 $this->request->getPost('tahun'),
 

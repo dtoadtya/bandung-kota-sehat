@@ -1036,6 +1036,116 @@
                 $currentSubSegment =
                     service('uri')->getSegment(2);
 
+                $currentUsername =
+                    session()->get('username');
+
+                $isTatanan =
+                    (bool) preg_match(
+                        '/^TATANAN_[1-9]$/i',
+                        (string) $currentUsername
+                    );
+
+                /*
+                 * Deteksi user kecamatan / kelurahan
+                 * berdasarkan username.
+                 */
+                $lowerUsername =
+                    strtolower(
+                        trim((string) $currentUsername)
+                    );
+
+                $isKecamatanUser = false;
+                $isKelurahanUser = false;
+
+                if ($lowerUsername !== '') {
+
+                    $checkUsername = $lowerUsername;
+
+                    if (
+                        str_starts_with(
+                            $checkUsername,
+                            'kec_'
+                        )
+                    ) {
+                        $checkUsername =
+                            substr($checkUsername, 4);
+                    }
+
+                    $kecModel =
+                        new \App\Models\KecamatanModel();
+
+                    foreach (
+                        $kecModel->findAll()
+                        as $kec
+                    ) {
+                        $mapped =
+                            strtolower(
+                                str_replace(
+                                    ' ',
+                                    '_',
+                                    trim(
+                                        $kec['nama_kecamatan']
+                                    )
+                                )
+                            );
+
+                        if (
+                            $mapped ===
+                            $checkUsername
+                        ) {
+                            $isKecamatanUser = true;
+                            break;
+                        }
+                    }
+
+                    if (!$isKecamatanUser) {
+
+                        $checkUsername =
+                            $lowerUsername;
+
+                        if (
+                            str_starts_with(
+                                $checkUsername,
+                                'kel_'
+                            )
+                        ) {
+                            $checkUsername =
+                                substr(
+                                    $checkUsername,
+                                    4
+                                );
+                        }
+
+                        $kelModel =
+                            new \App\Models\KelurahanModel();
+
+                        foreach (
+                            $kelModel->findAll()
+                            as $kel
+                        ) {
+                            $mapped =
+                                strtolower(
+                                    str_replace(
+                                        ' ',
+                                        '_',
+                                        trim(
+                                            $kel['nama_kelurahan']
+                                        )
+                                    )
+                                );
+
+                            if (
+                                $mapped ===
+                                $checkUsername
+                            ) {
+                                $isKelurahanUser =
+                                    true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
             ?>
 
 
@@ -1120,7 +1230,9 @@
                     <!-- TIM PEMBINA -->
 
                     <?php if (
-                        in_array(
+                        !$isKecamatanUser
+                        && !$isKelurahanUser
+                        && in_array(
                             $currentRole,
                             [
                                 'user',
@@ -1163,7 +1275,10 @@
                          (dicek RoleFilter) -->
 
                     <?php if (
-                        in_array(
+                        !$isTatanan
+                        && !$isKecamatanUser
+                        && !$isKelurahanUser
+                        && in_array(
                             $currentRole,
                             [
                                 'user',
@@ -1198,7 +1313,13 @@
                     <!-- FORUM KECAMATAN -->
 
                     <?php if (
-                        in_array(
+                        !$isTatanan
+                        && !$isKelurahanUser
+                        && (
+                            $isKecamatanUser
+                            || $currentRole === 'admin'
+                        )
+                        && in_array(
                             $currentRole,
                             [
                                 'user',
@@ -1232,7 +1353,13 @@
                     <!-- POKJA -->
 
                     <?php if (
-                        in_array(
+                        !$isTatanan
+                        && !$isKecamatanUser
+                        && (
+                            $isKelurahanUser
+                            || $currentRole === 'admin'
+                        )
+                        && in_array(
                             $currentRole,
                             [
                                 'user',
@@ -1328,6 +1455,32 @@
                 >
 
 
+                    <?php
+
+                        /*
+                         * Menu Inovasi menyesuaikan akun:
+                         * - TATANAN  -> Perangkat Daerah
+                         * - Kecamatan -> Kecamatan
+                         * - Kelurahan -> Kelurahan
+                         * - Lainnya (admin/dst) -> semua
+                         */
+                        $showInovasiPerangkatDaerah =
+                            !$isKecamatanUser
+                            && !$isKelurahanUser;
+
+                        $showInovasiKecamatan =
+                            !$isTatanan
+                            && !$isKelurahanUser;
+
+                        $showInovasiKelurahan =
+                            !$isTatanan
+                            && !$isKecamatanUser;
+
+                    ?>
+
+
+                    <?php if ($showInovasiPerangkatDaerah): ?>
+
                     <!-- PERANGKAT DAERAH -->
 
                     <a
@@ -1350,6 +1503,10 @@
 
                     </a>
 
+                    <?php endif; ?>
+
+
+                    <?php if ($showInovasiKecamatan): ?>
 
                     <!-- KECAMATAN -->
 
@@ -1373,6 +1530,10 @@
 
                     </a>
 
+                    <?php endif; ?>
+
+
+                    <?php if ($showInovasiKelurahan): ?>
 
                     <!-- KELURAHAN -->
 
@@ -1395,6 +1556,8 @@
                         </span>
 
                     </a>
+
+                    <?php endif; ?>
 
 
                 </div>

@@ -33,7 +33,7 @@ class TimPembinaSk extends BaseController
 
     public function index()
     {
-        $data = $this->timPembinaSkModel
+        $data = $this->filterByUser($this->timPembinaSkModel)
             ->orderBy('id', 'DESC')
             ->findAll();
 
@@ -159,6 +159,9 @@ class TimPembinaSk extends BaseController
         */
 
         $this->timPembinaSkModel->insert([
+
+            'user_id' =>
+                $this->currentUserId(),
 
             'no_sk' =>
                 trim($this->request->getPost('no_sk')),

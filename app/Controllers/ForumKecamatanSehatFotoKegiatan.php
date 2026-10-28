@@ -33,7 +33,7 @@ class ForumKecamatanSehatFotoKegiatan extends BaseController
                 );
         }
 
-        $foto = $this->fotoModel
+        $foto = $this->filterByUser($this->fotoModel)
             ->orderBy('id', 'DESC')
             ->first();
 
@@ -158,6 +158,7 @@ class ForumKecamatanSehatFotoKegiatan extends BaseController
         );
 
         $this->fotoModel->insert([
+            'user_id'      => $this->currentUserId(),
             'kecamatan_id' => null,
             'nama_file'    => $namaFile,
             'nama_asli'    => $file->getClientName(),

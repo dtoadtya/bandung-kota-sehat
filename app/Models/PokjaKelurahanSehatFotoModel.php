@@ -16,6 +16,7 @@ class PokjaKelurahanSehatFotoModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'user_id',
         'kelurahan_id',
         'nama_file',
         'nama_asli',

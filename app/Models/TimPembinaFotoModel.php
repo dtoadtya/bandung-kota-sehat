@@ -13,6 +13,7 @@ class TimPembinaFotoModel extends Model
     protected $returnType = 'array';
 
     protected $allowedFields = [
+        'user_id',
         'kecamatan_id',
         'nama_file',
         'nama_asli',

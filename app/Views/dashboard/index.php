@@ -812,6 +812,11 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
         <!-- TIM PEMBINA -->
         <!-- Klik kartu untuk melihat progres -->
 
+        <?php if (
+            empty($isKecamatanUser)
+            && empty($isKelurahanUser)
+        ): ?>
+
         <div
             class="dashboard-stat-card gold"
             role="button"
@@ -863,6 +868,15 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
         </div>
 
+
+        <?php endif; ?>
+
+
+        <?php if (
+            empty($isTatanan)
+            && empty($isKecamatanUser)
+            && empty($isKelurahanUser)
+        ): ?>
 
 
         <!-- FORUM BANDUNG SEHAT -->
@@ -920,9 +934,20 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
         </div>
 
 
+        <?php endif; ?>
+
 
         <!-- FORUM KECAMATAN SEHAT -->
         <!-- Klik kartu untuk melihat progres -->
+
+        <?php if (
+            empty($isTatanan)
+            && empty($isKelurahanUser)
+            && (
+                !empty($isKecamatanUser)
+                || ($role ?? '') === 'admin'
+            )
+        ): ?>
 
         <div
             class="dashboard-stat-card cyan"
@@ -976,9 +1001,20 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
         </div>
 
 
+        <?php endif; ?>
+
 
         <!-- POKJA KELURAHAN SEHAT -->
         <!-- Klik kartu untuk melihat progres -->
+
+        <?php if (
+            empty($isTatanan)
+            && empty($isKecamatanUser)
+            && (
+                !empty($isKelurahanUser)
+                || ($role ?? '') === 'admin'
+            )
+        ): ?>
 
         <div
             class="dashboard-stat-card purple"
@@ -1032,6 +1068,9 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
         </div>
 
 
+        <?php endif; ?>
+
+
     </div>
 
 
@@ -1065,6 +1104,17 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                 'realisasi'     => 'Realisasi Kegiatan',
                 'foto'          => 'Foto Sekretariat',
             ];
+
+            if (!empty($isTatanan)) {
+                $labelItemProgres =
+                    array_intersect_key(
+                        $labelItemProgres,
+                        [
+                            'rencana_kerja' => true,
+                            'realisasi'     => true,
+                        ]
+                    );
+            }
 
             $roleUser =
                 session()->get('role')
@@ -1328,7 +1378,7 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
          CHARTS
     ====================================================== -->
 
-    <!-- DROPDOWN PILIH TAMPILAN GRAFIK + TOMBOL EXCEL -->
+    <!-- TOMBOL EXCEL + DROPDOWN GRAFIK (Khusus Admin) -->
 
     <div class="dashboard-chart-toolbar">
 
@@ -1344,40 +1394,41 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                 Unduh Excel
             </a>
 
+
+            <div class="dashboard-chart-toolbar-right">
+
+                <label for="chartScope">
+                    Tampilkan grafik
+                </label>
+
+                <select id="chartScope">
+
+                    <option value="kelembagaan">
+                        Kelembagaan (semua)
+                    </option>
+
+                    <option value="tim_pembina">
+                        Tim Pembina
+                    </option>
+
+                    <option value="forum_bandung_sehat">
+                        Forum Bandung Sehat
+                    </option>
+
+                    <option value="forum_kecamatan_sehat">
+                        Forum Kecamatan Sehat
+                    </option>
+
+                    <option value="pokja_kelurahan_sehat">
+                        Pokja Kelurahan Sehat
+                    </option>
+
+                </select>
+
+            </div>
+
         <?php endif; ?>
 
-
-        <div class="dashboard-chart-toolbar-right">
-
-            <label for="chartScope">
-                Tampilkan grafik
-            </label>
-
-            <select id="chartScope">
-
-                <option value="kelembagaan">
-                    Kelembagaan (semua)
-                </option>
-
-                <option value="tim_pembina">
-                    Tim Pembina
-                </option>
-
-                <option value="forum_bandung_sehat">
-                    Forum Bandung Sehat
-                </option>
-
-                <option value="forum_kecamatan_sehat">
-                    Forum Kecamatan Sehat
-                </option>
-
-                <option value="pokja_kelurahan_sehat">
-                    Pokja Kelurahan Sehat
-                </option>
-
-            </select>
-
-        </div>
 
     </div>
 
@@ -1465,6 +1516,35 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
             <div class="dashboard-summary">
 
 
+                <?php if (!empty($ringkasanKomponen)): ?>
+
+
+                    <!-- Khusus User Kecamatan/Kelurahan:
+                         SK, Rencana Kerja, Realisasi
+                         Kegiatan, Foto Sekretariat
+                         (1/1 jika sudah diisi,
+                         1/0 jika belum) -->
+
+                    <?php foreach ($ringkasanKomponen as $komponen): ?>
+
+                        <div class="dashboard-summary-item">
+
+                            <div class="dashboard-summary-label">
+                                <?= esc($komponen['label']) ?>
+                            </div>
+
+                            <div class="dashboard-summary-value">
+                                <?= esc($komponen['nilai']) ?>
+                            </div>
+
+                        </div>
+
+                    <?php endforeach; ?>
+
+
+                <?php else: ?>
+
+
                 <div class="dashboard-summary-item">
 
                     <div class="dashboard-summary-label">
@@ -1476,11 +1556,14 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                         <?= (int) (
                             $progresKelembagaan['tim_pembina']['jumlah_terisi']
                                 ?? 0
-                        ) ?>/4
+                        ) ?>/<?= !empty($isTatanan) ? '2' : '4' ?>
 
                     </div>
 
                 </div>
+
+
+                <?php if (empty($isTatanan)): ?>
 
 
                 <div class="dashboard-summary-item">
@@ -1537,6 +1620,12 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                 </div>
 
 
+                <?php endif; ?>
+
+
+                <?php endif; ?>
+
+
             </div>
 
         </div>
@@ -1571,6 +1660,33 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                 ): ?>
 
 
+                    <?php
+
+                        /*
+                         * Akses Cepat Inovasi menyesuaikan
+                         * akun yang login:
+                         * - TATANAN  -> Perangkat Daerah
+                         * - Kecamatan -> Kecamatan
+                         * - Kelurahan -> Kelurahan
+                         * - Lainnya (admin/dst) -> semua
+                         */
+                        $showAksesPerangkatDaerah =
+                            empty($isKecamatanUser)
+                            && empty($isKelurahanUser);
+
+                        $showAksesKecamatan =
+                            empty($isTatanan)
+                            && empty($isKelurahanUser);
+
+                        $showAksesKelurahan =
+                            empty($isTatanan)
+                            && empty($isKecamatanUser);
+
+                    ?>
+
+
+                    <?php if ($showAksesPerangkatDaerah): ?>
+
                     <!-- INOVASI - PERANGKAT DAERAH -->
 
                     <a
@@ -1600,7 +1716,11 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     </a>
 
+                    <?php endif; ?>
 
+
+
+                    <?php if ($showAksesKecamatan): ?>
 
                     <!-- INOVASI - KECAMATAN -->
 
@@ -1631,7 +1751,11 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     </a>
 
+                    <?php endif; ?>
 
+
+
+                    <?php if ($showAksesKelurahan): ?>
 
                     <!-- INOVASI - KELURAHAN -->
 
@@ -1661,6 +1785,8 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                         </div>
 
                     </a>
+
+                    <?php endif; ?>
 
 
                 <?php endif; ?>
@@ -1702,19 +1828,33 @@ document.addEventListener(
                 $progresKelembagaan ?? []
             ) ?>;
 
-        const labelKelembagaan = [
-            'Tim Pembina',
-            'Forum Bandung Sehat',
-            'Forum Kecamatan Sehat',
-            'Pokja Kelurahan Sehat'
-        ];
+        const isAdmin =
+            <?= json_encode(
+                ($role ?? session()->get('role')) === 'admin'
+                ? true : false
+            ) ?>;
 
-        const keyKelembagaan = [
-            'tim_pembina',
-            'forum_bandung_sehat',
-            'forum_kecamatan_sehat',
-            'pokja_kelurahan_sehat'
-        ];
+        const labelKelembagaan = <?= json_encode(
+            !empty($isTatanan)
+                ? ['Tim Pembina']
+                : [
+                    'Tim Pembina',
+                    'Forum Bandung Sehat',
+                    'Forum Kecamatan Sehat',
+                    'Pokja Kelurahan Sehat'
+                ]
+        ) ?>;
+
+        const keyKelembagaan = <?= json_encode(
+            !empty($isTatanan)
+                ? ['tim_pembina']
+                : [
+                    'tim_pembina',
+                    'forum_bandung_sehat',
+                    'forum_kecamatan_sehat',
+                    'pokja_kelurahan_sehat'
+                ]
+        ) ?>;
 
         function jumlahSubTerisi(key) {
             const modul = progres[key] || {};
@@ -1724,19 +1864,22 @@ document.addEventListener(
         const dataKelembagaan =
             keyKelembagaan.map(jumlahSubTerisi);
 
-        const labelSubProgres = [
-            'SK',
-            'Rencana Kerja',
-            'Realisasi Kegiatan',
-            'Foto Sekretariat'
-        ];
+        const labelSubProgres = <?= json_encode(
+            !empty($isTatanan)
+                ? ['Rencana Kerja', 'Realisasi Kegiatan']
+                : [
+                    'SK',
+                    'Rencana Kerja',
+                    'Realisasi Kegiatan',
+                    'Foto Sekretariat'
+                ]
+        ) ?>;
 
-        const keySubProgres = [
-            'sk',
-            'rencana_kerja',
-            'realisasi',
-            'foto'
-        ];
+        const keySubProgres = <?= json_encode(
+            !empty($isTatanan)
+                ? ['rencana_kerja', 'realisasi']
+                : ['sk', 'rencana_kerja', 'realisasi', 'foto']
+        ) ?>;
 
 
         /*
@@ -2004,9 +2147,47 @@ document.addEventListener(
 
             if (scope === 'kelembagaan') {
 
+                /* Admin: tampil nama kelembagaan (semula) */
+                if (isAdmin) {
+                    return {
+                        labels: labelKelembagaan,
+                        data: dataKelembagaan
+                    };
+                }
+
+                /*
+                 * Non-admin: tampilkan 4 komponen sub menu
+                 * (SK, Rencana Kerja, Realisasi,
+                 * Foto) dengan jumlah kelembagaan
+                 * yang sudah terisi.
+                 */
+                const jumlahPerKomponen =
+                    keySubProgres.map(function (subKey) {
+                        let hitung = 0;
+
+                        keyKelembagaan.forEach(
+                            function (modulKey) {
+                                const modul =
+                                    progres[modulKey] || {};
+
+                                const nilai =
+                                    Number(
+                                        (modul.items || {})[subKey]
+                                        || 0
+                                    );
+
+                                if (nilai > 0) {
+                                    hitung++;
+                                }
+                            }
+                        );
+
+                        return hitung;
+                    });
+
                 return {
-                    labels: labelKelembagaan,
-                    data: dataKelembagaan
+                    labels: labelSubProgres,
+                    data: jumlahPerKomponen
                 };
             }
 
@@ -2117,6 +2298,9 @@ document.addEventListener(
 
         if (dataChartElement) {
 
+            const defaultScope =
+                ambilScope('kelembagaan');
+
             lineChart = new Chart(
                 dataChartElement,
                 {
@@ -2126,14 +2310,14 @@ document.addEventListener(
                     data: {
 
                         labels:
-                            labelKelembagaan,
+                            defaultScope.labels,
 
                         datasets: [
 
                             {
 
                                 data:
-                                    dataKelembagaan,
+                                    defaultScope.data,
 
                                 borderColor:
                                     '#087df5',
@@ -2258,6 +2442,9 @@ document.addEventListener(
 
         if (donutChartElement) {
 
+            const defaultScope =
+                ambilScope('kelembagaan');
+
             donutChart = new Chart(
                 donutChartElement,
                 {
@@ -2267,14 +2454,14 @@ document.addEventListener(
                     data: {
 
                         labels:
-                            labelKelembagaan,
+                            defaultScope.labels,
 
                         datasets: [
 
                             {
 
                                 data:
-                                    dataKelembagaan,
+                                    defaultScope.data,
 
                                 backgroundColor: [
                                     '#f5b700',

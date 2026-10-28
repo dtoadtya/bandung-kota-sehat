@@ -26,7 +26,7 @@ class TimPembinaFotoKegiatan extends BaseController
 
         $data = [
             'title' => 'Foto Sekretariat Tim Pembina',
-            'foto'  => $this->fotoModel->first(),
+            'foto'  => $this->filterByUser($this->fotoModel)->first(),
         ];
 
         return view(
@@ -176,6 +176,7 @@ class TimPembinaFotoKegiatan extends BaseController
         */
 
         $this->fotoModel->insert([
+            'user_id'      => $this->currentUserId(),
             'kecamatan_id' => null,
             'nama_file'    => $newName,
             'nama_asli'    => $file->getClientName(),

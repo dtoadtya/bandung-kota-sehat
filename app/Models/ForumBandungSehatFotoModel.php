@@ -12,6 +12,7 @@ class ForumBandungSehatFotoModel extends Model
     protected $useTimestamps    = true;
 
     protected $allowedFields = [
+        'user_id',
         'nama_file',
         'nama_asli',
         'file_path',

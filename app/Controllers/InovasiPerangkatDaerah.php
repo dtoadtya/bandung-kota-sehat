@@ -16,11 +16,47 @@ class InovasiPerangkatDaerah extends BaseController
 
     /**
      * =========================================================
+     * CEK AKSES
+     *
+     * Inovasi Perangkat Daerah hanya untuk
+     * admin dan akun TATANAN_1 s/d TATANAN_9
+     * (akun perangkat daerah).
+     *
+     * Akun kecamatan -> inovasi kecamatan
+     * Akun kelurahan  -> inovasi kelurahan
+     * =========================================================
+     */
+    private function checkAccess()
+    {
+        if (!in_array(session()->get('role'), ['user', 'admin'], true)) {
+            return redirect()->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
+        }
+
+        if ($this->userKecamatan() !== null) {
+            return redirect()->to('/inovasi/kecamatan')
+                ->with('error', 'Akun kecamatan hanya dapat mengakses Inovasi Kecamatan.');
+        }
+
+        if ($this->userKelurahan() !== null) {
+            return redirect()->to('/inovasi/kelurahan')
+                ->with('error', 'Akun kelurahan hanya dapat mengakses Inovasi Kelurahan.');
+        }
+
+        return null;
+    }
+
+    /**
+     * =========================================================
      * DAFTAR INOVASI PERANGKAT DAERAH
      * =========================================================
      */
     public function index()
     {
+        if ($redirect = $this->checkAccess()) {
+            return $redirect;
+        }
+
         $data = [
             'title'   => 'Inovasi Perangkat Daerah',
             'inovasi' => $this->inovasiModel
@@ -39,6 +75,10 @@ class InovasiPerangkatDaerah extends BaseController
      */
     public function create()
     {
+        if ($redirect = $this->checkAccess()) {
+            return $redirect;
+        }
+
         $data = [
             'title' => 'Tambah Inovasi Perangkat Daerah',
         ];
@@ -53,6 +93,10 @@ class InovasiPerangkatDaerah extends BaseController
      */
     public function store()
     {
+        if ($redirect = $this->checkAccess()) {
+            return $redirect;
+        }
+
         $rules = [
             'nama_perangkat_daerah' => 'required',
             'nama_inovasi'          => 'required',
@@ -91,6 +135,10 @@ class InovasiPerangkatDaerah extends BaseController
      */
     public function edit($id)
     {
+        if ($redirect = $this->checkAccess()) {
+            return $redirect;
+        }
+
         $dataInovasi = $this->inovasiModel->find($id);
 
         if (!$dataInovasi) {
@@ -114,6 +162,10 @@ class InovasiPerangkatDaerah extends BaseController
      */
     public function update($id)
     {
+        if ($redirect = $this->checkAccess()) {
+            return $redirect;
+        }
+
         $dataInovasi = $this->inovasiModel->find($id);
 
         if (!$dataInovasi) {
@@ -160,6 +212,10 @@ class InovasiPerangkatDaerah extends BaseController
      */
     public function delete($id)
     {
+        if ($redirect = $this->checkAccess()) {
+            return $redirect;
+        }
+
         $dataInovasi = $this->inovasiModel->find($id);
 
         if (!$dataInovasi) {

@@ -33,7 +33,7 @@ class PokjaKelurahanSehatFoto extends BaseController
                 );
         }
 
-        $foto = $this->fotoModel
+        $foto = $this->filterByUser($this->fotoModel)
             ->orderBy('id', 'DESC')
             ->first();
 
@@ -158,6 +158,7 @@ class PokjaKelurahanSehatFoto extends BaseController
         );
 
         $this->fotoModel->insert([
+            'user_id'      => $this->currentUserId(),
             'kelurahan_id' => null,
             'nama_file'    => $namaFile,
             'nama_asli'    => $file->getClientName(),

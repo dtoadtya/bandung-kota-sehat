@@ -94,6 +94,155 @@ class Dashboard extends BaseController
     }
 
     /**
+     * Mendapatkan kelurahan berdasarkan username user.
+     *
+     * Contoh:
+     *
+     * kel_cipaganti
+     * -> Cipaganti
+     *
+     * kel_dago
+     * -> Dago
+     */
+    private function getUserKelurahan(
+        KelurahanModel $kelurahanModel
+    ): ?array {
+        $username = session()->get('username');
+
+        if (!$username) {
+            return null;
+        }
+
+        $username = strtolower(
+            trim((string) $username)
+        );
+
+        /*
+         * Kelurahan dengan username khusus
+         * (contoh: kel_cipaganti)
+         * tetap dipetakan ke kelurahannya.
+         */
+        if (str_starts_with($username, 'kel_')) {
+            $username = substr($username, 4);
+        }
+
+        $kelurahanList = $kelurahanModel
+            ->orderBy(
+                'nama_kelurahan',
+                'ASC'
+            )
+            ->findAll();
+
+        foreach ($kelurahanList as $kelurahan) {
+
+            $mappedUsername = strtolower(
+                str_replace(
+                    ' ',
+                    '_',
+                    trim(
+                        $kelurahan['nama_kelurahan']
+                    )
+                )
+            );
+
+            if (
+                $mappedUsername ===
+                $username
+            ) {
+                return $kelurahan;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Cek apakah user saat ini adalah user kecamatan.
+     */
+    private function isKecamatanUser(): bool
+    {
+        $username = session()->get('username');
+
+        if (!$username) {
+            return false;
+        }
+
+        $username = strtolower(
+            trim((string) $username)
+        );
+
+        if (str_starts_with($username, 'kec_')) {
+            $username = substr($username, 4);
+        }
+
+        $kecamatanModel = new KecamatanModel();
+
+        $kecamatanList = $kecamatanModel
+            ->findAll();
+
+        foreach ($kecamatanList as $kecamatan) {
+            $mappedUsername = strtolower(
+                str_replace(
+                    ' ',
+                    '_',
+                    trim(
+                        $kecamatan['nama_kecamatan']
+                    )
+                )
+            );
+
+            if ($mappedUsername === $username) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Cek apakah user saat ini adalah user kelurahan.
+     */
+    private function isKelurahanUser(): bool
+    {
+        $username = session()->get('username');
+
+        if (!$username) {
+            return false;
+        }
+
+        $username = strtolower(
+            trim((string) $username)
+        );
+
+        if (str_starts_with($username, 'kel_')) {
+            $username = substr($username, 4);
+        }
+
+        $kelurahanModel = new KelurahanModel();
+
+        $kelurahanList = $kelurahanModel
+            ->findAll();
+
+        foreach ($kelurahanList as $kelurahan) {
+            $mappedUsername = strtolower(
+                str_replace(
+                    ' ',
+                    '_',
+                    trim(
+                        $kelurahan['nama_kelurahan']
+                    )
+                )
+            );
+
+            if ($mappedUsername === $username) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Menghitung jumlah data tiap sub menu
      * kelembagaan (SK, rencana kerja,
      * realisasi kegiatan, foto sekretariat).
@@ -453,6 +602,41 @@ class Dashboard extends BaseController
 
 
         // =====================================================
+        // FILTER KHUSUS AKUN TATANAN
+        // =====================================================
+        //
+        // Akun TATANAN_1 s/d TATANAN_9 hanya
+        // melihat kelembagaan Tim Pembina,
+        // dan di dalamnya hanya Rencana Kerja
+        // serta Realisasi Kegiatan.
+        //
+
+        $isTatanan =
+            (bool) preg_match(
+                '/^TATANAN_[1-9]$/i',
+                (string) $username
+            );
+
+        if ($isTatanan) {
+
+            $progresKelembagaan =
+                array_intersect_key(
+                    $progresKelembagaan,
+                    ['tim_pembina' => true]
+                );
+
+            $progresKelembagaan['tim_pembina']['items'] =
+                array_intersect_key(
+                    $progresKelembagaan['tim_pembina']['items'],
+                    [
+                        'rencana_kerja' => true,
+                        'realisasi'     => true,
+                    ]
+                );
+        }
+
+
+        // =====================================================
         // STATUS KELENGKAPAN TIAP KELEMBAGAAN
         // =====================================================
         //
@@ -474,7 +658,7 @@ class Dashboard extends BaseController
                 );
 
             $terisiSemua =
-                count($items) === 4
+                count($items) > 0
                 && ! in_array(0, $items, true);
 
             $status = $terisiSemua ? 1 : 0;
@@ -582,6 +766,66 @@ class Dashboard extends BaseController
 
 
         // =====================================================
+        // IDENTITAS WILAYAH USER
+        // =====================================================
+
+        $isKecamatanUser =
+            $this->isKecamatanUser();
+
+        $isKelurahanUser =
+            $this->isKelurahanUser();
+
+
+        // =====================================================
+        // RINGKASAN SISTEM (Khusus User Kecamatan/Kelurahan)
+        // Menampilkan status tiap komponen: SK,
+        // Rencana Kerja, Realisasi Kegiatan,
+        // Foto Sekretariat.
+        // 1/1 jika sudah diisi, 1/0 jika belum.
+        // =====================================================
+
+        $ringkasanKomponen = [];
+
+        if ($isKecamatanUser || $isKelurahanUser) {
+
+            $labelKomponen = $isTatanan
+                ? [
+                    'rencana_kerja' => 'Rencana Kerja',
+                    'realisasi'     => 'Realisasi Kegiatan',
+                ]
+                : [
+                    'sk'            => 'SK',
+                    'rencana_kerja' => 'Rencana Kerja',
+                    'realisasi'     => 'Realisasi Kegiatan',
+                    'foto'          => 'Foto Sekretariat',
+                ];
+
+            foreach ($labelKomponen as $subKey => $label) {
+
+                $terisi = false;
+
+                foreach ($progresKelembagaan as $modul) {
+
+                    $nilai =
+                        (int) (
+                            $modul['items'][$subKey] ?? 0
+                        );
+
+                    if ($nilai > 0) {
+                        $terisi = true;
+                        break;
+                    }
+                }
+
+                $ringkasanKomponen[] = [
+                    'label' => $label,
+                    'nilai' => $terisi ? '1/1' : '1/0',
+                ];
+            }
+        }
+
+
+        // =====================================================
         // DATA DASHBOARD
         // =====================================================
 
@@ -634,6 +878,18 @@ class Dashboard extends BaseController
 
             'progresPerKelurahan' =>
                 $progresPerKelurahan,
+
+            'isTatanan' =>
+                $isTatanan,
+
+            'isKecamatanUser' =>
+                $isKecamatanUser,
+
+            'isKelurahanUser' =>
+                $isKelurahanUser,
+
+            'ringkasanKomponen' =>
+                $ringkasanKomponen,
         ];
 
 

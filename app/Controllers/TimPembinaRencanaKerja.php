@@ -83,7 +83,7 @@ class TimPembinaRencanaKerja extends BaseController
                 ? 'Tahun Ganjil'
                 : 'Tahun Genap';
 
-        $rencana = $this->rencanaModel
+        $rencana = $this->filterByUser($this->rencanaModel)
             ->where(
                 'periode',
                 $periode
@@ -299,6 +299,9 @@ class TimPembinaRencanaKerja extends BaseController
          * Simpan database.
          */
         $this->rencanaModel->insert([
+            'user_id' =>
+                $this->currentUserId(),
+
             'periode' =>
                 $periode,
 

@@ -24,7 +24,7 @@ class PokjaKelurahanSehatRealisasi extends BaseController
     {
         $tahun = $this->request->getGet('tahun');
 
-        $builder = $this->model
+        $builder = $this->filterByUser($this->model)
             ->select(
                 'pokja_kelurahan_sehat_realisasi.*,
                  kelurahan.nama_kelurahan,
@@ -97,6 +97,7 @@ class PokjaKelurahanSehatRealisasi extends BaseController
         $anggaran = str_replace('.', '', $this->request->getPost('anggaran'));
 
         $this->model->insert([
+            'user_id' => $this->currentUserId(),
             'kelurahan_id' => $this->request->getPost('kelurahan_id'),
             'tahun' => $this->request->getPost('tahun'),
             'nama_kegiatan' => $this->request->getPost('nama_kegiatan'),

@@ -15,6 +15,7 @@ class PokjaKelurahanSehatRealisasiModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'user_id',
         'kelurahan_id',
         'tahun',
         'nama_kegiatan',

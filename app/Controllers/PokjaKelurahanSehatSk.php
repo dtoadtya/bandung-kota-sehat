@@ -31,7 +31,7 @@ class PokjaKelurahanSehatSk extends BaseController
      */
     public function index()
     {
-        $builder = $this->skModel
+        $builder = $this->filterByUser($this->skModel)
             ->select(
                 'pokja_kelurahan_sehat_sk.*,
                  kelurahan.nama_kelurahan,
@@ -271,7 +271,10 @@ class PokjaKelurahanSehatSk extends BaseController
         } else {
 
             $this->skModel->insert(
-                $data
+                $data + [
+                    'user_id' =>
+                        $this->currentUserId(),
+                ]
             );
 
             $message =

@@ -15,6 +15,7 @@ class ForumBandungSehatRealisasiModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'user_id',
         'tahun',
         'nama_kegiatan',
         'waktu_kegiatan',

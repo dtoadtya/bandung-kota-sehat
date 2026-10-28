@@ -15,6 +15,7 @@ class TimPembinaRencanaKerjaModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'user_id',
         'periode',
         'tahun',
         'nama_file',

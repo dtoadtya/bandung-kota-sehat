@@ -24,7 +24,7 @@ class TimPembinaRealisasi extends BaseController
     {
         $tahun = $this->request->getGet('tahun');
 
-        $builder = $this->realisasiModel
+        $builder = $this->filterByUser($this->realisasiModel)
             ->orderBy('waktu_kegiatan', 'DESC')
             ->orderBy('id', 'DESC');
 
@@ -181,6 +181,8 @@ class TimPembinaRealisasi extends BaseController
         */
 
         $this->realisasiModel->insert([
+            'user_id'              => $this->currentUserId(),
+
             /*
              * Tidak menggunakan Kecamatan.
              */

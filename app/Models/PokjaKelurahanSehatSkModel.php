@@ -15,6 +15,7 @@ class PokjaKelurahanSehatSkModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'user_id',
         'kelurahan_id',
         'no_sk',
         'periode',

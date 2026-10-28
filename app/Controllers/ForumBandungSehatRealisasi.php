@@ -38,7 +38,7 @@ class ForumBandungSehatRealisasi extends BaseController
 
         $tahun = $this->request->getGet('tahun');
 
-        $builder = $this->realisasiModel
+        $builder = $this->filterByUser($this->realisasiModel)
             ->orderBy('tahun', 'ASC')
             ->orderBy('waktu_kegiatan', 'DESC')
             ->orderBy('id', 'DESC');
@@ -180,6 +180,8 @@ class ForumBandungSehatRealisasi extends BaseController
         }
 
         $data = [
+            'user_id'           => $this->currentUserId(),
+
             'tahun'             => trim(
                 (string) $this->request->getPost('tahun')
             ),

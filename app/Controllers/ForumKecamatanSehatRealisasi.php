@@ -21,7 +21,7 @@ class ForumKecamatanSehatRealisasi extends BaseController
     {
         $tahun = $this->request->getGet('tahun');
 
-        $builder = $this->model
+        $builder = $this->filterByUser($this->model)
             ->select('forum_kecamatan_sehat_realisasi.*, kecamatan.nama_kecamatan')
             ->join(
                 'kecamatan',
@@ -78,6 +78,7 @@ class ForumKecamatanSehatRealisasi extends BaseController
         $anggaran = str_replace('.', '', $this->request->getPost('anggaran'));
 
         $this->model->insert([
+            'user_id' => $this->currentUserId(),
             'kecamatan_id' => $this->request->getPost('kecamatan_id'),
             'tahun' => $this->request->getPost('tahun'),
             'nama_kegiatan' => $this->request->getPost('nama_kegiatan'),

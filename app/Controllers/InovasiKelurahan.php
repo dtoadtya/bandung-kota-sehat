@@ -23,6 +23,23 @@ class InovasiKelurahan extends BaseController
                 ->with('error', 'Anda tidak memiliki akses.');
         }
 
+        /*
+         * Inovasi Kelurahan hanya untuk admin,
+         * user kelurahan, dan user biasa.
+         *
+         * Akun TATANAN   -> khusus perangkat daerah
+         * Akun kecamatan -> khusus inovasi kecamatan
+         */
+        if ($this->isTatananUser()) {
+            return redirect()->to('/inovasi/perangkat-daerah')
+                ->with('error', 'Akun TATANAN hanya dapat mengakses Inovasi Perangkat Daerah.');
+        }
+
+        if ($this->userKecamatan() !== null) {
+            return redirect()->to('/dashboard')
+                ->with('error', 'Akun kecamatan hanya dapat mengakses Inovasi Kecamatan.');
+        }
+
         return null;
     }
 
@@ -35,7 +52,7 @@ class InovasiKelurahan extends BaseController
             return $redirect;
         }
 
-        $data = $this->inovasiModel
+        $query = $this->inovasiModel
             ->select(
                 'inovasi_kelurahan.*,
                  kelurahan.nama_kelurahan,
@@ -53,8 +70,22 @@ class InovasiKelurahan extends BaseController
             )
             ->orderBy('inovasi_kelurahan.tahun', 'DESC')
             ->orderBy('kecamatan.nama_kecamatan', 'ASC')
-            ->orderBy('kelurahan.nama_kelurahan', 'ASC')
-            ->findAll();
+            ->orderBy('kelurahan.nama_kelurahan', 'ASC');
+
+        /*
+         * User kelurahan hanya melihat
+         * data kelurahannya sendiri.
+         */
+        $kelurahanUser = $this->userKelurahan();
+
+        if ($kelurahanUser !== null) {
+            $query->where(
+                'inovasi_kelurahan.kelurahan_id',
+                $kelurahanUser['id']
+            );
+        }
+
+        $data = $query->findAll();
 
         return view('inovasi_kelurahan/index', [
             'title' => 'Inovasi Kelurahan',
@@ -85,6 +116,16 @@ class InovasiKelurahan extends BaseController
             ->orderBy('kecamatan.nama_kecamatan', 'ASC')
             ->orderBy('kelurahan.nama_kelurahan', 'ASC')
             ->findAll();
+
+        /*
+         * User kelurahan hanya boleh memilih
+         * kelurahannya sendiri.
+         */
+        $kelurahanUser = $this->userKelurahan();
+
+        if ($kelurahanUser !== null) {
+            $kelurahan = [$kelurahanUser];
+        }
 
         return view('inovasi_kelurahan/create', [
             'title'     => 'Tambah Inovasi Kelurahan',
@@ -125,8 +166,20 @@ class InovasiKelurahan extends BaseController
                 ->with('errors', $this->validator->getErrors());
         }
 
+        $kelurahanId = $this->request->getPost('kelurahan_id');
+
+        /*
+         * User kelurahan dipaksa menyimpan
+         * data ke kelurahannya sendiri.
+         */
+        $kelurahanUser = $this->userKelurahan();
+
+        if ($kelurahanUser !== null) {
+            $kelurahanId = $kelurahanUser['id'];
+        }
+
         $this->inovasiModel->insert([
-            'kelurahan_id'    => $this->request->getPost('kelurahan_id'),
+            'kelurahan_id'    => $kelurahanId,
             'nama_inovasi'    => $this->request->getPost('nama_inovasi'),
             'tahun'           => $this->request->getPost('tahun'),
             'deskripsi'       => $this->request->getPost('deskripsi'),
@@ -157,6 +210,22 @@ class InovasiKelurahan extends BaseController
                 ->with('error', 'Data inovasi tidak ditemukan.');
         }
 
+        /*
+         * User kelurahan hanya boleh mengedit
+         * data kelurahannya sendiri.
+         */
+        $kelurahanUser = $this->userKelurahan();
+
+        if (
+            $kelurahanUser !== null
+            && (int) $data['kelurahan_id']
+                !== (int) $kelurahanUser['id']
+        ) {
+            return redirect()
+                ->to('/inovasi/kelurahan')
+                ->with('error', 'Anda tidak memiliki akses untuk mengedit data ini.');
+        }
+
         $kelurahan = $this->kelurahanModel
             ->select(
                 'kelurahan.id,
@@ -171,6 +240,10 @@ class InovasiKelurahan extends BaseController
             ->orderBy('kecamatan.nama_kecamatan', 'ASC')
             ->orderBy('kelurahan.nama_kelurahan', 'ASC')
             ->findAll();
+
+        if ($kelurahanUser !== null) {
+            $kelurahan = [$kelurahanUser];
+        }
 
         return view('inovasi_kelurahan/edit', [
             'title'     => 'Edit Inovasi Kelurahan',
@@ -194,6 +267,18 @@ class InovasiKelurahan extends BaseController
             return redirect()
                 ->to('/inovasi/kelurahan')
                 ->with('error', 'Data inovasi tidak ditemukan.');
+        }
+
+        $kelurahanUser = $this->userKelurahan();
+
+        if (
+            $kelurahanUser !== null
+            && (int) $data['kelurahan_id']
+                !== (int) $kelurahanUser['id']
+        ) {
+            return redirect()
+                ->to('/inovasi/kelurahan')
+                ->with('error', 'Anda tidak memiliki akses untuk mengubah data ini.');
         }
 
         $rules = [
@@ -220,8 +305,14 @@ class InovasiKelurahan extends BaseController
                 ->with('errors', $this->validator->getErrors());
         }
 
+        $kelurahanId = $this->request->getPost('kelurahan_id');
+
+        if ($kelurahanUser !== null) {
+            $kelurahanId = $kelurahanUser['id'];
+        }
+
         $this->inovasiModel->update($id, [
-            'kelurahan_id'     => $this->request->getPost('kelurahan_id'),
+            'kelurahan_id'     => $kelurahanId,
             'nama_inovasi'     => $this->request->getPost('nama_inovasi'),
             'tahun'            => $this->request->getPost('tahun'),
             'deskripsi'        => $this->request->getPost('deskripsi'),
@@ -250,6 +341,18 @@ class InovasiKelurahan extends BaseController
             return redirect()
                 ->to('/inovasi/kelurahan')
                 ->with('error', 'Data inovasi tidak ditemukan.');
+        }
+
+        $kelurahanUser = $this->userKelurahan();
+
+        if (
+            $kelurahanUser !== null
+            && (int) $data['kelurahan_id']
+                !== (int) $kelurahanUser['id']
+        ) {
+            return redirect()
+                ->to('/inovasi/kelurahan')
+                ->with('error', 'Anda tidak memiliki akses untuk menghapus data ini.');
         }
 
         $this->inovasiModel->delete($id);

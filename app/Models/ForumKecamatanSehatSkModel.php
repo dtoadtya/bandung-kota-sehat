@@ -15,6 +15,7 @@ class ForumKecamatanSehatSkModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'user_id',
         'kecamatan_id',
         'no_sk',
         'periode',

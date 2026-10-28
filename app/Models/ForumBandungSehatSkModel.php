@@ -15,6 +15,7 @@ class ForumBandungSehatSkModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'user_id',
         'no_sk',
         'periode',
         'keterangan',

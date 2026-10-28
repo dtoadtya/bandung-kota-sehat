@@ -15,6 +15,7 @@ class TimPembinaRealisasiModel extends Model
     protected $useAutoIncrement = true;
 
     protected $allowedFields = [
+        'user_id',
         'kecamatan_id',
         'tahun',
         'nama_kegiatan',
