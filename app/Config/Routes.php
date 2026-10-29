@@ -813,6 +813,16 @@ $routes->group(
         );
 
         $routes->get(
+            'realisasi/ganjil',
+            'ForumKecamatanSehatRealisasi::periode/ganjil'
+        );
+
+        $routes->get(
+            'realisasi/genap',
+            'ForumKecamatanSehatRealisasi::periode/genap'
+        );
+
+        $routes->get(
             'realisasi/create',
             'ForumKecamatanSehatRealisasi::create'
         );

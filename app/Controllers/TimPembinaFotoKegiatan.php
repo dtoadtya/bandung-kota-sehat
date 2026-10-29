@@ -24,9 +24,21 @@ class TimPembinaFotoKegiatan extends BaseController
             return redirect()->to('/dashboard');
         }
 
+        $foto = $this->filterByUser($this->fotoModel)
+            ->orderBy('id', 'DESC')
+            ->first();
+
+        /*
+         * Form upload hanya tampil saat belum ada foto,
+         * atau saat user memilih "Ubah Foto".
+         */
+        $showUpload = !$foto
+            || $this->request->getGet('ubah') === '1';
+
         $data = [
             'title' => 'Foto Sekretariat Tim Pembina',
-            'foto'  => $this->filterByUser($this->fotoModel)->first(),
+            'foto'  => $foto,
+            'showUpload' => $showUpload,
         ];
 
         return view(
@@ -116,11 +128,13 @@ class TimPembinaFotoKegiatan extends BaseController
 
         /*
         |--------------------------------------------------------------------------
-        | CEK FOTO LAMA
+        | CEK FOTO LAMA (milik user yang login)
         |--------------------------------------------------------------------------
         */
 
-        $fotoLama = $this->fotoModel->first();
+        $fotoLama = $this->filterByUser($this->fotoModel)
+            ->orderBy('id', 'DESC')
+            ->first();
 
         /*
         |--------------------------------------------------------------------------
@@ -189,6 +203,84 @@ class TimPembinaFotoKegiatan extends BaseController
             ->with(
                 'success',
                 'Foto Sekretariat berhasil diunggah.'
+            );
+    }
+
+    /**
+     * Unduh / buka file Foto Sekretariat
+     */
+    public function view($id)
+    {
+        $role = session()->get('role');
+
+        if (!in_array($role, ['user', 'admin'], true)) {
+            return redirect()->to('/dashboard');
+        }
+
+        $foto = $this->filterByUser($this->fotoModel)
+            ->find($id);
+
+        if (!$foto) {
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'Foto tidak ditemukan.'
+                );
+        }
+
+        $path = FCPATH . $foto['file_path'];
+
+        if (!is_file($path)) {
+            return redirect()
+                ->back()
+                ->with(
+                    'error',
+                    'File foto tidak ditemukan.'
+                );
+        }
+
+        return $this->response
+            ->download($path, null)
+            ->setFileName($foto['nama_asli']);
+    }
+
+    /**
+     * Hapus Foto Sekretariat
+     */
+    public function delete($id)
+    {
+        $role = session()->get('role');
+
+        if (!in_array($role, ['user', 'admin'], true)) {
+            return redirect()->to('/dashboard');
+        }
+
+        $foto = $this->filterByUser($this->fotoModel)
+            ->find($id);
+
+        if (!$foto) {
+            return redirect()
+                ->to('/tim-pembina/foto-kegiatan')
+                ->with(
+                    'error',
+                    'Foto tidak ditemukan.'
+                );
+        }
+
+        $path = FCPATH . $foto['file_path'];
+
+        if (is_file($path)) {
+            unlink($path);
+        }
+
+        $this->fotoModel->delete($id);
+
+        return redirect()
+            ->to('/tim-pembina/foto-kegiatan')
+            ->with(
+                'success',
+                'Foto Sekretariat berhasil dihapus.'
             );
     }
 }

@@ -37,12 +37,20 @@ class PokjaKelurahanSehatFoto extends BaseController
             ->orderBy('id', 'DESC')
             ->first();
 
+        /*
+         * Form upload hanya tampil saat belum ada foto,
+         * atau saat user memilih "Ubah Foto".
+         */
+        $showUpload = !$foto
+            || $this->request->getGet('ubah') === '1';
+
         return view(
             'pokja_kelurahan_sehat_foto/index',
             [
                 'title' =>
                     'Foto Sekretariat Pokja Kelurahan Sehat',
                 'foto' => $foto,
+                'showUpload' => $showUpload,
             ]
         );
     }
@@ -78,6 +86,23 @@ class PokjaKelurahanSehatFoto extends BaseController
                 ->with(
                     'errors',
                     $this->validator->getErrors()
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CARI KELURAHAN USER YANG LOGIN
+        |--------------------------------------------------------------------------
+        */
+
+        $kelurahan = $this->userKelurahan();
+
+        if (!$kelurahan) {
+            return redirect()
+                ->to('/pokja-kelurahan-sehat/foto-kegiatan')
+                ->with(
+                    'error',
+                    'Hanya akun kelurahan yang dapat mengunggah foto sekretariat.'
                 );
         }
 
@@ -125,11 +150,12 @@ class PokjaKelurahanSehatFoto extends BaseController
 
         /*
         |--------------------------------------------------------------------------
-        | HAPUS FOTO LAMA
+        | HAPUS FOTO LAMA (milik user yang login)
         |--------------------------------------------------------------------------
         */
 
-        $fotoLama = $this->fotoModel->findAll();
+        $fotoLama = $this->filterByUser($this->fotoModel)
+            ->findAll();
 
         foreach ($fotoLama as $foto) {
 
@@ -159,7 +185,7 @@ class PokjaKelurahanSehatFoto extends BaseController
 
         $this->fotoModel->insert([
             'user_id'      => $this->currentUserId(),
-            'kelurahan_id' => null,
+            'kelurahan_id' => $kelurahan['id'],
             'nama_file'    => $namaFile,
             'nama_asli'    => $file->getClientName(),
             'file_path'    =>
@@ -182,18 +208,26 @@ class PokjaKelurahanSehatFoto extends BaseController
             return redirect()->to('/dashboard');
         }
 
-        $foto = $this->fotoModel->find($id);
+        $foto = $this->filterByUser($this->fotoModel)
+            ->find($id);
 
-        if ($foto) {
+        if (!$foto) {
 
-            $path = FCPATH . $foto['file_path'];
-
-            if (is_file($path)) {
-                unlink($path);
-            }
-
-            $this->fotoModel->delete($id);
+            return redirect()
+                ->to('/pokja-kelurahan-sehat/foto-kegiatan')
+                ->with(
+                    'error',
+                    'Foto tidak ditemukan.'
+                );
         }
+
+        $path = FCPATH . $foto['file_path'];
+
+        if (is_file($path)) {
+            unlink($path);
+        }
+
+        $this->fotoModel->delete($id);
 
         return redirect()
             ->to('/pokja-kelurahan-sehat/foto-kegiatan')

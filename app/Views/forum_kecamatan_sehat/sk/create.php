@@ -522,59 +522,6 @@
 
 
                 <!-- =========================================
-                     FORUM KECAMATAN
-                ========================================== -->
-
-                <div class="form-group">
-
-
-                    <label>
-                        Forum Kecamatan <span>*</span>
-                    </label>
-
-
-                    <select
-                        name="kecamatan_id"
-                        required
-                    >
-
-                        <option value="">
-                            -- Pilih Forum Kecamatan --
-                        </option>
-
-                        <?php if (!empty($kecamatanList)): ?>
-
-                            <?php foreach ($kecamatanList as $kecamatan): ?>
-
-                                <option
-                                    value="<?= esc($kecamatan['id']) ?>"
-                                    <?= old('kecamatan_id') == $kecamatan['id']
-                                        ? 'selected'
-                                        : ''
-                                    ?>
-                                >
-                                    <?= esc(
-                                        $kecamatan['nama_kecamatan']
-                                    ) ?>
-                                </option>
-
-                            <?php endforeach; ?>
-
-                        <?php endif; ?>
-
-                    </select>
-
-
-                    <small class="form-help">
-                        Pilih kecamatan pemilik Surat Keputusan
-                        Forum Kecamatan Sehat.
-                    </small>
-
-
-                </div>
-
-
-                <!-- =========================================
                      NOMOR SK
                 ========================================== -->
 

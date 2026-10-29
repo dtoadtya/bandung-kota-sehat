@@ -4,17 +4,14 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\ForumKecamatanSehatSkModel;
-use App\Models\KecamatanModel;
 
 class ForumKecamatanSehatSk extends BaseController
 {
     protected $skModel;
-    protected $kecamatanModel;
 
     public function __construct()
     {
         $this->skModel = new ForumKecamatanSehatSkModel();
-        $this->kecamatanModel = new KecamatanModel();
     }
 
 
@@ -60,21 +57,11 @@ class ForumKecamatanSehatSk extends BaseController
 
     public function create()
     {
-        $kecamatanList = $this->kecamatanModel
-            ->orderBy(
-                'nama_kecamatan',
-                'ASC'
-            )
-            ->findAll();
-
         return view(
             'forum_kecamatan_sehat/sk/create',
             [
                 'title' =>
                     'Tambah SK Forum Kecamatan Sehat',
-
-                'kecamatanList' =>
-                    $kecamatanList
             ]
         );
     }
@@ -86,12 +73,19 @@ class ForumKecamatanSehatSk extends BaseController
 
     public function store()
     {
-        $rules = [
-            'kecamatan_id' => [
-                'label' => 'Forum Kecamatan',
-                'rules' => 'required|integer'
-            ],
+        $kecamatan = $this->userKecamatan();
 
+        if (!$kecamatan) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Kecamatan akun pengguna tidak ditemukan.'
+                );
+        }
+
+        $rules = [
             'no_sk' => [
                 'label' => 'Nomor Surat Keputusan',
                 'rules' => 'required|max_length[255]'
@@ -169,7 +163,7 @@ class ForumKecamatanSehatSk extends BaseController
                 $this->currentUserId(),
 
             'kecamatan_id' =>
-                $this->request->getPost('kecamatan_id'),
+                $kecamatan['id'],
 
             'no_sk' =>
                 $this->request->getPost('no_sk'),
@@ -226,13 +220,6 @@ class ForumKecamatanSehatSk extends BaseController
                 );
         }
 
-        $kecamatanList = $this->kecamatanModel
-            ->orderBy(
-                'nama_kecamatan',
-                'ASC'
-            )
-            ->findAll();
-
         return view(
             'forum_kecamatan_sehat/sk/edit',
             [
@@ -241,9 +228,6 @@ class ForumKecamatanSehatSk extends BaseController
 
                 'data' =>
                     $data,
-
-                'kecamatanList' =>
-                    $kecamatanList
             ]
         );
     }
@@ -267,11 +251,6 @@ class ForumKecamatanSehatSk extends BaseController
         }
 
         $rules = [
-            'kecamatan_id' => [
-                'label' => 'Forum Kecamatan',
-                'rules' => 'required|integer'
-            ],
-
             'no_sk' => [
                 'label' => 'Nomor Surat Keputusan',
                 'rules' => 'required|max_length[255]'
@@ -311,9 +290,6 @@ class ForumKecamatanSehatSk extends BaseController
         }
 
         $updateData = [
-            'kecamatan_id' =>
-                $this->request->getPost('kecamatan_id'),
-
             'no_sk' =>
                 $this->request->getPost('no_sk'),
 

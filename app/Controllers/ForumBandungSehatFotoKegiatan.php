@@ -33,11 +33,19 @@ class ForumBandungSehatFotoKegiatan extends BaseController
             ->orderBy('id', 'DESC')
             ->first();
 
+        /*
+         * Form upload hanya tampil saat belum ada foto,
+         * atau saat user memilih "Ubah Foto".
+         */
+        $showUpload = !$foto
+            || $this->request->getGet('ubah') === '1';
+
         return view(
             'forum_bandung_sehat_foto/index',
             [
                 'title' => 'Foto Sekretariat Forum Bandung Sehat',
                 'foto'  => $foto,
+                'showUpload' => $showUpload,
             ]
         );
     }
@@ -121,11 +129,11 @@ class ForumBandungSehatFotoKegiatan extends BaseController
 
         /*
         |--------------------------------------------------------------------------
-        | HAPUS FOTO LAMA
+        | HAPUS FOTO LAMA (milik user yang login)
         |--------------------------------------------------------------------------
         */
 
-        $fotoLama = $this->fotoModel
+        $fotoLama = $this->filterByUser($this->fotoModel)
             ->orderBy('id', 'DESC')
             ->findAll();
 
@@ -177,7 +185,8 @@ class ForumBandungSehatFotoKegiatan extends BaseController
             return redirect()->to('/dashboard');
         }
 
-        $foto = $this->fotoModel->find($id);
+        $foto = $this->filterByUser($this->fotoModel)
+            ->find($id);
 
         if (!$foto) {
             return redirect()
@@ -210,18 +219,26 @@ class ForumBandungSehatFotoKegiatan extends BaseController
             return redirect()->to('/dashboard');
         }
 
-        $foto = $this->fotoModel->find($id);
+        $foto = $this->filterByUser($this->fotoModel)
+            ->find($id);
 
-        if ($foto) {
+        if (!$foto) {
 
-            $path = FCPATH . $foto['file_path'];
-
-            if (is_file($path)) {
-                unlink($path);
-            }
-
-            $this->fotoModel->delete($id);
+            return redirect()
+                ->to('/forum-bandung-sehat/foto-kegiatan')
+                ->with(
+                    'error',
+                    'Foto tidak ditemukan.'
+                );
         }
+
+        $path = FCPATH . $foto['file_path'];
+
+        if (is_file($path)) {
+            unlink($path);
+        }
+
+        $this->fotoModel->delete($id);
 
         return redirect()
             ->to('/forum-bandung-sehat/foto-kegiatan')

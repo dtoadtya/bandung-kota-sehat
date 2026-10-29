@@ -133,6 +133,77 @@
         font-size: 12px;
         word-break: break-word;
     }
+
+    .foto-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+        max-width: 750px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-ubah,
+    .btn-hapus,
+    .btn-batal {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 11px 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+        border: 1px solid transparent;
+    }
+
+    .btn-ubah {
+        background: #0b4f9c;
+        color: #fff;
+    }
+
+    .btn-ubah:hover {
+        background: #07366d;
+        color: #fff;
+    }
+
+    .btn-hapus {
+        background: #fff0f0;
+        color: #d9534f;
+        border-color: #f1b4b1;
+    }
+
+    .btn-hapus:hover {
+        background: #ffdede;
+        color: #b52b27;
+    }
+
+    .btn-batal {
+        margin-top: 5px;
+        background: #fff;
+        color: #526b84;
+        border-color: #cbd9e5;
+    }
+
+    .btn-batal:hover {
+        background: #f4f8fc;
+        color: #40566d;
+    }
+
+    .foto-form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-top: 5px;
+    }
+
+    .foto-form-actions .btn-upload,
+    .foto-form-actions .btn-batal {
+        margin-top: 0;
+    }
 </style>
 
 
@@ -154,65 +225,6 @@
         </p>
 
     </div>
-
-    <div class="foto-card">
-
-        <h2>Upload Foto Sekretariat</h2>
-
-        <div class="description">
-            Upload satu foto sekretariat Pokja Kelurahan Sehat.
-            Upload baru akan menggantikan foto lama.
-        </div>
-
-        <div class="upload-info">
-
-            <strong>Ketentuan:</strong><br>
-
-            • Maksimal <strong>2 MB</strong><br>
-            • JPG atau JPEG<br>
-            • Wajib memiliki titik koordinat (GPS) pada foto<br>
-            • Hanya satu foto yang digunakan
-
-        </div>
-
-
-        <form
-            action="<?= base_url(
-                'pokja-kelurahan-sehat/foto-kegiatan/store'
-            ) ?>"
-            method="post"
-            enctype="multipart/form-data"
-        >
-
-            <?= csrf_field() ?>
-
-            <label
-                for="foto"
-                class="form-label"
-            >
-                Pilih Foto Sekretariat
-            </label>
-
-            <input
-                type="file"
-                name="foto"
-                id="foto"
-                class="form-control"
-                accept=".jpg,.jpeg"
-                required
-            >
-
-            <button
-                type="submit"
-                class="btn-upload"
-            >
-                Upload Foto
-            </button>
-
-        </form>
-
-    </div>
-
 
     <?php if (!empty($foto)) : ?>
 
@@ -248,6 +260,126 @@
                 <?= esc($foto['nama_asli']) ?>
 
             </div>
+
+            <div class="foto-actions">
+
+                <a
+                    href="<?= base_url(
+                        'pokja-kelurahan-sehat/foto-kegiatan?ubah=1'
+                    ) ?>"
+                    class="btn-ubah"
+                >
+                    ✎ &nbsp;Ubah Foto
+                </a>
+
+                <form
+                    action="<?= base_url(
+                        'pokja-kelurahan-sehat/foto-kegiatan/delete/'
+                        . $foto['id']
+                    ) ?>"
+                    method="post"
+                    data-konfirmasi="Yakin ingin menghapus foto sekretariat ini?"
+                >
+
+                    <?= csrf_field() ?>
+
+                    <button
+                        type="submit"
+                        class="btn-hapus"
+                    >
+                        🗑 &nbsp;Hapus Foto
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    <?php endif; ?>
+
+
+    <?php if (!empty($showUpload)) : ?>
+
+        <div class="foto-card">
+
+            <h2>
+                <?= !empty($foto)
+                    ? 'Ubah Foto Sekretariat'
+                    : 'Upload Foto Sekretariat' ?>
+            </h2>
+
+            <div class="description">
+                <?= !empty($foto)
+                    ? 'Pilih foto baru untuk menggantikan foto sekretariat yang saat ini tersimpan.'
+                    : 'Upload satu foto sekretariat Pokja Kelurahan Sehat. Upload baru akan menggantikan foto lama.' ?>
+            </div>
+
+            <div class="upload-info">
+
+                <strong>Ketentuan:</strong><br>
+
+                • Maksimal <strong>2 MB</strong><br>
+                • JPG atau JPEG<br>
+                • Wajib memiliki titik koordinat (GPS) pada foto<br>
+                • Hanya satu foto yang digunakan
+
+            </div>
+
+
+            <form
+                action="<?= base_url(
+                    'pokja-kelurahan-sehat/foto-kegiatan/store'
+                ) ?>"
+                method="post"
+                enctype="multipart/form-data"
+            >
+
+                <?= csrf_field() ?>
+
+                <label
+                    for="foto"
+                    class="form-label"
+                >
+                    Pilih Foto Sekretariat
+                </label>
+
+                <input
+                    type="file"
+                    name="foto"
+                    id="foto"
+                    class="form-control"
+                    accept=".jpg,.jpeg"
+                    required
+                >
+
+                <div class="foto-form-actions">
+
+                    <button
+                        type="submit"
+                        class="btn-upload"
+                    >
+                        <?= !empty($foto)
+                            ? 'Simpan Foto Baru'
+                            : 'Upload Foto' ?>
+                    </button>
+
+                    <?php if (!empty($foto)) : ?>
+
+                        <a
+                            href="<?= base_url(
+                                'pokja-kelurahan-sehat/foto-kegiatan'
+                            ) ?>"
+                            class="btn-batal"
+                        >
+                            Batal
+                        </a>
+
+                    <?php endif; ?>
+
+                </div>
+
+            </form>
 
         </div>
 

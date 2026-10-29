@@ -62,79 +62,6 @@
         background: #eef7ff;
     }
 
-    .tahun-card {
-        background: #fff;
-        border: 1px solid #d8e7f5;
-        border-radius: 14px;
-        margin-bottom: 24px;
-        overflow: hidden;
-        box-shadow: 0 3px 12px rgba(22, 82, 130, 0.05);
-    }
-
-    .tahun-header {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 22px 26px;
-        border-bottom: 1px solid #e3edf6;
-    }
-
-    .tahun-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
-        background: #e7f3ff;
-        color: #087ff5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 21px;
-    }
-
-    .tahun-header h2 {
-        margin: 0;
-        color: #07366d;
-        font-size: 20px;
-        font-weight: 800;
-    }
-
-    .tahun-header p {
-        margin: 4px 0 0;
-        color: #6d87a4;
-        font-size: 12px;
-    }
-
-    .tahun-buttons {
-        display: flex;
-        gap: 10px;
-        padding: 0 26px 22px;
-    }
-
-    .btn-tahun {
-        min-width: 105px;
-        padding: 10px 18px;
-        border-radius: 7px;
-        border: 1px solid #087ff5;
-        background: #087ff5;
-        color: #fff;
-        text-decoration: none;
-        text-align: center;
-        font-size: 13px;
-        font-weight: 700;
-        transition: .2s;
-    }
-
-    .btn-tahun:hover {
-        background: #066fd6;
-        color: #fff;
-        transform: translateY(-1px);
-    }
-
-    .btn-tahun.active {
-        background: #07366d;
-        border-color: #07366d;
-    }
-
     .form-card {
         background: #fff;
         border: 1px solid #d8e7f5;
@@ -305,10 +232,6 @@
         .form-row {
             grid-template-columns: 1fr;
         }
-
-        .tahun-buttons {
-            flex-wrap: wrap;
-        }
     }
 </style>
 
@@ -318,9 +241,7 @@
 
         <a href="<?= base_url(
             'forum-kecamatan-sehat/realisasi'
-            . (!empty($data['tahun'])
-                ? '?tahun=' . urlencode($data['tahun'])
-                : '')
+            . (!empty($periode) ? '/' . $periode : '')
         ) ?>"
            class="btn-kembali">
             ← &nbsp;Kembali
@@ -341,44 +262,6 @@
         </div>
 
     <?php endif; ?>
-
-    <div class="tahun-card">
-
-        <div class="tahun-header">
-
-            <div class="tahun-icon">▤</div>
-
-            <div>
-
-                <h2>Realisasi Kegiatan</h2>
-
-                <p>
-                    Pilih tahun untuk mengubah periode kegiatan.
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="tahun-buttons">
-
-            <a href="<?= base_url(
-                'forum-kecamatan-sehat/realisasi/create?tahunGanjil'
-            ) ?>"
-               class="btn-tahun <?= ($data['tahun'] ?? '') == 'Ganjil' ? 'active' : '' ?>">
-                ▣ &nbsp; Tahun Ganjil
-            </a>
-
-            <a href="<?= base_url(
-                'forum-kecamatan-sehat/realisasi/create?tahunGenap'
-            ) ?>"
-               class="btn-tahun <?= ($data['tahun'] ?? '') == 'Genap' ? 'active' : '' ?>">
-                ▣ &nbsp; Tahun Genap
-            </a>
-
-        </div>
-
-    </div>
 
     <div class="form-card">
 
@@ -452,18 +335,46 @@
                         Tahun <span>*</span>
                     </label>
 
-                    <input type="text"
-                           name="tahun"
-                           id="tahun"
-                           value="<?= old(
-                               'tahun',
-                               $data['tahun'] ?? ''
-                           ) ?>"
-                           readonly
-                           required>
+                    <select
+                        name="tahun"
+                        id="tahun"
+                        required
+                    >
+
+                        <option value="">
+                            -- Pilih Tahun --
+                        </option>
+
+                        <option
+                            value="Ganjil"
+                            <?= old(
+                                'tahun',
+                                $data['tahun'] ?? ''
+                            ) === 'Ganjil'
+                                ? 'selected'
+                                : ''
+                            ?>
+                        >
+                            Tahun Ganjil
+                        </option>
+
+                        <option
+                            value="Genap"
+                            <?= old(
+                                'tahun',
+                                $data['tahun'] ?? ''
+                            ) === 'Genap'
+                                ? 'selected'
+                                : ''
+                            ?>
+                        >
+                            Tahun Genap
+                        </option>
+
+                    </select>
 
                     <small class="form-help">
-                        Pilih Tahun Ganjil atau Tahun Genap pada bagian atas.
+                        Pilih Tahun Ganjil atau Tahun Genap.
                     </small>
 
                 </div>
@@ -638,6 +549,7 @@
 
                     <a href="<?= base_url(
                         'forum-kecamatan-sehat/realisasi'
+                        . (!empty($periode) ? '/' . $periode : '')
                     ) ?>"
                        class="btn-batal">
                         Batal
