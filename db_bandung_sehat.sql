@@ -845,7 +845,8 @@ INSERT INTO `users` (`id`, `nama`, `username`, `password`, `role`, `is_active`, 
 (41, 'Sukajadi', 'sukajadi', '$2y$12$i7JHeCEqUOpCtYcFS8UUze9bO/HpVzty6Ot4Wq2l8IKj8fMzSHkY6', 'user', 1, '2026-09-08 11:04:40', '2026-09-08 11:04:40'),
 (42, 'Sukasari', 'sukasari', '$2y$12$9Fc6aOBGJSz.hj6tX1NP.evrq5INqCOXtQU5/jPuAn0O9idRnGoNC', 'user', 1, '2026-09-08 11:04:40', '2026-09-08 11:04:40'),
 (43, 'Sumur Bandung', 'sumur_bandung', '$2y$12$EI55WEDfJ8Y0FUfxQoSAG.zkFQPMutuwWTl/SDIZ/GF9DIOaH2X4G', 'user', 1, '2026-09-08 11:04:40', '2026-09-08 11:04:40'),
-(44, 'Ujungberung', 'ujungberung', '$2y$12$sVlR39OjBdslPUuc1fqj1OaxLMba8nc7N7br2SsCIsB6lSENbjJUK', 'user', 1, '2026-09-08 11:04:40', '2026-09-08 11:04:40');
+(44, 'Ujungberung', 'ujungberung', '$2y$12$sVlR39OjBdslPUuc1fqj1OaxLMba8nc7N7br2SsCIsB6lSENbjJUK', 'user', 1, '2026-09-08 11:04:40', '2026-09-08 11:04:40'),
+(45, 'Administrator Utama', 'BAPPERIDA', '$2y$12$Rx0jNajVmMy28kPd41WP1Ooqmcmq.oIyDygOGTFH8LBR30c.7NPPa', 'admin', 1, '2026-09-08 10:33:09', '2026-09-08 10:33:09');
 
 --
 -- Indexes for dumped tables
