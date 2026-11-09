@@ -695,10 +695,42 @@ class Dashboard extends BaseController
         // kerja, realisasi, foto) sudah terisi
         // minimal 1 data, selain itu 1/0.
         //
+        // Khusus role admin:
+        // - Tim Pembina  -> jumlah akun
+        //   TATANAN_1 s/d TATANAN_9 (9/0, 9/1)
+        // - Forum Bandung Sehat -> tetap 1/x
+        // - Forum Kecamatan     -> jumlah kecamatan
+        // - Pokja Kelurahan     -> jumlah kelurahan
+        //
+        // Non-admin: seluruh modul tetap 1/x
+        // (kelembagaan milik akun sendiri).
+        //
         // jumlah_terisi: berapa sub menu yang
         // sudah terisi (0 - 4), dipakai grafik
         // dan ringkasan sistem.
         //
+
+        $jumlahTimPembinaAkun = 0;
+
+        if ($isAdmin) {
+
+            $daftarAkun = db_connect()
+                ->table('users')
+                ->select('username')
+                ->get()
+                ->getResultArray();
+
+            foreach ($daftarAkun as $akun) {
+                if (
+                    preg_match(
+                        '/^TATANAN_[1-9]$/i',
+                        (string) $akun['username']
+                    )
+                ) {
+                    $jumlahTimPembinaAkun++;
+                }
+            }
+        }
 
         foreach ($progresKelembagaan as $key => &$modul) {
 
@@ -714,7 +746,10 @@ class Dashboard extends BaseController
 
             $status = $terisiSemua ? 1 : 0;
 
-            if ($key === 'forum_kecamatan_sehat') {
+            if ($key === 'tim_pembina' && $isAdmin) {
+                $modul['status_kelengkapan'] =
+                    $jumlahTimPembinaAkun . '/' . $status;
+            } elseif ($key === 'forum_kecamatan_sehat') {
                 $modul['status_kelengkapan'] =
                     $jumlahKecamatan . '/' . $status;
             } elseif ($key === 'pokja_kelurahan_sehat') {
