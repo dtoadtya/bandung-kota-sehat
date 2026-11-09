@@ -251,16 +251,24 @@
 
 
                                             <!-- HAPUS -->
-                                            <a href="<?= base_url(
+                                            <form action="<?= base_url(
                                                 'inovasi/perangkat-daerah/delete/' . $row['id']
                                             ) ?>"
-                                               class="btn btn-sm btn-outline-danger"
-                                               title="Hapus"
-                                               data-konfirmasi="Apakah Anda yakin ingin menghapus data inovasi ini?">
+                                                  method="post"
+                                                  class="d-inline"
+                                                  data-konfirmasi="Apakah Anda yakin ingin menghapus data inovasi ini?">
 
-                                                <i class="bi bi-trash"></i>
+                                                <?= csrf_field() ?>
 
-                                            </a>
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        title="Hapus">
+
+                                                    <i class="bi bi-trash"></i>
+
+                                                </button>
+
+                                            </form>
 
                                         </div>
 

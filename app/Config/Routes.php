@@ -436,16 +436,6 @@ $routes->group(
             'ForumBandungSehat::store'
         );
 
-        $routes->get(
-            'edit/(:num)',
-            'ForumBandungSehat::edit/$1'
-        );
-
-        $routes->post(
-            'update/(:num)',
-            'ForumBandungSehat::update/$1'
-        );
-
         $routes->post(
             'delete/(:num)',
             'ForumBandungSehat::delete/$1'
@@ -669,16 +659,6 @@ $routes->group(
             'ForumKecamatanSehat::store'
         );
 
-        $routes->get(
-            'edit/(:num)',
-            'ForumKecamatanSehat::edit/$1'
-        );
-
-        $routes->post(
-            'update/(:num)',
-            'ForumKecamatanSehat::update/$1'
-        );
-
         $routes->post(
             'delete/(:num)',
             'ForumKecamatanSehat::delete/$1'
@@ -719,11 +699,6 @@ $routes->group(
         $routes->get(
             'sk/view/(:num)',
             'ForumKecamatanSehatSk::view/$1'
-        );
-
-        $routes->get(
-            'sk/download/(:num)',
-            'ForumKecamatanSehatSk::download/$1'
         );
 
         $routes->post(
@@ -917,6 +892,16 @@ $routes->group(
             'PokjaKelurahanSehat::store'
         );
 
+        $routes->get(
+            'edit/(:num)',
+            'PokjaKelurahanSehat::edit/$1'
+        );
+
+        $routes->post(
+            'update/(:num)',
+            'PokjaKelurahanSehat::update/$1'
+        );
+
         $routes->post(
             'delete/(:num)',
             'PokjaKelurahanSehat::delete/$1'
@@ -962,11 +947,6 @@ $routes->group(
         $routes->get(
             'sk/view/(:num)',
             'PokjaKelurahanSehatSk::view/$1'
-        );
-
-        $routes->get(
-            'sk/download/(:num)',
-            'PokjaKelurahanSehatSk::download/$1'
         );
 
         $routes->post(
@@ -1233,12 +1213,18 @@ $routes->group(
 // INOVASI - PERANGKAT DAERAH
 // =====================================================
 
-$routes->get('inovasi/perangkat-daerah', 'InovasiPerangkatDaerah::index');
-$routes->get('inovasi/perangkat-daerah/create', 'InovasiPerangkatDaerah::create');
-$routes->post('inovasi/perangkat-daerah/store', 'InovasiPerangkatDaerah::store');
-$routes->get('inovasi/perangkat-daerah/edit/(:num)', 'InovasiPerangkatDaerah::edit/$1');
-$routes->post('inovasi/perangkat-daerah/update/(:num)', 'InovasiPerangkatDaerah::update/$1');
-$routes->get('inovasi/perangkat-daerah/delete/(:num)', 'InovasiPerangkatDaerah::delete/$1');
+$routes->group(
+    'inovasi/perangkat-daerah',
+    ['filter' => 'role:user,admin'],
+    static function ($routes) {
+        $routes->get('', 'InovasiPerangkatDaerah::index');
+        $routes->get('create', 'InovasiPerangkatDaerah::create');
+        $routes->post('store', 'InovasiPerangkatDaerah::store');
+        $routes->get('edit/(:num)', 'InovasiPerangkatDaerah::edit/$1');
+        $routes->post('update/(:num)', 'InovasiPerangkatDaerah::update/$1');
+        $routes->post('delete/(:num)', 'InovasiPerangkatDaerah::delete/$1');
+    }
+);
 
 // =====================================================
 // SELF-ASSESSMENT (NILAI SEMENTARA DI PANEL PROGRES DASHBOARD)

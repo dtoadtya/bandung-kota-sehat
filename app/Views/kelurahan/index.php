@@ -525,7 +525,7 @@
              DATA
         =================================== -->
 
-        <?php if (!empty($kelurahan)) : ?>
+        <?php if (!empty($pokja)) : ?>
 
 
             <div class="pokja-table-wrapper">
@@ -548,6 +548,18 @@
                                 Kelurahan
                             </th>
 
+                            <th>
+                                Nama Pokja
+                            </th>
+
+                            <th>
+                                Ketua
+                            </th>
+
+                            <th width="90">
+                                Tahun
+                            </th>
+
                             <th width="160">
                                 Aksi
                             </th>
@@ -562,7 +574,7 @@
                         <?php $no = 1; ?>
 
 
-                        <?php foreach ($kelurahan as $row) : ?>
+                        <?php foreach ($pokja as $row) : ?>
 
                             <tr>
 
@@ -595,6 +607,40 @@
                                         ) ?>
 
                                     </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    <?= esc(
+                                        $row['nama_pokja']
+                                        ?? '-'
+                                    ) ?>
+
+                                </td>
+
+
+                                <td>
+
+                                    <?= esc(
+                                        $row['ketua']
+                                        ?? '-'
+                                    ) ?>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="pokja-kecamatan">
+
+                                        <?= esc(
+                                            $row['tahun']
+                                            ?? '-'
+                                        ) ?>
+
+                                    </span>
 
                                 </td>
 

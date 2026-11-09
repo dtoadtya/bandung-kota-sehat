@@ -2,265 +2,358 @@
 
 <?= $this->section('content') ?>
 
-<style>
-    .menu-page {
-        background: #f4f8fc;
-        min-height: calc(100vh - 70px);
-        padding: 28px;
-    }
+<div class="container-fluid py-4">
 
-    .menu-header {
-        background: linear-gradient(135deg, #eef7ff, #e5f2ff);
-        border-left: 6px solid #1687e8;
-        border-radius: 14px;
-        padding: 28px 30px;
-        margin-bottom: 24px;
-    }
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    .menu-header h1 {
-        margin: 0 0 7px;
-        color: #07366d;
-        font-size: 30px;
-        font-weight: 800;
-    }
+        <div>
 
-    .menu-header p {
-        margin: 0;
-        color: #5d7898;
-        font-size: 14px;
-    }
+            <h4 class="fw-bold mb-1">
 
-    .menu-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
+                <i class="bi bi-people me-2"></i>
 
-    .menu-card {
-        background: #fff;
-        border: 1px solid #d8e7f5;
-        border-radius: 14px;
-        min-height: 205px;
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: .2s ease;
-    }
+                Edit Pokja Kelurahan Sehat
 
-    .menu-card:hover {
-        border-color: #087ff5;
-        box-shadow: 0 8px 24px rgba(7, 79, 156, .10);
-        transform: translateY(-1px);
-    }
+            </h4>
 
-    .menu-top {
-        display: flex;
-        align-items: flex-start;
-        gap: 16px;
-    }
+            <p class="text-muted mb-0">
 
-    .menu-icon {
-        width: 52px;
-        height: 52px;
-        min-width: 52px;
-        border-radius: 12px;
-        background: #e8f3ff;
-        color: #087ff5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 25px;
-    }
+                Perbarui data pokja, ketua, dan tahun keanggotaan.
 
-    .menu-content h3 {
-        margin: 2px 0 8px;
-        color: #07366d;
-        font-size: 20px;
-        font-weight: 800;
-    }
+            </p>
 
-    .menu-content p {
-        margin: 0;
-        color: #718096;
-        font-size: 13px;
-        line-height: 1.7;
-    }
-
-    .menu-action {
-        margin-top: 22px;
-    }
-
-    .btn-kelola {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        background: #087ff5;
-        color: #fff;
-        padding: 11px 18px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 700;
-        transition: .2s;
-    }
-
-    .btn-kelola:hover {
-        background: #066fd6;
-        color: #fff;
-    }
-
-    @media (max-width: 768px) {
-        .menu-page {
-            padding: 15px;
-        }
-
-        .menu-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
+        </div>
 
 
-<div class="menu-page">
+        <a href="<?= base_url('kelurahan') ?>"
+           class="btn btn-outline-secondary">
 
-    <div class="menu-header">
-        <h1>Pokja Kelurahan Sehat</h1>
-        <p>
-            Kelola data dan dokumen Pokja Kelurahan Sehat.
-        </p>
+            <i class="bi bi-arrow-left me-1"></i>
+
+            Kembali
+
+        </a>
+
     </div>
 
 
-    <div class="menu-grid">
+    <!-- ERROR VALIDATION -->
+    <?php if (session()->getFlashdata('error')) : ?>
 
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
 
-        <!-- SK -->
-        <div class="menu-card">
+            <div class="fw-semibold mb-2">
 
-            <div class="menu-top">
+                <i class="bi bi-exclamation-triangle me-2"></i>
 
-                <div class="menu-icon">
-                    <i class="bi bi-file-earmark-pdf"></i>
-                </div>
-
-                <div class="menu-content">
-                    <h3>SK</h3>
-
-                    <p>
-                        Upload Surat Keputusan Pokja Kelurahan Sehat.
-                        File harus berupa PDF dengan ukuran maksimal 2 MB.
-                    </p>
-                </div>
+                Data belum dapat disimpan.
 
             </div>
 
-            <div class="menu-action">
-                <a href="<?= base_url('pokja-kelurahan-sehat/sk') ?>"
-                   class="btn-kelola">
-                    <i class="bi bi-upload"></i>
-                    Kelola SK
-                </a>
+            <div>
+
+                <?= session()->getFlashdata('error') ?>
+
+            </div>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+
+    <?php endif; ?>
+
+
+    <!-- FORM -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white border-0 py-3">
+
+            <div class="d-flex align-items-center">
+
+                <div class="bg-primary bg-opacity-10 rounded-3 p-2 me-3">
+
+                    <i class="bi bi-buildings text-primary fs-5"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h6 class="fw-bold mb-0">
+
+                        Form Pokja Kelurahan Sehat
+
+                    </h6>
+
+                    <small class="text-muted">
+
+                        Pilih kecamatan lalu kelurahan, isi data pokja.
+
+                    </small>
+
+                </div>
+
             </div>
 
         </div>
 
 
-        <!-- RENCANA KERJA -->
-        <div class="menu-card">
+        <div class="card-body p-4">
 
-            <div class="menu-top">
+            <form action="<?= base_url(
+                'pokja-kelurahan-sehat/update/' . (int) ($data['id'] ?? 0)
+            ) ?>"
+                  method="post">
 
-                <div class="menu-icon">
-                    <i class="bi bi-journal-text"></i>
+                <?= csrf_field() ?>
+
+
+                <!-- KECAMATAN -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+
+                        Kecamatan
+
+                    </label>
+
+                    <select name="kecamatan_id"
+                            id="kecamatan_id"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            -- Pilih Kecamatan --
+                        </option>
+
+                        <?php $kecAktif =
+                            old(
+                                'kecamatan_id',
+                                $kecamatanIdAktif ?? null
+                            ); ?>
+
+                        <?php foreach (($kecamatan ?? []) as $kec) : ?>
+
+                            <option value="<?= (int) $kec['id'] ?>"
+                                <?= $kecAktif == $kec['id'] ? 'selected' : '' ?>>
+
+                                <?= esc($kec['nama_kecamatan']) ?>
+
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
                 </div>
 
-                <div class="menu-content">
-                    <h3>Rencana Kerja</h3>
 
-                    <p>
-                        Kelola rencana kerja Pokja Kelurahan Sehat
-                        berdasarkan tahun pelaksanaan.
-                    </p>
+                <!-- KELURAHAN -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+
+                        Kelurahan
+
+                    </label>
+
+                    <select name="kelurahan_id"
+                            id="kelurahan_id"
+                            class="form-select"
+                            required>
+
+                        <option value="">
+                            -- Pilih Kelurahan --
+                        </option>
+
+                        <?php foreach (($kelurahan ?? []) as $kel) : ?>
+
+                            <option value="<?= (int) $kel['id'] ?>"
+                                <?= old('kelurahan_id', $data['kelurahan_id'] ?? null) == $kel['id'] ? 'selected' : '' ?>>
+
+                                <?= esc($kel['nama_kelurahan']) ?>
+
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
                 </div>
 
-            </div>
 
-            <div class="menu-action">
-                <a href="<?= base_url('pokja-kelurahan-sehat/rencana-kerja') ?>"
-                   class="btn-kelola">
-                    <i class="bi bi-journal-check"></i>
-                    Kelola Rencana Kerja
-                </a>
-            </div>
+                <!-- NAMA POKJA -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+
+                        Nama Pokja
+
+                    </label>
+
+                    <input type="text"
+                           name="nama_pokja"
+                           class="form-control"
+                           value="<?= old(
+                               'nama_pokja',
+                               esc($data['nama_pokja'] ?? '')
+                           ) ?>"
+                           placeholder="Contoh: Pokja Kelurahan Sehat"
+                           required>
+
+                </div>
+
+
+                <!-- TAHUN -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+
+                        Tahun
+
+                    </label>
+
+                    <input type="number"
+                           name="tahun"
+                           class="form-control"
+                           value="<?= old(
+                               'tahun',
+                               esc($data['tahun'] ?? '')
+                           ) ?>"
+                           placeholder="Contoh: 2026"
+                           min="2000"
+                           max="2100"
+                           required>
+
+                </div>
+
+
+                <!-- KETUA -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+
+                        Ketua
+
+                    </label>
+
+                    <input type="text"
+                           name="ketua"
+                           class="form-control"
+                           value="<?= old(
+                               'ketua',
+                               esc($data['ketua'] ?? '')
+                           ) ?>"
+                           placeholder="Nama ketua pokja"
+                           required>
+
+                </div>
+
+
+                <!-- KETERANGAN -->
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+
+                        Keterangan
+
+                    </label>
+
+                    <textarea name="keterangan"
+                              class="form-control"
+                              rows="3"
+                              placeholder="Keterangan (opsional)"><?= old(
+                                  'keterangan',
+                                  esc($data['keterangan'] ?? '')
+                              ) ?></textarea>
+
+                </div>
+
+
+                <div class="d-flex gap-2">
+
+                    <a href="<?= base_url('kelurahan') ?>"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+
+                        Kembali
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-save me-1"></i>
+
+                        Simpan Perubahan
+
+                    </button>
+
+                </div>
+
+            </form>
 
         </div>
-
-
-        <!-- REALISASI -->
-        <div class="menu-card">
-
-            <div class="menu-top">
-
-                <div class="menu-icon">
-                    <i class="bi bi-bar-chart-fill"></i>
-                </div>
-
-                <div class="menu-content">
-                    <h3>Realisasi Kegiatan</h3>
-
-                    <p>
-                        Input laporan kegiatan, waktu, peserta,
-                        hasil pelaksanaan, anggaran dan sumber pendanaan.
-                    </p>
-                </div>
-
-            </div>
-
-            <div class="menu-action">
-                <a href="<?= base_url('pokja-kelurahan-sehat/realisasi') ?>"
-                   class="btn-kelola">
-                    <i class="bi bi-clipboard-data"></i>
-                    Kelola Realisasi
-                </a>
-            </div>
-
-        </div>
-
-
-        <!-- FOTO -->
-        <div class="menu-card">
-
-            <div class="menu-top">
-
-                <div class="menu-icon">
-                    <i class="bi bi-camera-fill"></i>
-                </div>
-
-                <div class="menu-content">
-                    <h3>Foto Kegiatan</h3>
-
-                    <p>
-                        Upload foto dokumentasi kegiatan
-                        Pokja Kelurahan Sehat dengan ukuran maksimal 2 MB.
-                    </p>
-                </div>
-
-            </div>
-
-            <div class="menu-action">
-                <a href="<?= base_url('pokja-kelurahan-sehat/foto-kegiatan') ?>"
-                   class="btn-kelola">
-                    <i class="bi bi-image"></i>
-                    Kelola Foto
-                </a>
-            </div>
-
-        </div>
-
 
     </div>
 
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    var kecamatanSelect = document.getElementById('kecamatan_id');
+    var kelurahanSelect = document.getElementById('kelurahan_id');
+
+    if (!kecamatanSelect || !kelurahanSelect) {
+        return;
+    }
+
+    var kelurahanIdAwal = '<?= (int) old(
+        'kelurahan_id',
+        $data['kelurahan_id'] ?? 0
+    ) ?>';
+
+    kecamatanSelect.addEventListener('change', function () {
+
+        var kecamatanId = this.value;
+
+        kelurahanSelect.innerHTML =
+            '<option value="">-- Pilih Kelurahan --</option>';
+
+        if (!kecamatanId) {
+            return;
+        }
+
+        fetch('<?= base_url('pokja-kelurahan-sehat/getKelurahan') ?>/'
+              + encodeURIComponent(kecamatanId))
+            .then(function (res) { return res.json(); })
+            .then(function (rows) {
+
+                rows.forEach(function (row) {
+
+                    var option = document.createElement('option');
+
+                    option.value = row.id;
+                    option.textContent = row.nama_kelurahan;
+
+                    if (String(row.id) === String(kelurahanIdAwal)) {
+                        option.selected = true;
+                    }
+
+                    kelurahanSelect.appendChild(option);
+                });
+            })
+            .catch(function () { /* abaikan */ });
+    });
+});
+</script>
 
 <?= $this->endSection() ?>

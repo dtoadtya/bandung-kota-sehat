@@ -1830,8 +1830,7 @@ document.addEventListener(
 
         const isAdmin =
             <?= json_encode(
-                ($role ?? session()->get('role')) === 'admin'
-                ? true : false
+                !empty($isAdmin)
             ) ?>;
 
         const labelKelembagaan = <?= json_encode(

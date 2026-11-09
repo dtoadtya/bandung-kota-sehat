@@ -141,7 +141,7 @@ class PokjaKelurahanSehat extends BaseController
         $this->pokjaModel->insert($data);
 
         return redirect()
-            ->to('/pokja-kelurahan-sehat')
+            ->to('/kelurahan')
             ->with(
                 'success',
                 'Data Pokja Kelurahan Sehat berhasil ditambahkan.'
@@ -157,12 +157,17 @@ class PokjaKelurahanSehat extends BaseController
 
         if (!$data) {
             return redirect()
-                ->to('/pokja-kelurahan-sehat')
+                ->to('/kelurahan')
                 ->with(
                     'error',
                     'Data Pokja tidak ditemukan.'
                 );
         }
+
+        $kecamatanIdAktif =
+            $this->getKecamatanId(
+                $data['kelurahan_id']
+            );
 
         $kecamatan = $this->kecamatanModel
             ->orderBy(
@@ -174,9 +179,7 @@ class PokjaKelurahanSehat extends BaseController
         $kelurahan = $this->kelurahanModel
             ->where(
                 'kecamatan_id',
-                $this->getKecamatanId(
-                    $data['kelurahan_id']
-                )
+                $kecamatanIdAktif
             )
             ->orderBy(
                 'nama_kelurahan',
@@ -190,6 +193,7 @@ class PokjaKelurahanSehat extends BaseController
                 'title' => 'Edit Data Pokja Kelurahan Sehat',
                 'kecamatan' => $kecamatan,
                 'kelurahan' => $kelurahan,
+                'kecamatanIdAktif' => $kecamatanIdAktif,
                 'data' => $data
             ]
         );
@@ -219,7 +223,7 @@ class PokjaKelurahanSehat extends BaseController
 
         if (!$dataLama) {
             return redirect()
-                ->to('/pokja-kelurahan-sehat')
+                ->to('/kelurahan')
                 ->with(
                     'error',
                     'Data Pokja tidak ditemukan.'
@@ -275,7 +279,7 @@ class PokjaKelurahanSehat extends BaseController
         );
 
         return redirect()
-            ->to('/pokja-kelurahan-sehat')
+            ->to('/kelurahan')
             ->with(
                 'success',
                 'Data Pokja Kelurahan Sehat berhasil diperbarui.'
@@ -291,7 +295,7 @@ class PokjaKelurahanSehat extends BaseController
 
         if (!$data) {
             return redirect()
-                ->to('/pokja-kelurahan-sehat')
+                ->to('/kelurahan')
                 ->with(
                     'error',
                     'Data Pokja tidak ditemukan.'
@@ -301,7 +305,7 @@ class PokjaKelurahanSehat extends BaseController
         $this->pokjaModel->delete($id);
 
         return redirect()
-            ->to('/pokja-kelurahan-sehat')
+            ->to('/kelurahan')
             ->with(
                 'success',
                 'Data Pokja Kelurahan Sehat berhasil dihapus.'

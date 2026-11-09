@@ -28,6 +28,53 @@ class Dashboard extends BaseController
     }
 
     /**
+     * Query builder yang di-scope per-akun.
+     *
+     * Admin (admin/super_admin/admin_fbs):
+     * melihat semua baris.
+     *
+     * User biasa: hanya baris dengan
+     * user_id milik akun login.
+     *
+     * Jika tabel tidak punya kolom user_id,
+     * query dikembalikan tanpa scope.
+     */
+    private function scopeByUser(
+        string $tabel
+    ): \CodeIgniter\Database\BaseBuilder {
+        $db = db_connect();
+
+        $builder = $db->table($tabel);
+
+        if ($this->isAdmin()) {
+            return $builder;
+        }
+
+        if (
+            !$db->fieldExists(
+                'user_id',
+                $tabel
+            )
+        ) {
+            return $builder;
+        }
+
+        $userId =
+            session()->get('user_id');
+
+        if ($userId) {
+            $builder->where(
+                'user_id',
+                $userId
+            );
+        } else {
+            $builder->where('user_id', null);
+        }
+
+        return $builder;
+    }
+
+    /**
      * Mendapatkan kecamatan berdasarkan username user.
      *
      * Contoh:
@@ -268,8 +315,8 @@ class Dashboard extends BaseController
                 continue;
             }
 
-            $hasil[$key] = (int) $db
-                ->table($tabel)
+            $hasil[$key] = (int) $this
+                ->scopeByUser($tabel)
                 ->countAllResults();
         }
 
@@ -307,8 +354,8 @@ class Dashboard extends BaseController
                 continue;
             }
 
-            $baris = $db
-                ->table($tabel)
+            $baris = $this
+                ->scopeByUser($tabel)
                 ->select(
                     $kolomWilayah
                     . ', COUNT(*) AS jumlah'
@@ -513,15 +560,19 @@ class Dashboard extends BaseController
         // KEEMPAT KOMPONEN KELEMBAGAAN
         // =====================================================
         //
-        // Dihitung total untuk semua role agar
-        // grafik "Statistik Program" dan
-        // "Distribusi Data" selalu mengikuti
-        // data yang diisi pada keempat komponen:
+        // Jumlah baris tabel induk kelembagaan.
         //
-        // - Tim Pembina
-        // - Forum Bandung Sehat
-        // - Forum Kecamatan Sehat
-        // - Pokja Kelurahan Sehat
+        // Tabel induk (tim_pembina, forum_*,
+        // pokja_*) tidak memiliki kolom user_id,
+        // sehingga angka ini tetap total global.
+        //
+        // Grafik "Statistik Program" dan
+        // "Distribusi Data" TIDAK memakai angka
+        // ini; grafik memakai hitungProgres()
+        // dan hitungProgresPerWilayah() yang
+        // di-scope per-akun: admin melihat
+        // semua baris, user biasa hanya baris
+        // dengan user_id miliknya sendiri.
         //
 
         $jumlahTimPembina =
@@ -890,6 +941,9 @@ class Dashboard extends BaseController
 
             'ringkasanKomponen' =>
                 $ringkasanKomponen,
+
+            'isAdmin' =>
+                $isAdmin,
         ];
 
 

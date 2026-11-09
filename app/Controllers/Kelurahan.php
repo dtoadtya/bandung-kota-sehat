@@ -18,13 +18,23 @@ class Kelurahan extends BaseController
 
 
     // =========================
-    // DATA KELURAHAN
+    // DATA POKJA PER KELURAHAN
     // =========================
 
     public function index()
     {
-        $kelurahan = $this->kelurahanModel
-            ->select('kelurahan.*, kecamatan.nama_kecamatan')
+        $pokja = db_connect()
+            ->table('pokja_kelurahan_sehat')
+            ->select(
+                'pokja_kelurahan_sehat.*, '
+                . 'kelurahan.nama_kelurahan, '
+                . 'kecamatan.nama_kecamatan'
+            )
+            ->join(
+                'kelurahan',
+                'kelurahan.id = pokja_kelurahan_sehat.kelurahan_id',
+                'left'
+            )
             ->join(
                 'kecamatan',
                 'kecamatan.id = kelurahan.kecamatan_id',
@@ -38,13 +48,14 @@ class Kelurahan extends BaseController
                 'kelurahan.nama_kelurahan',
                 'ASC'
             )
-            ->findAll();
+            ->get()
+            ->getResultArray();
 
         return view(
             'kelurahan/index',
             [
                 'title' => 'Pokja Kelurahan Sehat',
-                'kelurahan' => $kelurahan
+                'pokja' => $pokja
             ]
         );
     }

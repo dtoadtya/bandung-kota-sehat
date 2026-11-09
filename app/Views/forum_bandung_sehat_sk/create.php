@@ -248,7 +248,7 @@
 
             <input
                 type="file"
-                name="file_sk"
+                name="file"
                 class="form-control-custom"
                 accept=".pdf,application/pdf"
                 required
