@@ -688,6 +688,202 @@ class Dashboard extends BaseController
 
 
         // =====================================================
+        // TABEL INOVASI DASHBOARD
+        // =====================================================
+        //
+        // Ditampilkan di sebelah kartu Tim Pembina,
+        // hanya untuk akun TATANAN dan admin.
+        //
+        // - TATANAN -> Inovasi Perangkat Daerah saja.
+        // - Admin   -> gabungan ketiga inovasi
+        //   (Perangkat Daerah + Kecamatan + Kelurahan).
+        //
+        // Read-only; link menuju modul Inovasi.
+        //
+
+        $showTabelInovasi =
+            $isTatanan || $role === 'admin';
+
+        $tabelInovasi = null;
+
+        $inovasiGabungan = false;
+
+        if ($showTabelInovasi) {
+
+            $tabelInovasi = [];
+
+            $db = db_connect();
+
+
+            // -------------------------------------------------
+            // INOVASI PERANGKAT DAERAH
+            // -------------------------------------------------
+
+            $barisPD = $db
+                ->table('inovasi_perangkat_daerah')
+                ->select(
+                    'nama_perangkat_daerah,'
+                    . ' nama_inovasi,'
+                    . ' penjelasan,'
+                    . ' waktu_awal_penerapan,'
+                    . ' dampak_inovasi,'
+                    . ' link_data_dukung'
+                )
+                ->orderBy('nama_perangkat_daerah', 'ASC')
+                ->orderBy('nama_inovasi', 'ASC')
+                ->get()
+                ->getResultArray();
+
+            foreach ($barisPD as $baris) {
+                $tabelInovasi[] = [
+                    'jenis' => 'Perangkat Daerah',
+
+                    'nama_inovasi' =>
+                        $baris['nama_inovasi'] ?? '',
+
+                    'asal' =>
+                        $baris['nama_perangkat_daerah']
+                        ?? '',
+
+                    'tahun' =>
+                        !empty(
+                            $baris['waktu_awal_penerapan']
+                        )
+                            ? date(
+                                'Y',
+                                strtotime(
+                                    $baris['waktu_awal_penerapan']
+                                )
+                            )
+                            : '-',
+
+                    'hasil' =>
+                        $baris['dampak_inovasi'] ?? '',
+
+                    'link' =>
+                        $baris['link_data_dukung'] ?? '',
+                ];
+            }
+
+
+            // -------------------------------------------------
+            // ADMIN: GABUNGKAN KECAMATAN & KELURAHAN
+            // -------------------------------------------------
+
+            if ($role === 'admin') {
+
+                $inovasiGabungan = true;
+
+
+                // =============================================
+                // INOVASI KECAMATAN
+                // =============================================
+
+                $barisKec = $db
+                    ->table('inovasi_kecamatan')
+                    ->select(
+                        'inovasi_kecamatan.nama_inovasi,'
+                        . ' inovasi_kecamatan.tahun,'
+                        . ' inovasi_kecamatan.manfaat,'
+                        . ' inovasi_kecamatan.link_data_dukung,'
+                        . ' kecamatan.nama_kecamatan'
+                    )
+                    ->join(
+                        'kecamatan',
+                        'kecamatan.id'
+                        . ' = inovasi_kecamatan.kecamatan_id'
+                    )
+                    ->orderBy(
+                        'kecamatan.nama_kecamatan',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'inovasi_kecamatan.nama_inovasi',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+                foreach ($barisKec as $baris) {
+                    $tabelInovasi[] = [
+                        'jenis' => 'Kecamatan',
+
+                        'nama_inovasi' =>
+                            $baris['nama_inovasi'] ?? '',
+
+                        'asal' =>
+                            $baris['nama_kecamatan']
+                            ?? '',
+
+                        'tahun' =>
+                            $baris['tahun'] ?? '-',
+
+                        'hasil' =>
+                            $baris['manfaat'] ?? '',
+
+                        'link' =>
+                            $baris['link_data_dukung']
+                            ?? '',
+                    ];
+                }
+
+
+                // =============================================
+                // INOVASI KELURAHAN
+                // =============================================
+
+                $barisKel = $db
+                    ->table('inovasi_kelurahan')
+                    ->select(
+                        'inovasi_kelurahan.nama_inovasi,'
+                        . ' inovasi_kelurahan.tahun,'
+                        . ' inovasi_kelurahan.manfaat,'
+                        . ' inovasi_kelurahan.link_data_dukung,'
+                        . ' kelurahan.nama_kelurahan'
+                    )
+                    ->join(
+                        'kelurahan',
+                        'kelurahan.id'
+                        . ' = inovasi_kelurahan.kelurahan_id'
+                    )
+                    ->orderBy(
+                        'kelurahan.nama_kelurahan',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'inovasi_kelurahan.nama_inovasi',
+                        'ASC'
+                    )
+                    ->get()
+                    ->getResultArray();
+
+                foreach ($barisKel as $baris) {
+                    $tabelInovasi[] = [
+                        'jenis' => 'Kelurahan',
+
+                        'nama_inovasi' =>
+                            $baris['nama_inovasi'] ?? '',
+
+                        'asal' =>
+                            $baris['nama_kelurahan']
+                            ?? '',
+
+                        'tahun' =>
+                            $baris['tahun'] ?? '-',
+
+                        'hasil' =>
+                            $baris['manfaat'] ?? '',
+
+                        'link' =>
+                            $baris['link_data_dukung']
+                            ?? '',
+                    ];
+                }
+            }
+        }
+
+
+        // =====================================================
         // STATUS KELENGKAPAN TIAP KELEMBAGAAN
         // =====================================================
         //
@@ -706,8 +902,9 @@ class Dashboard extends BaseController
         // (kelembagaan milik akun sendiri).
         //
         // jumlah_terisi: berapa sub menu yang
-        // sudah terisi (0 - 4), dipakai grafik
-        // dan ringkasan sistem.
+        // sudah terisi (0 - 4), dipakai grafik.
+        // Ringkasan sistem memakai
+        // status_kelengkapan.
         //
 
         $jumlahTimPembinaAkun = 0;
@@ -967,6 +1164,15 @@ class Dashboard extends BaseController
 
             'isTatanan' =>
                 $isTatanan,
+
+            'tabelInovasi' =>
+                $tabelInovasi,
+
+            'inovasiGabungan' =>
+                $inovasiGabungan,
+
+            'urlInovasi' =>
+                '/inovasi/perangkat-daerah',
 
             'isKecamatanUser' =>
                 $isKecamatanUser,

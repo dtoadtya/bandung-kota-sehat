@@ -346,9 +346,44 @@ $routes->group(
             'TimPembinaRealisasi::index'
         );
 
+
+        // -------------------------------------------------
+        // TAHUN GANJIL
+        // -------------------------------------------------
+
+        $routes->get(
+            'realisasi/ganjil',
+            'TimPembinaRealisasi::periode/ganjil'
+        );
+
+        $routes->get(
+            'realisasi/create/ganjil',
+            'TimPembinaRealisasi::create/ganjil'
+        );
+
+
+        // -------------------------------------------------
+        // TAHUN GENAP
+        // -------------------------------------------------
+
+        $routes->get(
+            'realisasi/genap',
+            'TimPembinaRealisasi::periode/genap'
+        );
+
+        $routes->get(
+            'realisasi/create/genap',
+            'TimPembinaRealisasi::create/genap'
+        );
+
+
+        // -------------------------------------------------
+        // REALISASI - PROSES
+        // -------------------------------------------------
+
         $routes->get(
             'realisasi/create',
-            'TimPembinaRealisasi::create'
+            'TimPembinaRealisasi::index'
         );
 
         $routes->post(

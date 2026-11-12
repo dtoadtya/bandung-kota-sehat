@@ -471,6 +471,105 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
 
 /* =========================================================
+   TABEL INOVASI (DI PANEL PROGRES)
+========================================================= */
+
+.dashboard-inovasi-body {
+    max-height: 320px;
+    overflow-y: auto;
+
+    border: 1px solid #e3eefb;
+    border-radius: 8px;
+}
+
+.dashboard-inovasi-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.dashboard-inovasi-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    background: #f4f8fc;
+    color: #315777;
+    font-size: 10px;
+    font-weight: 800;
+    text-align: left;
+    white-space: nowrap;
+
+    padding: 8px 10px;
+    border-bottom: 1px solid #dce8f2;
+}
+
+.dashboard-inovasi-table td {
+    color: #465d73;
+    vertical-align: top;
+
+    padding: 8px 10px;
+    border-bottom: 1px solid #edf2f6;
+}
+
+.dashboard-inovasi-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.dashboard-inovasi-table .inovasi-nama {
+    font-weight: 600;
+    color: #063b78;
+}
+
+.dashboard-inovasi-table .inovasi-hasil {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-inovasi-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: #eaf3ff;
+    color: #0b4f9c;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.dashboard-inovasi-empty {
+    text-align: center;
+    padding: 24px 10px;
+    color: #7890a8;
+    font-size: 12px;
+}
+
+.dashboard-inovasi-foot {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 10px;
+}
+
+.dashboard-inovasi-foot a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    font-size: 11px;
+    font-weight: 700;
+    color: #087df5;
+    text-decoration: none;
+}
+
+.dashboard-inovasi-foot a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
    PANEL PROGRES KELEMBAGAAN
 ========================================================= */
 
@@ -868,6 +967,67 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
         </div>
 
+
+        <?php endif; ?>
+
+
+        <!-- =====================================================
+             KARTU INOVASI
+             Tampilannya sama seperti kartu Tim Pembina.
+             Angka = jumlah inovasi (0, 1, 2, ...)
+             dan terus bertambah saat inovasi ditambahkan.
+             Klik kartu untuk melihat daftar inovasi.
+        ====================================================== -->
+
+        <?php if (is_array($tabelInovasi)): ?>
+
+        <div
+            class="dashboard-stat-card blue"
+            role="button"
+            tabindex="0"
+            data-progres="inovasi"
+            onclick="toggleProgres('inovasi')"
+            onkeydown="if(event.key==='Enter'){toggleProgres('inovasi')}"
+        >
+
+            <div class="dashboard-stat-top">
+
+                <div class="dashboard-stat-label">
+                    Inovasi
+                </div>
+
+                <div class="dashboard-stat-icon">
+
+                    <i class="bi bi-lightbulb"></i>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat-value">
+
+                <?= count($tabelInovasi) ?>
+
+            </div>
+
+
+            <div class="dashboard-stat-description">
+
+                Data Inovasi Bandung Sehat
+
+            </div>
+
+
+            <div class="dashboard-stat-hint">
+
+                <i class="bi bi-chevron-down"></i>
+
+                Lihat progres
+
+            </div>
+
+        </div>
 
         <?php endif; ?>
 
@@ -1370,6 +1530,192 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
         <?php endforeach; ?>
 
 
+        <?php if (is_array($tabelInovasi)): ?>
+
+
+            <!-- =====================================================
+                 DAFTAR INOVASI
+                 Dibuka lewat kartu Inovasi.
+                 Read-only; link menuju modul Inovasi.
+            ====================================================== -->
+
+            <div
+                class="dashboard-progres-section"
+                id="progres-inovasi"
+                style="display:none"
+            >
+
+
+                <div class="dashboard-progres-header">
+
+                    <div class="dashboard-progres-title">
+                        Inovasi
+                    </div>
+
+                    <button
+                        type="button"
+                        class="dashboard-progres-close"
+                        title="Tutup"
+                        onclick="toggleProgres('inovasi')"
+                    >
+                        &times;
+                    </button>
+
+                </div>
+
+
+                <div class="dashboard-inovasi-body">
+
+                    <?php if (!empty($tabelInovasi)): ?>
+
+                    <table class="dashboard-inovasi-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th width="34">
+                                    No
+                                </th>
+
+                                <?php if (!empty($inovasiGabungan)): ?>
+
+                                <th>
+                                    Jenis
+                                </th>
+
+                                <?php endif; ?>
+
+                                <th>
+                                    Nama Inovasi
+                                </th>
+
+                                <th>
+                                    Asal
+                                </th>
+
+                                <th width="60">
+                                    Tahun
+                                </th>
+
+                                <th>
+                                    Hasil
+                                </th>
+
+                                <th width="50">
+                                    Link
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <?php foreach ($tabelInovasi as $i => $row): ?>
+
+                            <tr>
+
+                                <td>
+                                    <?= $i + 1 ?>
+                                </td>
+
+                                <?php if (!empty($inovasiGabungan)): ?>
+
+                                <td>
+                                    <span class="dashboard-inovasi-badge">
+                                        <?= esc($row['jenis'] ?? '-') ?>
+                                    </span>
+                                </td>
+
+                                <?php endif; ?>
+
+                                <td class="inovasi-nama">
+                                    <?= esc($row['nama_inovasi'] ?? '-') ?>
+                                </td>
+
+                                <td>
+                                    <?= esc($row['asal'] ?? '-') ?>
+                                </td>
+
+                                <td>
+                                    <?= esc($row['tahun'] ?? '-') ?>
+                                </td>
+
+                                <td>
+                                    <div
+                                        class="inovasi-hasil"
+                                        title="<?= esc($row['hasil'] ?? '') ?>"
+                                    >
+                                        <?= ($row['hasil'] ?? '') !== ''
+                                            ? esc($row['hasil'])
+                                            : '-' ?>
+                                    </div>
+                                </td>
+
+                                <td>
+
+                                    <?php if (!empty($row['link'])): ?>
+
+                                        <a
+                                            href="<?= esc($row['link']) ?>"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            title="Buka link data dukung"
+                                            style="color:#087df5;"
+                                        >
+                                            <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+
+                                    <?php else: ?>
+
+                                        <span class="text-muted">-</span>
+
+                                    <?php endif; ?>
+
+                                </td>
+
+                            </tr>
+
+                            <?php endforeach; ?>
+
+                        </tbody>
+
+                    </table>
+
+                    <?php else: ?>
+
+                    <div class="dashboard-inovasi-empty">
+
+                        <i class="bi bi-lightbulb d-block mb-2 fs-4"></i>
+
+                        Belum ada data inovasi.
+
+                    </div>
+
+                    <?php endif; ?>
+
+                </div>
+
+
+                <div class="dashboard-inovasi-foot">
+
+                    <a
+                        href="<?= base_url($urlInovasi ?? 'inovasi/perangkat-daerah') ?>"
+                    >
+                        Buka modul Inovasi
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                </div>
+
+
+            </div>
+
+
+        <?php endif; ?>
+
+
     </div>
 
 
@@ -1545,6 +1891,29 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
                 <?php else: ?>
 
 
+                <!-- =====================================================
+                     RINGKASAN TIAP KELEMBAGAAN
+                     Tiap kotak mengikuti aturan kartu
+                     statistik di atas (menyesuaikan akun):
+                     - Tim Pembina   -> semua kecuali
+                                        user kecamatan/kelurahan
+                     - FBS           -> selain TATANAN + kec/kel
+                     - Forum Kecamatan -> user kecamatan + admin
+                     - Pokja         -> user kelurahan + admin
+
+                     Nilai memakai status_kelengkapan
+                     (sama dengan kartu):
+                     - Tim Pembina (admin) -> 9/0 (jumlah akun TATANAN)
+                     - FBS                 -> 1/0
+                     - Forum Kecamatan     -> 30/0 (jumlah kecamatan)
+                     - Pokja               -> 151/0 (jumlah kelurahan)
+                ====================================================== -->
+
+                <?php if (
+                    empty($isKecamatanUser)
+                    && empty($isKelurahanUser)
+                ): ?>
+
                 <div class="dashboard-summary-item">
 
                     <div class="dashboard-summary-label">
@@ -1553,17 +1922,23 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     <div class="dashboard-summary-value">
 
-                        <?= (int) (
-                            $progresKelembagaan['tim_pembina']['jumlah_terisi']
-                                ?? 0
-                        ) ?>/<?= !empty($isTatanan) ? '2' : '4' ?>
+                        <?= esc(
+                            $progresKelembagaan['tim_pembina']['status_kelengkapan']
+                                ?? '1/0'
+                        ) ?>
 
                     </div>
 
                 </div>
 
+                <?php endif; ?>
 
-                <?php if (empty($isTatanan)): ?>
+
+                <?php if (
+                    empty($isTatanan)
+                    && empty($isKecamatanUser)
+                    && empty($isKelurahanUser)
+                ): ?>
 
 
                 <div class="dashboard-summary-item">
@@ -1574,14 +1949,27 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     <div class="dashboard-summary-value">
 
-                        <?= (int) (
-                            $progresKelembagaan['forum_bandung_sehat']['jumlah_terisi']
-                                ?? 0
-                        ) ?>/4
+                        <?= esc(
+                            $progresKelembagaan['forum_bandung_sehat']['status_kelengkapan']
+                                ?? '1/0'
+                        ) ?>
 
                     </div>
 
                 </div>
+
+
+                <?php endif; ?>
+
+
+                <?php if (
+                    empty($isTatanan)
+                    && empty($isKelurahanUser)
+                    && (
+                        !empty($isKecamatanUser)
+                        || ($role ?? '') === 'admin'
+                    )
+                ): ?>
 
 
                 <div class="dashboard-summary-item">
@@ -1592,14 +1980,27 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     <div class="dashboard-summary-value">
 
-                        <?= (int) (
-                            $progresKelembagaan['forum_kecamatan_sehat']['jumlah_terisi']
-                                ?? 0
-                        ) ?>/4
+                        <?= esc(
+                            $progresKelembagaan['forum_kecamatan_sehat']['status_kelengkapan']
+                                ?? '30/0'
+                        ) ?>
 
                     </div>
 
                 </div>
+
+
+                <?php endif; ?>
+
+
+                <?php if (
+                    empty($isTatanan)
+                    && empty($isKecamatanUser)
+                    && (
+                        !empty($isKelurahanUser)
+                        || ($role ?? '') === 'admin'
+                    )
+                ): ?>
 
 
                 <div class="dashboard-summary-item">
@@ -1610,10 +2011,10 @@ $nama = session()->get('nama') ?? ($username ?? 'Pengguna');
 
                     <div class="dashboard-summary-value">
 
-                        <?= (int) (
-                            $progresKelembagaan['pokja_kelurahan_sehat']['jumlah_terisi']
-                                ?? 0
-                        ) ?>/4
+                        <?= esc(
+                            $progresKelembagaan['pokja_kelurahan_sehat']['status_kelengkapan']
+                                ?? '151/0'
+                        ) ?>
 
                     </div>
 

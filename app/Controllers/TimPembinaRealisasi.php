@@ -14,148 +14,245 @@ class TimPembinaRealisasi extends BaseController
             new TimPembinaRealisasiModel();
     }
 
+    /**
+     * Cek role.
+     */
+    private function allowedRoles(): bool
+    {
+        return in_array(
+            session()->get('role'),
+            ['user', 'admin'],
+            true
+        );
+    }
+
+    /**
+     * Validasi periode.
+     */
+    private function validPeriode($periode): bool
+    {
+        return in_array(
+            $periode,
+            ['ganjil', 'genap'],
+            true
+        );
+    }
+
+    /**
+     * Nama tampilan periode.
+     */
+    private function namaPeriode(string $periode): string
+    {
+        return $periode === 'ganjil'
+            ? 'Tahun Ganjil'
+            : 'Tahun Genap';
+    }
+
     /*
     |--------------------------------------------------------------------------
-    | INDEX
+    | INDEX - HALAMAN PILIH PERIODE
     |--------------------------------------------------------------------------
     */
 
     public function index()
     {
-        $tahun = $this->request->getGet('tahun');
-
-        $builder = $this->filterByUser($this->realisasiModel)
-            ->orderBy('waktu_kegiatan', 'DESC')
-            ->orderBy('id', 'DESC');
-
-        if ($tahun !== null && $tahun !== '') {
-            $builder->where('tahun', $tahun);
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
         }
-
-        $data = $builder->findAll();
 
         return view(
             'tim_pembina_realisasi/index',
             [
-                'title' => 'Realisasi Kegiatan Tim Pembina',
-                'data'  => $data,
-                'tahun' => $tahun,
+                'title' =>
+                    'Realisasi Kegiatan Tim Pembina',
             ]
         );
     }
 
     /*
     |--------------------------------------------------------------------------
-    | CREATE
+    | PERIODE - DAFTAR DATA
     |--------------------------------------------------------------------------
     */
 
-    public function create()
+    public function periode($periode)
     {
-        $tahun = $this->request->getGet('tahun');
-
-        if (!in_array($tahun, ['1', '2'], true)) {
-            $tahun = '';
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
         }
+
+        if (!$this->validPeriode($periode)) {
+            return redirect()
+                ->to('/tim-pembina/realisasi')
+                ->with(
+                    'error',
+                    'Periode tidak valid.'
+                );
+        }
+
+        $namaPeriode =
+            $this->namaPeriode($periode);
+
+        $data = $this->filterByUser(
+            $this->realisasiModel
+        )
+            ->where('periode', $periode)
+            ->orderBy('waktu_kegiatan', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        return view(
+            'tim_pembina_realisasi/periode',
+            [
+                'title' =>
+                    'Realisasi Kegiatan Tim Pembina - '
+                    . $namaPeriode,
+
+                'periode' => $periode,
+
+                'namaPeriode' => $namaPeriode,
+
+                'data' => $data,
+            ]
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE - FORM TAMBAH
+    |--------------------------------------------------------------------------
+    */
+
+    public function create($periode)
+    {
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
+        }
+
+        if (!$this->validPeriode($periode)) {
+            return redirect()
+                ->to('/tim-pembina/realisasi')
+                ->with(
+                    'error',
+                    'Periode tidak valid.'
+                );
+        }
+
+        $namaPeriode =
+            $this->namaPeriode($periode);
 
         return view(
             'tim_pembina_realisasi/create',
             [
-                'title' => 'Tambah Realisasi Kegiatan Tim Pembina',
-                'tahun' => $tahun,
+                'title' =>
+                    'Tambah Realisasi Kegiatan - '
+                    . $namaPeriode,
+
+                'periode' => $periode,
+
+                'namaPeriode' => $namaPeriode,
             ]
         );
     }
 
     /*
     |--------------------------------------------------------------------------
-    | STORE
+    | STORE - SIMPAN
     |--------------------------------------------------------------------------
     */
 
     public function store()
     {
-        $tahun = trim(
-            (string) $this->request->getPost('tahun')
-        );
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
+        }
 
-        $namaKegiatan = trim(
-            (string) $this->request->getPost(
-                'nama_kegiatan'
-            )
-        );
+        $periode =
+            $this->request->getPost('periode');
 
-        $waktuKegiatan = $this->request->getPost(
-            'waktu_kegiatan'
-        );
+        if (!$this->validPeriode($periode)) {
+            return redirect()
+                ->to('/tim-pembina/realisasi')
+                ->with(
+                    'error',
+                    'Periode tidak valid.'
+                );
+        }
 
-        $peserta = trim(
-            (string) $this->request->getPost('peserta')
-        );
+        $rules = [
+            'tahun' => [
+                'label' => 'Tahun',
 
-        $hasilPelaksanaan = trim(
-            (string) $this->request->getPost(
-                'hasil_pelaksanaan'
-            )
-        );
+                'rules' =>
+                    'required|max_length[20]',
+
+                'errors' => [
+                    'required' =>
+                        'Tahun wajib diisi.',
+
+                    'max_length' =>
+                        'Tahun maksimal 20 karakter.',
+                ],
+            ],
+
+            'nama_kegiatan' => [
+                'label' => 'Nama Kegiatan',
+
+                'rules' => 'required',
+
+                'errors' => [
+                    'required' =>
+                        'Nama kegiatan wajib diisi.',
+                ],
+            ],
+
+            'waktu_kegiatan' => [
+                'label' => 'Waktu Kegiatan',
+
+                'rules' => 'required',
+
+                'errors' => [
+                    'required' =>
+                        'Waktu kegiatan wajib diisi.',
+                ],
+            ],
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'errors',
+                    $this->validator->getErrors()
+                );
+        }
 
         $anggaran = trim(
-            (string) $this->request->getPost('anggaran')
-        );
-
-        $sumberPendanaan = trim(
             (string) $this->request->getPost(
-                'sumber_pendanaan'
+                'anggaran'
             )
         );
-
-        $linkDrive = trim(
-            (string) $this->request->getPost(
-                'link_drive'
-            )
-        );
-
-        $dataDukung = trim(
-            (string) $this->request->getPost(
-                'data_dukung'
-            )
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI TAHUN
-        |--------------------------------------------------------------------------
-        */
-
-        if (!in_array($tahun, ['1', '2'], true)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Silakan pilih Tahun 1 atau Tahun 2.'
-                );
-        }
-
-        if ($namaKegiatan === '') {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Nama kegiatan wajib diisi.'
-                );
-        }
-
-        if ($waktuKegiatan === '') {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Waktu kegiatan wajib diisi.'
-                );
-        }
 
         /*
         |--------------------------------------------------------------------------
@@ -181,32 +278,74 @@ class TimPembinaRealisasi extends BaseController
         */
 
         $this->realisasiModel->insert([
-            'user_id'              => $this->currentUserId(),
+            'user_id' => $this->currentUserId(),
 
             /*
              * Tidak menggunakan Kecamatan.
              */
-            'kecamatan_id'      => null,
+            'kecamatan_id' => null,
 
-            'tahun'             => $tahun,
-            'nama_kegiatan'     => $namaKegiatan,
-            'waktu_kegiatan'    => $waktuKegiatan,
-            'peserta'           => $peserta,
-            'hasil_pelaksanaan' => $hasilPelaksanaan,
-            'anggaran'          => $anggaran !== ''
-                ? $anggaran
-                : 0,
-            'sumber_pendanaan'  => $sumberPendanaan,
-            'link_drive'        => $linkDrive,
-            'data_dukung'       => $dataDukung,
+            'tahun' =>
+                trim(
+                    (string) $this->request
+                        ->getPost('tahun')
+                ),
+
+            'periode' => $periode,
+
+            'nama_kegiatan' =>
+                trim(
+                    (string) $this->request
+                        ->getPost('nama_kegiatan')
+                ),
+
+            'waktu_kegiatan' =>
+                $this->request->getPost(
+                    'waktu_kegiatan'
+                ),
+
+            'peserta' =>
+                trim(
+                    (string) $this->request
+                        ->getPost('peserta')
+                ),
+
+            'hasil_pelaksanaan' =>
+                trim(
+                    (string) $this->request
+                        ->getPost(
+                            'hasil_pelaksanaan'
+                        )
+                ),
+
+            'anggaran' =>
+                $anggaran !== '' ? $anggaran : 0,
+
+            'sumber_pendanaan' =>
+                trim(
+                    (string) $this->request
+                        ->getPost(
+                            'sumber_pendanaan'
+                        )
+                ),
+
+            'link_drive' =>
+                trim(
+                    (string) $this->request
+                        ->getPost('link_drive')
+                ),
+
+            'data_dukung' =>
+                trim(
+                    (string) $this->request
+                        ->getPost('data_dukung')
+                ),
         ]);
 
         return redirect()
             ->to(
-                base_url(
-                    'tim-pembina/realisasi?tahun=' .
-                    $tahun
-                )
+                '/tim-pembina/realisasi/'
+                . $periode
             )
             ->with(
                 'success',
@@ -216,145 +355,153 @@ class TimPembinaRealisasi extends BaseController
 
     /*
     |--------------------------------------------------------------------------
-    | EDIT
+    | EDIT - FORM UBAH
     |--------------------------------------------------------------------------
     */
 
     public function edit($id)
     {
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
+        }
+
         $data = $this->realisasiModel->find($id);
 
         if (!$data) {
             return redirect()
-                ->to(
-                    base_url(
-                        'tim-pembina/realisasi'
-                    )
-                )
+                ->to('/tim-pembina/realisasi')
                 ->with(
                     'error',
                     'Data realisasi kegiatan tidak ditemukan.'
                 );
         }
 
+        $periode =
+            $data['periode'] ?? 'ganjil';
+
+        if (!$this->validPeriode($periode)) {
+            $periode = 'ganjil';
+        }
+
+        $namaPeriode =
+            $this->namaPeriode($periode);
+
         return view(
             'tim_pembina_realisasi/edit',
             [
                 'title' =>
-                    'Edit Realisasi Kegiatan Tim Pembina',
+                    'Edit Realisasi Kegiatan - '
+                    . $namaPeriode,
 
-                'data'  => $data,
+                'data' => $data,
 
-                'tahun' =>
-                    $data['tahun'] ?? '',
+                'periode' => $periode,
+
+                'namaPeriode' => $namaPeriode,
             ]
         );
     }
 
     /*
     |--------------------------------------------------------------------------
-    | UPDATE
+    | UPDATE - SIMPAN UBAH
     |--------------------------------------------------------------------------
     */
 
     public function update($id)
     {
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
+        }
+
         $data = $this->realisasiModel->find($id);
 
         if (!$data) {
             return redirect()
-                ->to(
-                    base_url(
-                        'tim-pembina/realisasi'
-                    )
-                )
+                ->to('/tim-pembina/realisasi')
                 ->with(
                     'error',
                     'Data realisasi kegiatan tidak ditemukan.'
                 );
         }
 
-        $tahun = trim(
-            (string) $this->request->getPost('tahun')
-        );
+        $periode =
+            $this->request->getPost('periode');
 
-        $namaKegiatan = trim(
-            (string) $this->request->getPost(
-                'nama_kegiatan'
-            )
-        );
+        if (!$this->validPeriode($periode)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Periode tidak valid.'
+                );
+        }
 
-        $waktuKegiatan = $this->request->getPost(
-            'waktu_kegiatan'
-        );
+        $rules = [
+            'tahun' => [
+                'label' => 'Tahun',
 
-        $peserta = trim(
-            (string) $this->request->getPost('peserta')
-        );
+                'rules' =>
+                    'required|max_length[20]',
 
-        $hasilPelaksanaan = trim(
-            (string) $this->request->getPost(
-                'hasil_pelaksanaan'
-            )
-        );
+                'errors' => [
+                    'required' =>
+                        'Tahun wajib diisi.',
+
+                    'max_length' =>
+                        'Tahun maksimal 20 karakter.',
+                ],
+            ],
+
+            'nama_kegiatan' => [
+                'label' => 'Nama Kegiatan',
+
+                'rules' => 'required',
+
+                'errors' => [
+                    'required' =>
+                        'Nama kegiatan wajib diisi.',
+                ],
+            ],
+
+            'waktu_kegiatan' => [
+                'label' => 'Waktu Kegiatan',
+
+                'rules' => 'required',
+
+                'errors' => [
+                    'required' =>
+                        'Waktu kegiatan wajib diisi.',
+                ],
+            ],
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with(
+                    'errors',
+                    $this->validator->getErrors()
+                );
+        }
 
         $anggaran = trim(
-            (string) $this->request->getPost('anggaran')
-        );
-
-        $sumberPendanaan = trim(
             (string) $this->request->getPost(
-                'sumber_pendanaan'
+                'anggaran'
             )
         );
-
-        $linkDrive = trim(
-            (string) $this->request->getPost(
-                'link_drive'
-            )
-        );
-
-        $dataDukung = trim(
-            (string) $this->request->getPost(
-                'data_dukung'
-            )
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI
-        |--------------------------------------------------------------------------
-        */
-
-        if (!in_array($tahun, ['1', '2'], true)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Silakan pilih Tahun 1 atau Tahun 2.'
-                );
-        }
-
-        if ($namaKegiatan === '') {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Nama kegiatan wajib diisi.'
-                );
-        }
-
-        if ($waktuKegiatan === '') {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Waktu kegiatan wajib diisi.'
-                );
-        }
 
         /*
         |--------------------------------------------------------------------------
@@ -377,27 +524,76 @@ class TimPembinaRealisasi extends BaseController
         $this->realisasiModel->update(
             $id,
             [
-                'kecamatan_id'      => null,
-                'tahun'             => $tahun,
-                'nama_kegiatan'     => $namaKegiatan,
-                'waktu_kegiatan'    => $waktuKegiatan,
-                'peserta'           => $peserta,
-                'hasil_pelaksanaan' => $hasilPelaksanaan,
-                'anggaran'          => $anggaran !== ''
-                    ? $anggaran
-                    : 0,
-                'sumber_pendanaan'  => $sumberPendanaan,
-                'link_drive'        => $linkDrive,
-                'data_dukung'       => $dataDukung,
+                'kecamatan_id' => null,
+
+                'tahun' =>
+                    trim(
+                        (string) $this->request
+                            ->getPost('tahun')
+                    ),
+
+                'periode' => $periode,
+
+                'nama_kegiatan' =>
+                    trim(
+                        (string) $this->request
+                            ->getPost(
+                                'nama_kegiatan'
+                            )
+                    ),
+
+                'waktu_kegiatan' =>
+                    $this->request->getPost(
+                        'waktu_kegiatan'
+                    ),
+
+                'peserta' =>
+                    trim(
+                        (string) $this->request
+                            ->getPost('peserta')
+                    ),
+
+                'hasil_pelaksanaan' =>
+                    trim(
+                        (string) $this->request
+                            ->getPost(
+                                'hasil_pelaksanaan'
+                            )
+                    ),
+
+                'anggaran' =>
+                    $anggaran !== ''
+                        ? $anggaran
+                        : 0,
+
+                'sumber_pendanaan' =>
+                    trim(
+                        (string) $this->request
+                            ->getPost(
+                                'sumber_pendanaan'
+                            )
+                    ),
+
+                'link_drive' =>
+                    trim(
+                        (string) $this->request
+                            ->getPost('link_drive')
+                    ),
+
+                'data_dukung' =>
+                    trim(
+                        (string) $this->request
+                            ->getPost(
+                                'data_dukung'
+                            )
+                    ),
             ]
         );
 
         return redirect()
             ->to(
-                base_url(
-                    'tim-pembina/realisasi?tahun=' .
-                    $tahun
-                )
+                '/tim-pembina/realisasi/'
+                . $periode
             )
             ->with(
                 'success',
@@ -407,12 +603,21 @@ class TimPembinaRealisasi extends BaseController
 
     /*
     |--------------------------------------------------------------------------
-    | DELETE
+    | DELETE - HAPUS
     |--------------------------------------------------------------------------
     */
 
     public function delete($id)
     {
+        if (!$this->allowedRoles()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with(
+                    'error',
+                    'Anda tidak memiliki akses.'
+                );
+        }
+
         $data = $this->realisasiModel->find($id);
 
         if (!$data) {
@@ -424,16 +629,19 @@ class TimPembinaRealisasi extends BaseController
                 );
         }
 
-        $tahun = $data['tahun'] ?? '';
+        $periode =
+            $data['periode'] ?? 'ganjil';
+
+        if (!$this->validPeriode($periode)) {
+            $periode = 'ganjil';
+        }
 
         $this->realisasiModel->delete($id);
 
         return redirect()
             ->to(
-                base_url(
-                    'tim-pembina/realisasi?tahun=' .
-                    $tahun
-                )
+                '/tim-pembina/realisasi/'
+                . $periode
             )
             ->with(
                 'success',

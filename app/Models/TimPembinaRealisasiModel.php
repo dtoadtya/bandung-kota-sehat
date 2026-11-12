@@ -18,6 +18,7 @@ class TimPembinaRealisasiModel extends Model
         'user_id',
         'kecamatan_id',
         'tahun',
+        'periode',
         'nama_kegiatan',
         'waktu_kegiatan',
         'peserta',

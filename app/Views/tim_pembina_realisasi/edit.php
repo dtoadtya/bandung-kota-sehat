@@ -2,479 +2,273 @@
 
 <?= $this->section('content') ?>
 
-<style>
-    .page-wrapper {
-        background: #f4f8fc;
-        min-height: calc(100vh - 70px);
-        padding: 28px;
-    }
-
-    .page-header {
-        background: linear-gradient(135deg, #eef7ff, #e5f2ff);
-        border-left: 6px solid #1687e8;
-        border-radius: 14px;
-        padding: 28px 30px;
-        margin-bottom: 24px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .page-header::after {
-        content: "";
-        position: absolute;
-        width: 150px;
-        height: 150px;
-        right: -40px;
-        top: -70px;
-        background: rgba(22, 135, 232, 0.08);
-        border-radius: 50%;
-    }
-
-    .page-header h1 {
-        margin: 0 0 8px;
-        color: #07366d;
-        font-size: 30px;
-        font-weight: 800;
-    }
-
-    .page-header p {
-        margin: 0;
-        color: #5d7898;
-        font-size: 14px;
-    }
-
-    .btn-kembali {
-        position: absolute;
-        right: 28px;
-        top: 25px;
-        z-index: 2;
-        text-decoration: none;
-        background: #fff;
-        color: #0b4f9c;
-        border: 1px solid #cbdff2;
-        border-radius: 8px;
-        padding: 11px 18px;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .btn-kembali:hover {
-        background: #eef7ff;
-        color: #0b4f9c;
-    }
-
-    .tahun-card,
-    .form-card {
-        background: #fff;
-        border: 1px solid #d8e7f5;
-        border-radius: 14px;
-        margin-bottom: 24px;
-        overflow: hidden;
-        box-shadow: 0 3px 12px rgba(22, 82, 130, 0.05);
-    }
-
-    .tahun-header,
-    .form-header {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 22px 26px;
-        border-bottom: 1px solid #e3edf6;
-    }
-
-    .tahun-icon,
-    .form-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
-        background: #e7f3ff;
-        color: #087ff5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 21px;
-        flex-shrink: 0;
-    }
-
-    .tahun-header h2,
-    .form-header h2 {
-        margin: 0;
-        color: #07366d;
-        font-size: 20px;
-        font-weight: 800;
-    }
-
-    .tahun-header p,
-    .form-header p {
-        margin: 4px 0 0;
-        color: #6d87a4;
-        font-size: 12px;
-    }
-
-    .tahun-buttons {
-        display: flex;
-        gap: 10px;
-        padding: 20px 26px 22px;
-    }
-
-    .btn-tahun {
-        min-width: 110px;
-        padding: 11px 18px;
-        border-radius: 7px;
-        border: 1px solid #087ff5;
-        background: #087ff5;
-        color: #fff;
-        text-decoration: none;
-        text-align: center;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    .btn-tahun:hover {
-        background: #066fd6;
-        color: #fff;
-    }
-
-    .btn-tahun.active {
-        background: #07366d;
-        border-color: #07366d;
-    }
-
-    .form-body {
-        padding: 28px;
-    }
-
-    .form-group {
-        margin-bottom: 18px;
-    }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 8px;
-        color: #174b7e;
-        font-size: 13px;
-        font-weight: 700;
-    }
-
-    label span {
-        color: #e53935;
-    }
-
-    input,
-    select,
-    textarea {
-        width: 100%;
-        box-sizing: border-box;
-        border: 1px solid #c8dceb;
-        border-radius: 8px;
-        padding: 12px 13px;
-        color: #34495e;
-        background: #fff;
-        font-family: inherit;
-        font-size: 13px;
-        outline: none;
-        transition: .2s;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-        border-color: #1687e8;
-        box-shadow: 0 0 0 3px rgba(22, 135, 232, 0.10);
-    }
-
-    textarea {
-        min-height: 105px;
-        resize: vertical;
-    }
-
-    .form-help {
-        display: block;
-        margin-top: 6px;
-        color: #7992ad;
-        font-size: 11px;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 8px;
-    }
-
-    .btn-simpan {
-        border: none;
-        background: #087ff5;
-        color: #fff;
-        padding: 11px 20px;
-        border-radius: 7px;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-    }
-
-    .btn-simpan:hover {
-        background: #066fd6;
-    }
-
-    .btn-batal {
-        text-decoration: none;
-        background: #fff;
-        color: #526b84;
-        border: 1px solid #cbd9e5;
-        padding: 10px 20px;
-        border-radius: 7px;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .btn-batal:hover {
-        background: #f4f8fc;
-    }
-
-    .alert-error {
-        background: #fff0f0;
-        color: #b42318;
-        border: 1px solid #f1c0c0;
-        padding: 12px 15px;
-        border-radius: 8px;
-        margin-bottom: 18px;
-        font-size: 13px;
-    }
-
-    @media (max-width: 768px) {
-
-        .page-wrapper {
-            padding: 15px;
-        }
-
-        .page-header {
-            padding: 22px;
-        }
-
-        .page-header h1 {
-            font-size: 23px;
-            padding-right: 90px;
-        }
-
-        .btn-kembali {
-            right: 18px;
-            top: 20px;
-        }
-
-        .form-row {
-            grid-template-columns: 1fr;
-        }
-
-        .tahun-buttons {
-            flex-wrap: wrap;
-        }
-    }
-</style>
-
-<div class="page-wrapper">
+<div class="container-fluid py-4">
 
     <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <div class="page-header">
+        <div>
 
-        <a href="<?= base_url('tim-pembina/realisasi?tahun=' . ($tahun ?? '')) ?>"
-           class="btn-kembali">
-            ← &nbsp;Kembali
+            <h3 class="fw-bold mb-1">
+                Edit Realisasi Kegiatan
+            </h3>
+
+            <p class="text-muted mb-0">
+                Tim Pembina -
+                <?= esc($namaPeriode) ?>
+            </p>
+
+        </div>
+
+        <a
+            href="<?= base_url('tim-pembina/realisasi/' . $periode) ?>"
+            class="btn btn-outline-secondary"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Kembali
         </a>
 
-        <h1>
-            Edit Realisasi Kegiatan
-        </h1>
-
-        <p>
-            Tim Pembina
-        </p>
-
     </div>
 
 
-    <!-- TAHUN -->
+    <!-- ERROR -->
+    <?php if (session()->getFlashdata('errors')): ?>
 
-    <div class="tahun-card">
+        <div class="alert alert-danger">
 
-        <div class="tahun-header">
+            <ul class="mb-0">
 
-            <div class="tahun-icon">
-                ▤
-            </div>
+                <?php foreach (
+                    session()->getFlashdata('errors')
+                    as $error
+                ): ?>
 
-            <div>
+                    <li>
+                        <?= esc($error) ?>
+                    </li>
 
-                <h2>
-                    Realisasi Kegiatan
-                </h2>
+                <?php endforeach; ?>
 
-                <p>
-                    Pilih tahun realisasi kegiatan.
-                </p>
-
-            </div>
+            </ul>
 
         </div>
 
-        <div class="tahun-buttons">
-
-            <a href="<?= base_url('tim-pembina/realisasi/edit/' . $data['id'] . '?tahun=1') ?>"
-               class="btn-tahun <?= ($tahun ?? '') == '1' ? 'active' : '' ?>">
-                ▣ &nbsp; Tahun Ganjil
-            </a>
-
-            <a href="<?= base_url('tim-pembina/realisasi/edit/' . $data['id'] . '?tahun=2') ?>"
-               class="btn-tahun <?= ($tahun ?? '') == '2' ? 'active' : '' ?>">
-                ▣ &nbsp; Tahun Genap
-            </a>
-
-        </div>
-
-    </div>
+    <?php endif; ?>
 
 
     <!-- FORM -->
+    <div class="card border-0 shadow-sm">
 
-    <div class="form-card">
+        <div class="card-body p-4">
 
-        <div class="form-header">
-
-            <div class="form-icon">
-                ▥
-            </div>
-
-            <div>
-
-                <h2>
-                    Form Edit Realisasi Kegiatan
-                </h2>
-
-                <p>
-                    Perbarui data realisasi kegiatan Tim Pembina.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="form-body">
-
-            <?php if (session()->getFlashdata('error')): ?>
-
-                <div class="alert-error">
-                    <?= session()->getFlashdata('error') ?>
-                </div>
-
-            <?php endif; ?>
-
-
-            <form action="<?= base_url('tim-pembina/realisasi/update/' . $data['id']) ?>"
-                  method="post">
+            <form
+                action="<?= base_url('tim-pembina/realisasi/update/' . $data['id']) ?>"
+                method="post"
+            >
 
                 <?= csrf_field() ?>
 
 
-                <input type="hidden"
-                       name="tahun"
-                       value="<?= esc($tahun ?? $data['tahun'] ?? '') ?>">
+                <!-- PERIODE -->
+                <div class="mb-4">
+
+                    <label
+                        for="periode"
+                        class="form-label fw-semibold"
+                    >
+                        Periode <span class="text-danger">*</span>
+                    </label>
+
+                    <select
+                        name="periode"
+                        id="periode"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="ganjil"
+                            <?= old('periode', $periode) === 'ganjil'
+                                ? 'selected'
+                                : '' ?>>
+                            Tahun Ganjil
+                        </option>
+
+                        <option value="genap"
+                            <?= old('periode', $periode) === 'genap'
+                                ? 'selected'
+                                : '' ?>>
+                            Tahun Genap
+                        </option>
+
+                    </select>
+
+                    <small class="text-muted">
+                        Pilih periode realisasi kegiatan.
+                    </small>
+
+                </div>
+
+
+                <!-- TAHUN -->
+                <div class="mb-4">
+
+                    <label
+                        for="tahun"
+                        class="form-label fw-semibold"
+                    >
+                        Tahun <span class="text-danger">*</span>
+                    </label>
+
+                    <input
+                        type="number"
+                        name="tahun"
+                        id="tahun"
+                        class="form-control"
+                        min="2000"
+                        max="2100"
+                        value="<?= old(
+                            'tahun',
+                            $data['tahun'] ?? ''
+                        ) ?>"
+                        placeholder="Contoh: 2026"
+                        required
+                    >
+
+                    <small class="text-muted">
+                        Masukkan tahun realisasi kegiatan.
+                    </small>
+
+                </div>
 
 
                 <!-- NAMA KEGIATAN -->
+                <div class="mb-4">
 
-                <div class="form-group">
-
-                    <label>
-                        Nama Kegiatan <span>*</span>
+                    <label
+                        for="nama_kegiatan"
+                        class="form-label fw-semibold"
+                    >
+                        Nama Kegiatan
+                        <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text"
-                           name="nama_kegiatan"
-                           value="<?= old(
-                               'nama_kegiatan',
-                               $data['nama_kegiatan'] ?? ''
-                           ) ?>"
-                           placeholder="Masukkan nama kegiatan"
-                           required>
+                    <input
+                        type="text"
+                        name="nama_kegiatan"
+                        id="nama_kegiatan"
+                        class="form-control"
+                        value="<?= old(
+                            'nama_kegiatan',
+                            $data['nama_kegiatan'] ?? ''
+                        ) ?>"
+                        placeholder="Masukkan nama kegiatan"
+                        required
+                    >
 
                 </div>
 
 
-                <div class="form-row">
+                <!-- WAKTU & PESERTA -->
+                <div class="row g-3 mb-4">
 
-                    <div class="form-group">
+                    <div class="col-md-6">
 
-                        <label>
-                            Waktu Kegiatan <span>*</span>
+                        <label
+                            for="waktu_kegiatan"
+                            class="form-label fw-semibold"
+                        >
+                            Waktu Kegiatan
+                            <span class="text-danger">*</span>
                         </label>
 
-                        <input type="date"
-                               name="waktu_kegiatan"
-                               value="<?= old(
-                                   'waktu_kegiatan',
-                                   $data['waktu_kegiatan'] ?? ''
-                               ) ?>"
-                               required>
+                        <input
+                            type="date"
+                            name="waktu_kegiatan"
+                            id="waktu_kegiatan"
+                            class="form-control"
+                            value="<?= old(
+                                'waktu_kegiatan',
+                                $data['waktu_kegiatan'] ?? ''
+                            ) ?>"
+                            required
+                        >
+
+                        <small class="text-muted">
+                            Pilih tanggal pelaksanaan kegiatan.
+                        </small>
 
                     </div>
 
+                    <div class="col-md-6">
 
-                    <div class="form-group">
-
-                        <label>
+                        <label
+                            for="peserta"
+                            class="form-label fw-semibold"
+                        >
                             Peserta
                         </label>
 
-                        <input type="text"
-                               name="peserta"
-                               value="<?= old(
-                                   'peserta',
-                                   $data['peserta'] ?? ''
-                               ) ?>"
-                               placeholder="Jumlah atau uraian peserta">
+                        <input
+                            type="text"
+                            name="peserta"
+                            id="peserta"
+                            class="form-control"
+                            value="<?= old(
+                                'peserta',
+                                $data['peserta'] ?? ''
+                            ) ?>"
+                            placeholder="Jumlah atau uraian peserta"
+                        >
+
+                        <small class="text-muted">
+                            Contoh: 25 orang / Tim Pembina.
+                        </small>
 
                     </div>
 
                 </div>
 
 
-                <!-- HASIL -->
+                <!-- HASIL PELAKSANAAN -->
+                <div class="mb-4">
 
-                <div class="form-group">
-
-                    <label>
+                    <label
+                        for="hasil_pelaksanaan"
+                        class="form-label fw-semibold"
+                    >
                         Hasil Pelaksanaan Kegiatan
                     </label>
 
-                    <textarea name="hasil_pelaksanaan"
-                              placeholder="Tuliskan hasil pelaksanaan kegiatan..."><?= old(
-                                  'hasil_pelaksanaan',
-                                  $data['hasil_pelaksanaan'] ?? ''
-                              ) ?></textarea>
+                    <textarea
+                        name="hasil_pelaksanaan"
+                        id="hasil_pelaksanaan"
+                        class="form-control"
+                        rows="3"
+                        placeholder="Tuliskan hasil pelaksanaan kegiatan..."
+                    ><?= old(
+                        'hasil_pelaksanaan',
+                        $data['hasil_pelaksanaan'] ?? ''
+                    ) ?></textarea>
 
                 </div>
 
 
-                <div class="form-row">
+                <!-- ANGGARAN & SUMBER PENDANAAN -->
+                <div class="row g-3 mb-4">
 
-                    <!-- ANGGARAN -->
+                    <div class="col-md-6">
 
-                    <div class="form-group">
-
-                        <label>
+                        <label
+                            for="anggaran"
+                            class="form-label fw-semibold"
+                        >
                             Anggaran Pelaksanaan (Rp)
                         </label>
 
                         <?php
 
-                        $anggaranValue = $data['anggaran'] ?? '';
+                        $anggaranValue =
+                            $data['anggaran'] ?? '';
 
                         if (
                             $anggaranValue !== ''
@@ -490,32 +284,39 @@
 
                         ?>
 
-                        <input type="text"
-                               name="anggaran"
-                               id="anggaran"
-                               value="<?= old(
-                                   'anggaran',
-                                   $anggaranValue
-                               ) ?>"
-                               placeholder="Contoh: 5.000.000"
-                               inputmode="numeric">
+                        <input
+                            type="text"
+                            name="anggaran"
+                            id="anggaran"
+                            class="form-control"
+                            value="<?= old(
+                                'anggaran',
+                                $anggaranValue
+                            ) ?>"
+                            placeholder="Contoh: 5.000.000"
+                            inputmode="numeric"
+                        >
 
-                        <small class="form-help">
+                        <small class="text-muted">
                             Contoh penulisan: 5.000.000
                         </small>
 
                     </div>
 
+                    <div class="col-md-6">
 
-                    <!-- SUMBER PENDANAAN -->
-
-                    <div class="form-group">
-
-                        <label>
+                        <label
+                            for="sumber_pendanaan"
+                            class="form-label fw-semibold"
+                        >
                             Sumber Pendanaan
                         </label>
 
-                        <select name="sumber_pendanaan">
+                        <select
+                            name="sumber_pendanaan"
+                            id="sumber_pendanaan"
+                            class="form-select"
+                        >
 
                             <option value="">
                                 -- Pilih Sumber Pendanaan --
@@ -558,55 +359,77 @@
                 </div>
 
 
-                <!-- LINK -->
+                <!-- LINK DRIVE -->
+                <div class="mb-4">
 
-                <div class="form-group">
-
-                    <label>
+                    <label
+                        for="link_drive"
+                        class="form-label fw-semibold"
+                    >
                         Link Drive/Cloud Data Dukung
                     </label>
 
-                    <input type="url"
-                           name="link_drive"
-                           value="<?= old(
-                               'link_drive',
-                               $data['link_drive'] ?? ''
-                           ) ?>"
-                           placeholder="https://drive.google.com/...">
+                    <input
+                        type="url"
+                        name="link_drive"
+                        id="link_drive"
+                        class="form-control"
+                        value="<?= old(
+                            'link_drive',
+                            $data['link_drive'] ?? ''
+                        ) ?>"
+                        placeholder="https://drive.google.com/..."
+                    >
+
+                    <small class="text-muted">
+                        Masukkan tautan Google Drive atau
+                        penyimpanan cloud lainnya.
+                    </small>
 
                 </div>
 
 
                 <!-- DATA DUKUNG -->
+                <div class="mb-4">
 
-                <div class="form-group">
-
-                    <label>
+                    <label
+                        for="data_dukung"
+                        class="form-label fw-semibold"
+                    >
                         Keterangan Data Dukung
                     </label>
 
-                    <textarea name="data_dukung"
-                              placeholder="Tuliskan keterangan data dukung..."><?= old(
-                                  'data_dukung',
-                                  $data['data_dukung'] ?? ''
-                              ) ?></textarea>
+                    <textarea
+                        name="data_dukung"
+                        id="data_dukung"
+                        class="form-control"
+                        rows="3"
+                        placeholder="Tuliskan keterangan data dukung atau dokumen pendukung..."
+                    ><?= old(
+                        'data_dukung',
+                        $data['data_dukung'] ?? ''
+                    ) ?></textarea>
 
                 </div>
 
 
-                <!-- ACTION -->
+                <!-- BUTTON -->
+                <div class="d-flex justify-content-end gap-2">
 
-                <div class="form-actions">
-
-                    <button type="submit"
-                            class="btn-simpan">
-                        ✓ &nbsp;Simpan Perubahan
-                    </button>
-
-                    <a href="<?= base_url('tim-pembina/realisasi?tahun=' . ($tahun ?? '')) ?>"
-                       class="btn-batal">
+                    <a
+                        href="<?= base_url('tim-pembina/realisasi/' . $periode) ?>"
+                        class="btn btn-light border"
+                    >
                         Batal
                     </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        <i class="bi bi-check-lg"></i>
+                        Simpan Perubahan
+                    </button>
 
                 </div>
 
