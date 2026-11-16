@@ -600,6 +600,16 @@ $routes->group(
         );
 
         $routes->get(
+            'realisasi/ganjil',
+            'ForumBandungSehatRealisasi::periode/ganjil'
+        );
+
+        $routes->get(
+            'realisasi/genap',
+            'ForumBandungSehatRealisasi::periode/genap'
+        );
+
+        $routes->get(
             'realisasi/create',
             'ForumBandungSehatRealisasi::create'
         );
@@ -1087,6 +1097,16 @@ $routes->group(
         $routes->get(
             '/',
             'PokjaKelurahanSehatRealisasi::index'
+        );
+
+        $routes->get(
+            'ganjil',
+            'PokjaKelurahanSehatRealisasi::periode/ganjil'
+        );
+
+        $routes->get(
+            'genap',
+            'PokjaKelurahanSehatRealisasi::periode/genap'
         );
 
         $routes->get(

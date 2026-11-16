@@ -317,10 +317,10 @@
     <div class="page-header">
 
         <a href="<?= base_url(
-            'pokja-kelurahan-sehat/realisasi'
-            . (!empty($data['tahun'])
-                ? '?tahun=' . urlencode($data['tahun'])
-                : '')
+            'pokja-kelurahan-sehat/realisasi/'
+            . (strtolower($data['tahun'] ?? '') === 'genap'
+                ? 'genap'
+                : 'ganjil')
         ) ?>"
            class="btn-kembali">
             ← &nbsp;Kembali
@@ -341,48 +341,6 @@
         </div>
 
     <?php endif; ?>
-
-    <div class="tahun-card">
-
-        <div class="tahun-header">
-
-            <div class="tahun-icon">▤</div>
-
-            <div>
-
-                <h2>Realisasi Kegiatan</h2>
-
-                <p>
-                    Pilih tahun untuk mengubah periode kegiatan.
-                </p>
-
-            </div>
-
-        </div>
-
-        <div class="tahun-buttons">
-
-            <a href="<?= base_url(
-                'pokja-kelurahan-sehat/realisasi/create?tahun=Ganjil'
-            ) ?>"
-               class="btn-tahun <?= ($data['tahun'] ?? '') == 'Ganjil'
-                    ? 'active'
-                    : '' ?>">
-                ▣ &nbsp; Tahun Ganjil
-            </a>
-
-            <a href="<?= base_url(
-                'pokja-kelurahan-sehat/realisasi/create?tahun=Genap'
-            ) ?>"
-               class="btn-tahun <?= ($data['tahun'] ?? '') == 'Genap'
-                    ? 'active'
-                    : '' ?>">
-                ▣ &nbsp; Tahun Genap
-            </a>
-
-        </div>
-
-    </div>
 
     <div class="form-card">
 
@@ -415,61 +373,6 @@
                 <div class="form-group">
 
                     <label>
-                        Kelurahan <span>*</span>
-                    </label>
-
-                    <select name="kelurahan_id" required>
-
-                        <option value="">
-                            -- Pilih Kelurahan --
-                        </option>
-
-                        <?php if (!empty($kelurahanList)): ?>
-
-                            <?php foreach (
-                                $kelurahanList
-                                as $kelurahan
-                            ): ?>
-
-                                <option
-                                    value="<?= esc(
-                                        $kelurahan['id']
-                                    ) ?>"
-                                    <?= ($data['kelurahan_id'] ?? '')
-                                        == $kelurahan['id']
-                                        ? 'selected'
-                                        : '' ?>
-                                >
-                                    <?= esc(
-                                        $kelurahan['nama_kelurahan']
-                                    ) ?>
-
-                                    <?php if (
-                                        !empty(
-                                            $kelurahan['nama_kecamatan']
-                                        )
-                                    ): ?>
-
-                                        -
-                                        <?= esc(
-                                            $kelurahan['nama_kecamatan']
-                                        ) ?>
-
-                                    <?php endif; ?>
-
-                                </option>
-
-                            <?php endforeach; ?>
-
-                        <?php endif; ?>
-
-                    </select>
-
-                </div>
-
-                <div class="form-group">
-
-                    <label>
                         Tahun <span>*</span>
                     </label>
 
@@ -484,7 +387,7 @@
                            required>
 
                     <small class="form-help">
-                        Pilih Tahun Ganjil atau Tahun Genap pada bagian atas.
+                        Tahun otomatis sesuai periode yang dipilih.
                     </small>
 
                 </div>
@@ -670,7 +573,10 @@
                     </button>
 
                     <a href="<?= base_url(
-                        'pokja-kelurahan-sehat/realisasi'
+                        'pokja-kelurahan-sehat/realisasi/'
+                        . (strtolower($data['tahun'] ?? '') === 'genap'
+                            ? 'genap'
+                            : 'ganjil')
                     ) ?>"
                        class="btn-batal">
                         Batal

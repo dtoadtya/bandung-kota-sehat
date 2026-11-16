@@ -25,7 +25,7 @@ class ForumBandungSehatRealisasi extends BaseController
 
     /*
     |--------------------------------------------------------------------------
-    | INDEX
+    | INDEX - HALAMAN PILIH PERIODE
     |--------------------------------------------------------------------------
     */
     public function index()
@@ -36,27 +36,66 @@ class ForumBandungSehatRealisasi extends BaseController
                 ->with('error', 'Anda tidak memiliki akses.');
         }
 
-        $tahun = $this->request->getGet('tahun');
-
-        $builder = $this->filterByUser($this->realisasiModel)
-            ->orderBy('tahun', 'ASC')
-            ->orderBy('waktu_kegiatan', 'DESC')
-            ->orderBy('id', 'DESC');
-
-        if ($tahun !== null && $tahun !== '') {
-            $builder->where('tahun', $tahun);
-        }
-
-        $data = $builder->findAll();
-
         return view(
             'forum_bandung_sehat_realisasi/index',
             [
                 'title' => 'Realisasi Kegiatan Forum Bandung Sehat',
-                'data'  => $data,
-                'tahun' => $tahun,
             ]
         );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | PERIODE - DAFTAR DATA
+    |--------------------------------------------------------------------------
+    */
+    public function periode($periode)
+    {
+        if (!$this->isAdmin()) {
+            return redirect()
+                ->to('/dashboard')
+                ->with('error', 'Anda tidak memiliki akses.');
+        }
+
+        if (!in_array($periode, ['ganjil', 'genap'], true)) {
+            return redirect()
+                ->to('/forum-bandung-sehat/realisasi')
+                ->with('error', 'Periode tidak valid.');
+        }
+
+        $tahun = $periode === 'ganjil' ? 'Ganjil' : 'Genap';
+
+        $data = $this->filterByUser($this->realisasiModel)
+            ->where('tahun', $tahun)
+            ->orderBy('waktu_kegiatan', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        return view(
+            'forum_bandung_sehat_realisasi/periode',
+            [
+                'title' => 'Realisasi Kegiatan Forum Bandung Sehat - '
+                    . 'Tahun ' . $tahun,
+
+                'periode' => $periode,
+                'tahun'   => $tahun,
+                'data'    => $data,
+            ]
+        );
+    }
+
+    /**
+     * URL periode dari nilai tahun.
+     */
+    private function periodeDariTahun($tahun): string
+    {
+        $nilai = strtolower(trim((string) $tahun));
+
+        if (!in_array($nilai, ['ganjil', 'genap'], true)) {
+            return '';
+        }
+
+        return '/' . $nilai;
     }
 
     /*
@@ -74,8 +113,13 @@ class ForumBandungSehatRealisasi extends BaseController
 
         $tahun = $this->request->getGet('tahun');
 
-        if (!in_array($tahun, ['1', '2'], true)) {
-            $tahun = '';
+        if (!in_array($tahun, ['Ganjil', 'Genap'], true)) {
+            return redirect()
+                ->to('/forum-bandung-sehat/realisasi')
+                ->with(
+                    'error',
+                    'Pilih terlebih dahulu Tahun Ganjil atau Tahun Genap.'
+                );
         }
 
         return view(
@@ -102,12 +146,12 @@ class ForumBandungSehatRealisasi extends BaseController
 
         $rules = [
             'tahun' => [
-                'rules' => 'required|in_list[1,2]',
+                'rules' => 'required|in_list[Ganjil,Genap]',
                 'errors' => [
                     'required' =>
                         'Tahun wajib dipilih.',
                     'in_list' =>
-                        'Tahun hanya dapat dipilih Tahun 1 atau Tahun 2.',
+                        'Tahun hanya dapat dipilih Tahun Ganjil atau Tahun Genap.',
                 ],
             ],
 
@@ -216,8 +260,8 @@ class ForumBandungSehatRealisasi extends BaseController
 
         return redirect()
             ->to(
-                '/forum-bandung-sehat/realisasi?tahun='
-                . $data['tahun']
+                '/forum-bandung-sehat/realisasi'
+                . $this->periodeDariTahun($data['tahun'])
             )
             ->with(
                 'success',
@@ -284,12 +328,12 @@ class ForumBandungSehatRealisasi extends BaseController
 
         $rules = [
             'tahun' => [
-                'rules' => 'required|in_list[1,2]',
+                'rules' => 'required|in_list[Ganjil,Genap]',
                 'errors' => [
                     'required' =>
                         'Tahun wajib dipilih.',
                     'in_list' =>
-                        'Tahun hanya dapat dipilih Tahun 1 atau Tahun 2.',
+                        'Tahun hanya dapat dipilih Tahun Ganjil atau Tahun Genap.',
                 ],
             ],
 
@@ -399,8 +443,8 @@ class ForumBandungSehatRealisasi extends BaseController
 
         return redirect()
             ->to(
-                '/forum-bandung-sehat/realisasi?tahun='
-                . $data['tahun']
+                '/forum-bandung-sehat/realisasi'
+                . $this->periodeDariTahun($data['tahun'])
             )
             ->with(
                 'success',
@@ -438,8 +482,8 @@ class ForumBandungSehatRealisasi extends BaseController
 
         return redirect()
             ->to(
-                '/forum-bandung-sehat/realisasi?tahun='
-                . $tahun
+                '/forum-bandung-sehat/realisasi'
+                . $this->periodeDariTahun($tahun)
             )
             ->with(
                 'success',

@@ -324,46 +324,6 @@
     <?php endif; ?>
 
 
-    <div class="tahun-card">
-
-        <div class="tahun-header">
-
-            <div class="tahun-icon">
-                ▤
-            </div>
-
-            <div>
-
-                <h2>
-                    Realisasi Kegiatan
-                </h2>
-
-                <p>
-                    Kelola realisasi kegiatan Forum Bandung Sehat berdasarkan tahun kegiatan.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="tahun-buttons">
-
-            <a href="<?= base_url('forum-bandung-sehat/realisasi/create?tahunGanjil') ?>"
-               class="btn-tahun <?= ($tahun ?? '') === 'Ganjil' ? 'active' : '' ?>">
-                ▣ &nbsp;Tahun Ganjil
-            </a>
-
-            <a href="<?= base_url('forum-bandung-sehat/realisasi/create?tahunGenap') ?>"
-               class="btn-tahun <?= ($tahun ?? '') === 'Genap' ? 'active' : '' ?>">
-                ▣ &nbsp;Tahun Genap
-            </a>
-
-        </div>
-
-    </div>
-
-
     <div class="form-card">
 
         <div class="form-header">
@@ -564,7 +524,10 @@
                     </button>
 
                     <a href="<?= base_url(
-                        'forum-bandung-sehat/realisasi'
+                        'forum-bandung-sehat/realisasi/'
+                        . (strtolower($tahun ?? '') === 'genap'
+                            ? 'genap'
+                            : 'ganjil')
                     ) ?>"
                        class="btn-batal">
                         Batal

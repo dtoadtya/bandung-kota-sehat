@@ -249,7 +249,12 @@
 
     <div class="page-header">
 
-        <a href="<?= base_url('forum-bandung-sehat/realisasi') ?>"
+        <a href="<?= base_url(
+            'forum-bandung-sehat/realisasi/'
+            . (strtolower($data['tahun'] ?? '') === 'genap'
+                ? 'genap'
+                : 'ganjil')
+        ) ?>"
            class="btn-kembali">
             ← &nbsp;Kembali
         </a>
@@ -295,54 +300,6 @@
     <?php endif; ?>
 
 
-    <div class="tahun-card">
-
-        <div class="tahun-header">
-
-            <div class="tahun-icon">
-                ▤
-            </div>
-
-            <div>
-
-                <h2>
-                    Realisasi Kegiatan
-                </h2>
-
-                <p>
-                    Pilih periode realisasi kegiatan.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="tahun-buttons">
-
-            <a href="<?= base_url(
-                'forum-bandung-sehat/realisasi/create?tahunGanjil'
-            ) ?>"
-               class="btn-tahun <?= ($data['tahun'] ?? '') === 'Ganjil'
-                    ? 'active'
-                    : '' ?>">
-                ▣ &nbsp;Tahun Ganjil
-            </a>
-
-            <a href="<?= base_url(
-                'forum-bandung-sehat/realisasi/create?tahunGenap'
-            ) ?>"
-               class="btn-tahun <?= ($data['tahun'] ?? '') === 'Genap'
-                    ? 'active'
-                    : '' ?>">
-                ▣ &nbsp;Tahun Genap
-            </a>
-
-        </div>
-
-    </div>
-
-
     <div class="form-card">
 
         <div class="form-header">
@@ -383,33 +340,19 @@
                         Tahun <span>*</span>
                     </label>
 
-                    <select name="tahun" required>
+                    <input type="text"
+                           name="tahun"
+                           id="tahun"
+                           value="<?= old(
+                               'tahun',
+                               $data['tahun'] ?? ''
+                           ) ?>"
+                           readonly
+                           required>
 
-                        <option value="">
-                            -- Pilih Tahun --
-                        </option>
-
-                        <option value="Ganjil"
-                            <?= old(
-                                'tahun',
-                                $data['tahun'] ?? ''
-                            ) === 'Ganjil'
-                                ? 'selected'
-                                : '' ?>>
-                            Tahun Ganjil
-                        </option>
-
-                        <option value="Ganjil"
-                            <?= old(
-                                'tahun',
-                                $data['tahun'] ?? ''
-                            ) === 'Genap'
-                                ? 'selected'
-                                : '' ?>>
-                            Tahun Genap
-                        </option>
-
-                    </select>
+                    <small class="form-help">
+                        Tahun otomatis sesuai periode yang dipilih.
+                    </small>
 
                 </div>
 
@@ -609,7 +552,10 @@
                     </button>
 
                     <a href="<?= base_url(
-                        'forum-bandung-sehat/realisasi'
+                        'forum-bandung-sehat/realisasi/'
+                        . (strtolower($data['tahun'] ?? '') === 'genap'
+                            ? 'genap'
+                            : 'ganjil')
                     ) ?>"
                        class="btn-batal">
                         Batal
