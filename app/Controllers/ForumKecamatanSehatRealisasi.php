@@ -72,22 +72,11 @@ class ForumKecamatanSehatRealisasi extends BaseController
 
     /**
      * Kecamatan untuk data realisasi:
-     * admin memilih melalui form, user kecamatan
-     * diambil dari akun yang login.
+     * diambil dari akun kecamatan yang login.
      */
-    private function kecamatanIdFromRequest(): ?int
+    private function kecamatanUser(): ?array
     {
-        if ($this->isAdminUser()) {
-            $posted = $this->request->getPost('kecamatan_id');
-
-            if (!empty($posted)) {
-                return (int) $posted;
-            }
-        }
-
-        $kecamatan = $this->userKecamatan();
-
-        return $kecamatan ? (int) $kecamatan['id'] : null;
+        return $this->userKecamatan();
     }
 
     public function create()
@@ -116,20 +105,55 @@ class ForumKecamatanSehatRealisasi extends BaseController
                 ->with('error', 'Pilih terlebih dahulu Tahun Ganjil atau Tahun Genap.');
         }
 
-        return view('forum_kecamatan_sehat_realisasi/create', [
+        $kecamatan = $this->kecamatanUser();
+        $isAdmin = $this->isAdminUser();
+
+        if (!$kecamatan && !$isAdmin) {
+            return redirect()
+                ->to('/forum-kecamatan-sehat/realisasi')
+                ->with(
+                    'error',
+                    'Hanya akun kecamatan yang dapat menambah data realisasi kegiatan.'
+                );
+        }
+
+        $viewData = [
             'title' => 'Tambah Realisasi Kegiatan',
             'periode' => $periode,
             'tahun' => $tahun,
-            'kecamatanList' => $this->kecamatanModel
+            'isAdmin' => $isAdmin,
+        ];
+
+        /*
+         * Admin tidak memiliki kecamatan,
+         * jadi admin memilih melalui dropdown.
+         */
+        if ($isAdmin) {
+            $viewData['kecamatanList'] = $this->kecamatanModel
                 ->orderBy('nama_kecamatan', 'ASC')
-                ->findAll()
-        ]);
+                ->findAll();
+        }
+
+        return view(
+            'forum_kecamatan_sehat_realisasi/create',
+            $viewData
+        );
     }
 
     public function store()
     {
-        if (!$this->validate([
-            'kecamatan_id' => 'permit_empty|integer',
+        $kecamatan = $this->kecamatanUser();
+        $isAdmin = $this->isAdminUser();
+
+        if (!$kecamatan && !$isAdmin) {
+            return redirect()->back()
+                ->with(
+                    'error',
+                    'Hanya akun kecamatan yang dapat menambah data realisasi kegiatan.'
+                );
+        }
+
+        $rules = [
             'tahun' => 'required|max_length[50]',
             'nama_kegiatan' => 'required|max_length[255]',
             'waktu_kegiatan' => 'required|valid_date[Y-m-d]',
@@ -139,18 +163,25 @@ class ForumKecamatanSehatRealisasi extends BaseController
             'sumber_pendanaan' => 'permit_empty|max_length[100]',
             'link_drive' => 'permit_empty|valid_url',
             'data_dukung' => 'permit_empty'
-        ])) {
+        ];
+
+        /*
+         * Admin memilih kecamatan melalui form.
+         */
+        if ($isAdmin) {
+            $rules['kecamatan_id'] = 'required|integer';
+        }
+
+        if (!$this->validate($rules)) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', implode('<br>', $this->validator->getErrors()));
         }
 
-        $kecamatanId = $this->kecamatanIdFromRequest();
-
-        if ($kecamatanId === null) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Kecamatan akun pengguna tidak ditemukan.');
+        if ($isAdmin) {
+            $kecamatanId = (int) $this->request->getPost('kecamatan_id');
+        } else {
+            $kecamatanId = (int) $kecamatan['id'];
         }
 
         $anggaran = str_replace('.', '', $this->request->getPost('anggaran'));
@@ -186,15 +217,36 @@ class ForumKecamatanSehatRealisasi extends BaseController
                 ->with('error', 'Data tidak ditemukan.');
         }
 
-        return view('forum_kecamatan_sehat_realisasi/edit', [
+        $kecamatan = $this->kecamatanUser();
+        $isAdmin = $this->isAdminUser();
+
+        if (!$kecamatan && !$isAdmin) {
+            return redirect()
+                ->to('/forum-kecamatan-sehat/realisasi')
+                ->with(
+                    'error',
+                    'Hanya akun kecamatan yang dapat mengubah data realisasi kegiatan.'
+                );
+        }
+
+        $viewData = [
             'title' => 'Edit Realisasi Kegiatan',
             'data' => $data,
             'tahun' => $data['tahun'] ?? '',
             'periode' => $this->periodeFromTahun($data['tahun'] ?? ''),
-            'kecamatanList' => $this->kecamatanModel
+            'isAdmin' => $isAdmin,
+        ];
+
+        if ($isAdmin) {
+            $viewData['kecamatanList'] = $this->kecamatanModel
                 ->orderBy('nama_kecamatan', 'ASC')
-                ->findAll()
-        ]);
+                ->findAll();
+        }
+
+        return view(
+            'forum_kecamatan_sehat_realisasi/edit',
+            $viewData
+        );
     }
 
     public function update($id)
@@ -206,8 +258,19 @@ class ForumKecamatanSehatRealisasi extends BaseController
                 ->with('error', 'Data tidak ditemukan.');
         }
 
-        if (!$this->validate([
-            'kecamatan_id' => 'permit_empty|integer',
+        $kecamatan = $this->kecamatanUser();
+        $isAdmin = $this->isAdminUser();
+
+        if (!$kecamatan && !$isAdmin) {
+            return redirect()
+                ->to('/forum-kecamatan-sehat/realisasi')
+                ->with(
+                    'error',
+                    'Hanya akun kecamatan yang dapat mengubah data realisasi kegiatan.'
+                );
+        }
+
+        $rules = [
             'tahun' => 'required|max_length[50]',
             'nama_kegiatan' => 'required|max_length[255]',
             'waktu_kegiatan' => 'required|valid_date[Y-m-d]',
@@ -217,19 +280,22 @@ class ForumKecamatanSehatRealisasi extends BaseController
             'sumber_pendanaan' => 'permit_empty|max_length[100]',
             'link_drive' => 'permit_empty|valid_url',
             'data_dukung' => 'permit_empty'
-        ])) {
+        ];
+
+        if ($isAdmin) {
+            $rules['kecamatan_id'] = 'required|integer';
+        }
+
+        if (!$this->validate($rules)) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', implode('<br>', $this->validator->getErrors()));
         }
 
-        $kecamatanId = $this->kecamatanIdFromRequest()
-            ?? (int) ($data['kecamatan_id'] ?? 0);
-
-        if ($kecamatanId <= 0) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Kecamatan akun pengguna tidak ditemukan.');
+        if ($isAdmin) {
+            $kecamatanId = (int) $this->request->getPost('kecamatan_id');
+        } else {
+            $kecamatanId = (int) $kecamatan['id'];
         }
 
         $anggaran = str_replace('.', '', $this->request->getPost('anggaran'));

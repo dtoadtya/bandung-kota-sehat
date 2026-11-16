@@ -391,6 +391,63 @@
 
                 </div>
 
+                <?php if (!empty($isAdmin)) : ?>
+
+                    <div class="form-group">
+
+                        <label>
+                            Kelurahan <span>*</span>
+                        </label>
+
+                        <select name="kelurahan_id"
+                                id="kelurahan_id"
+                                required>
+
+                            <option value="">
+                                -- Pilih Kelurahan --
+                            </option>
+
+                            <?php if (!empty($kelurahanList)) : ?>
+
+                                <?php foreach ($kelurahanList as $kelurahan) : ?>
+
+                                    <option
+                                        value="<?= esc($kelurahan['id']) ?>"
+                                        <?= old('kelurahan_id') == $kelurahan['id']
+                                            ? 'selected'
+                                            : ''
+                                        ?>
+                                    >
+
+                                        <?= esc(
+                                            $kelurahan['nama_kelurahan']
+                                        ) ?>
+
+                                        <?php if (!empty($kelurahan['nama_kecamatan'])) : ?>
+
+                                            -
+                                            <?= esc(
+                                                $kelurahan['nama_kecamatan']
+                                            ) ?>
+
+                                        <?php endif; ?>
+
+                                    </option>
+
+                                <?php endforeach; ?>
+
+                            <?php endif; ?>
+
+                        </select>
+
+                        <small class="form-help">
+                            Pilih kelurahan pelaksana kegiatan.
+                        </small>
+
+                    </div>
+
+                <?php endif; ?>
+
                 <div class="form-group">
 
                     <label>

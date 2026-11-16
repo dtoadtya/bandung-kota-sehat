@@ -96,8 +96,9 @@ class PokjaKelurahanSehatRealisasi extends BaseController
         }
 
         $kelurahan = $this->userKelurahan();
+        $isAdmin = $this->isAdminUser();
 
-        if (!$kelurahan) {
+        if (!$kelurahan && !$isAdmin) {
             return redirect()
                 ->to('/pokja-kelurahan-sehat/realisasi')
                 ->with(
@@ -106,17 +107,41 @@ class PokjaKelurahanSehatRealisasi extends BaseController
                 );
         }
 
-        return view('pokja_kelurahan_sehat_realisasi/create', [
+        $viewData = [
             'title' => 'Tambah Realisasi Kegiatan',
             'tahun' => $tahun,
-        ]);
+            'isAdmin' => $isAdmin,
+        ];
+
+        /*
+         * Admin tidak memiliki kelurahan,
+         * jadi admin memilih melalui dropdown.
+         */
+        if ($isAdmin) {
+            $viewData['kelurahanList'] = $this->kelurahanModel
+                ->select('kelurahan.*, kecamatan.nama_kecamatan')
+                ->join(
+                    'kecamatan',
+                    'kecamatan.id = kelurahan.kecamatan_id',
+                    'left'
+                )
+                ->orderBy('kecamatan.nama_kecamatan', 'ASC')
+                ->orderBy('kelurahan.nama_kelurahan', 'ASC')
+                ->findAll();
+        }
+
+        return view(
+            'pokja_kelurahan_sehat_realisasi/create',
+            $viewData
+        );
     }
 
     public function store()
     {
         $kelurahan = $this->userKelurahan();
+        $isAdmin = $this->isAdminUser();
 
-        if (!$kelurahan) {
+        if (!$kelurahan && !$isAdmin) {
             return redirect()
                 ->to('/pokja-kelurahan-sehat/realisasi')
                 ->with(
@@ -125,7 +150,7 @@ class PokjaKelurahanSehatRealisasi extends BaseController
                 );
         }
 
-        if (!$this->validate([
+        $rules = [
             'tahun' => 'required|in_list[Ganjil,Genap]',
             'nama_kegiatan' => 'required|max_length[255]',
             'waktu_kegiatan' => 'required|valid_date[Y-m-d]',
@@ -135,17 +160,32 @@ class PokjaKelurahanSehatRealisasi extends BaseController
             'sumber_pendanaan' => 'permit_empty|max_length[100]',
             'link_drive' => 'permit_empty|valid_url',
             'data_dukung' => 'permit_empty'
-        ])) {
+        ];
+
+        /*
+         * Admin memilih kelurahan melalui form.
+         */
+        if ($isAdmin) {
+            $rules['kelurahan_id'] = 'required|integer';
+        }
+
+        if (!$this->validate($rules)) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', implode('<br>', $this->validator->getErrors()));
+        }
+
+        if ($isAdmin) {
+            $kelurahanId = (int) $this->request->getPost('kelurahan_id');
+        } else {
+            $kelurahanId = (int) $kelurahan['id'];
         }
 
         $anggaran = str_replace('.', '', $this->request->getPost('anggaran'));
 
         $this->model->insert([
             'user_id' => $this->currentUserId(),
-            'kelurahan_id' => $kelurahan['id'],
+            'kelurahan_id' => $kelurahanId,
             'tahun' => $this->request->getPost('tahun'),
             'nama_kegiatan' => $this->request->getPost('nama_kegiatan'),
             'waktu_kegiatan' => $this->request->getPost('waktu_kegiatan'),
@@ -173,8 +213,9 @@ class PokjaKelurahanSehatRealisasi extends BaseController
         }
 
         $kelurahan = $this->userKelurahan();
+        $isAdmin = $this->isAdminUser();
 
-        if (!$kelurahan) {
+        if (!$kelurahan && !$isAdmin) {
             return redirect()
                 ->to('/pokja-kelurahan-sehat/realisasi')
                 ->with(
@@ -183,11 +224,30 @@ class PokjaKelurahanSehatRealisasi extends BaseController
                 );
         }
 
-        return view('pokja_kelurahan_sehat_realisasi/edit', [
+        $viewData = [
             'title' => 'Edit Realisasi Kegiatan',
             'data' => $data,
             'tahun' => $data['tahun'] ?? '',
-        ]);
+            'isAdmin' => $isAdmin,
+        ];
+
+        if ($isAdmin) {
+            $viewData['kelurahanList'] = $this->kelurahanModel
+                ->select('kelurahan.*, kecamatan.nama_kecamatan')
+                ->join(
+                    'kecamatan',
+                    'kecamatan.id = kelurahan.kecamatan_id',
+                    'left'
+                )
+                ->orderBy('kecamatan.nama_kecamatan', 'ASC')
+                ->orderBy('kelurahan.nama_kelurahan', 'ASC')
+                ->findAll();
+        }
+
+        return view(
+            'pokja_kelurahan_sehat_realisasi/edit',
+            $viewData
+        );
     }
 
     public function update($id)
@@ -200,8 +260,9 @@ class PokjaKelurahanSehatRealisasi extends BaseController
         }
 
         $kelurahan = $this->userKelurahan();
+        $isAdmin = $this->isAdminUser();
 
-        if (!$kelurahan) {
+        if (!$kelurahan && !$isAdmin) {
             return redirect()
                 ->to('/pokja-kelurahan-sehat/realisasi')
                 ->with(
@@ -210,7 +271,7 @@ class PokjaKelurahanSehatRealisasi extends BaseController
                 );
         }
 
-        if (!$this->validate([
+        $rules = [
             'tahun' => 'required|in_list[Ganjil,Genap]',
             'nama_kegiatan' => 'required|max_length[255]',
             'waktu_kegiatan' => 'required|valid_date[Y-m-d]',
@@ -220,16 +281,28 @@ class PokjaKelurahanSehatRealisasi extends BaseController
             'sumber_pendanaan' => 'permit_empty|max_length[100]',
             'link_drive' => 'permit_empty|valid_url',
             'data_dukung' => 'permit_empty'
-        ])) {
+        ];
+
+        if ($isAdmin) {
+            $rules['kelurahan_id'] = 'required|integer';
+        }
+
+        if (!$this->validate($rules)) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', implode('<br>', $this->validator->getErrors()));
         }
 
+        if ($isAdmin) {
+            $kelurahanId = (int) $this->request->getPost('kelurahan_id');
+        } else {
+            $kelurahanId = (int) $kelurahan['id'];
+        }
+
         $anggaran = str_replace('.', '', $this->request->getPost('anggaran'));
 
         $this->model->update($id, [
-            'kelurahan_id' => $kelurahan['id'],
+            'kelurahan_id' => $kelurahanId,
             'tahun' => $this->request->getPost('tahun'),
             'nama_kegiatan' => $this->request->getPost('nama_kegiatan'),
             'waktu_kegiatan' => $this->request->getPost('waktu_kegiatan'),

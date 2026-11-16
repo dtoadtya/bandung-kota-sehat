@@ -291,44 +291,6 @@
 
                 <?= csrf_field() ?>
 
-                <?php if (
-                    session()->get('role') === 'admin'
-                    && !empty($kecamatanList)
-                ): ?>
-
-                    <div class="form-group">
-
-                        <label>
-                            Kecamatan <span>*</span>
-                        </label>
-
-                        <select name="kecamatan_id" required>
-
-                            <option value="">
-                                -- Pilih Kecamatan --
-                            </option>
-
-                            <?php foreach ($kecamatanList as $kecamatan): ?>
-
-                                <option
-                                    value="<?= esc($kecamatan['id']) ?>"
-                                    <?= ($data['kecamatan_id'] ?? '') == $kecamatan['id']
-                                        ? 'selected'
-                                        : '' ?>
-                                >
-                                    <?= esc(
-                                        $kecamatan['nama_kecamatan']
-                                    ) ?>
-                                </option>
-
-                            <?php endforeach; ?>
-
-                        </select>
-
-                    </div>
-
-                <?php endif; ?>
-
                 <div class="form-group">
 
                     <label>
@@ -378,6 +340,57 @@
                     </small>
 
                 </div>
+
+                <?php if (!empty($isAdmin)) : ?>
+
+                    <div class="form-group">
+
+                        <label>
+                            Kecamatan <span>*</span>
+                        </label>
+
+                        <select name="kecamatan_id"
+                                id="kecamatan_id"
+                                required>
+
+                            <option value="">
+                                -- Pilih Kecamatan --
+                            </option>
+
+                            <?php if (!empty($kecamatanList)) : ?>
+
+                                <?php foreach ($kecamatanList as $kecamatan) : ?>
+
+                                    <option
+                                        value="<?= esc($kecamatan['id']) ?>"
+                                        <?= old(
+                                            'kecamatan_id',
+                                            $data['kecamatan_id'] ?? ''
+                                        ) == $kecamatan['id']
+                                            ? 'selected'
+                                            : ''
+                                        ?>
+                                    >
+
+                                        <?= esc(
+                                            $kecamatan['nama_kecamatan']
+                                        ) ?>
+
+                                    </option>
+
+                                <?php endforeach; ?>
+
+                            <?php endif; ?>
+
+                        </select>
+
+                        <small class="form-help">
+                            Pilih kecamatan pelaksana kegiatan.
+                        </small>
+
+                    </div>
+
+                <?php endif; ?>
 
                 <div class="form-group">
 
