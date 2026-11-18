@@ -356,6 +356,21 @@ class ForumBandungSehatSk extends BaseController
                 $file->getSize();
         }
 
+        /*
+         * Pengguna mengirim ulang setelah ditolak,
+         * kembalikan ke pending agar admin meninjau data baru.
+         */
+        $statusLama = strtolower(
+            trim((string) ($data['status'] ?? 'pending'))
+        );
+
+        if ($statusLama === 'ditolak') {
+            $updateData['status'] = 'pending';
+            $updateData['keterangan_penolakan'] = null;
+            $updateData['verified_at'] = null;
+            $updateData['verified_by'] = null;
+        }
+
         $this->skModel->update(
             $id,
             $updateData

@@ -320,6 +320,33 @@ class TimPembinaSk extends BaseController
 
         /*
         |--------------------------------------------------------------------------
+        | DITOLAK LALU DIKIRIM ULANG
+        | KEMBALI PENDING
+        |--------------------------------------------------------------------------
+        */
+
+        $statusLama =
+            strtolower(
+                trim((string) ($data['status'] ?? 'pending'))
+            );
+
+        if ($statusLama === 'ditolak') {
+
+            $updateData['status'] =
+                'pending';
+
+            $updateData['keterangan_penolakan'] =
+                null;
+
+            $updateData['verified_at'] =
+                null;
+
+            $updateData['verified_by'] =
+                null;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
         | CEK FILE BARU
         |--------------------------------------------------------------------------
         */

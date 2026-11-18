@@ -71,7 +71,8 @@ class PokjaKelurahanSehatSk extends BaseController
      */
     public function create()
     {
-        $kelurahanList = $this->kelurahanModel
+        $kelurahanList = $this->isAdmin()
+            ? $this->kelurahanModel
             ->select(
                 'kelurahan.*,
                  kecamatan.nama_kecamatan'
@@ -89,7 +90,8 @@ class PokjaKelurahanSehatSk extends BaseController
                 'kelurahan.nama_kelurahan',
                 'ASC'
             )
-            ->findAll();
+            ->findAll()
+            : [];
 
         return view(
             'pokja_kelurahan_sehat/sk/create',
@@ -106,17 +108,36 @@ class PokjaKelurahanSehatSk extends BaseController
      */
     public function store()
     {
-        $kelurahanId = $this->request
-            ->getPost('kelurahan_id');
+        if ($this->isAdmin()) {
 
-        if (!$kelurahanId) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Kelurahan wajib dipilih.'
-                );
+            $kelurahanId = $this->request
+                ->getPost('kelurahan_id');
+
+            if (!$kelurahanId) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Kelurahan wajib dipilih.'
+                    );
+            }
+
+        } else {
+
+            $kelurahanUser = $this->userKelurahan();
+
+            if (!$kelurahanUser) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Akun ini tidak terhubung ke kelurahan mana pun.'
+                    );
+            }
+
+            $kelurahanId = $kelurahanUser['id'];
         }
 
         $file = $this->request
@@ -260,6 +281,20 @@ class PokjaKelurahanSehatSk extends BaseController
          */
         if ($existing) {
 
+            $statusLama = strtolower(
+                trim(
+                    (string)
+                    ($existing['status'] ?? 'pending')
+                )
+            );
+
+            if ($statusLama === 'ditolak') {
+                $data['status'] = 'pending';
+                $data['keterangan_penolakan'] = null;
+                $data['verified_at'] = null;
+                $data['verified_by'] = null;
+            }
+
             $this->skModel->update(
                 $existing['id'],
                 $data
@@ -311,25 +346,27 @@ class PokjaKelurahanSehatSk extends BaseController
         }
 
         $kelurahanList =
-            $this->kelurahanModel
-                ->select(
-                    'kelurahan.*,
-                     kecamatan.nama_kecamatan'
-                )
-                ->join(
-                    'kecamatan',
-                    'kecamatan.id = kelurahan.kecamatan_id',
-                    'left'
-                )
-                ->orderBy(
-                    'kecamatan.nama_kecamatan',
-                    'ASC'
-                )
-                ->orderBy(
-                    'kelurahan.nama_kelurahan',
-                    'ASC'
-                )
-                ->findAll();
+            $this->isAdmin()
+                ? $this->kelurahanModel
+                    ->select(
+                        'kelurahan.*,
+                         kecamatan.nama_kecamatan'
+                    )
+                    ->join(
+                        'kecamatan',
+                        'kecamatan.id = kelurahan.kecamatan_id',
+                        'left'
+                    )
+                    ->orderBy(
+                        'kecamatan.nama_kecamatan',
+                        'ASC'
+                    )
+                    ->orderBy(
+                        'kelurahan.nama_kelurahan',
+                        'ASC'
+                    )
+                    ->findAll()
+                : [];
 
         return view(
             'pokja_kelurahan_sehat/sk/edit',
@@ -361,17 +398,36 @@ class PokjaKelurahanSehatSk extends BaseController
                 );
         }
 
-        $kelurahanId = $this->request
-            ->getPost('kelurahan_id');
+        if ($this->isAdmin()) {
 
-        if (!$kelurahanId) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Kelurahan wajib dipilih.'
-                );
+            $kelurahanId = $this->request
+                ->getPost('kelurahan_id');
+
+            if (!$kelurahanId) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Kelurahan wajib dipilih.'
+                    );
+            }
+
+        } else {
+
+            $kelurahanUser = $this->userKelurahan();
+
+            if (!$kelurahanUser) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Akun ini tidak terhubung ke kelurahan mana pun.'
+                    );
+            }
+
+            $kelurahanId = $kelurahanUser['id'];
         }
 
         $updateData = [
@@ -481,6 +537,24 @@ class PokjaKelurahanSehatSk extends BaseController
 
             $updateData['ukuran_file'] =
                 $file->getSize();
+        }
+
+        /*
+         * Pengguna mengirim ulang setelah ditolak,
+         * kembalikan ke pending agar admin meninjau data baru.
+         */
+        $statusLama = strtolower(
+            trim(
+                (string)
+                ($data['status'] ?? 'pending')
+            )
+        );
+
+        if ($statusLama === 'ditolak') {
+            $updateData['status'] = 'pending';
+            $updateData['keterangan_penolakan'] = null;
+            $updateData['verified_at'] = null;
+            $updateData['verified_by'] = null;
         }
 
         $this->skModel->update(

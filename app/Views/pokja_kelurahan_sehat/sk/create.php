@@ -503,7 +503,9 @@
                 <?= csrf_field() ?>
 
 
-                <!-- KELURAHAN -->
+                <!-- KELURAHAN (hanya admin) -->
+
+                <?php if (!empty($isAdmin)) : ?>
 
                 <div class="form-group">
 
@@ -517,8 +519,6 @@
 
                     </label>
 
-
-                    <?php if (!empty($isAdmin)) : ?>
 
                         <select
                             name="kelurahan_id"
@@ -565,32 +565,6 @@
                         </select>
 
 
-                    <?php else : ?>
-
-
-                        <input
-                            type="text"
-                            class="form-control"
-                            value="<?= esc(
-                                $kelurahanUser['nama_kelurahan']
-                                    ?? ''
-                            ) ?>"
-                            readonly
-                        >
-
-                        <input
-                            type="hidden"
-                            name="kelurahan_id"
-                            value="<?= esc(
-                                $kelurahanUser['id']
-                                    ?? ''
-                            ) ?>"
-                        >
-
-
-                    <?php endif; ?>
-
-
                     <div class="form-help">
 
                         Pilih kelurahan yang memiliki Surat Keputusan
@@ -599,6 +573,8 @@
                     </div>
 
                 </div>
+
+                <?php endif; ?>
 
 
                 <!-- NOMOR SK -->
